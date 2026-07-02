@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ServiceNow CSA 学習システム</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #1c2b36;
+    --sub: #5f7382;
+    --accent: #1f8476;
+    --accent-dark: #14655a;
+    --ok: #1f8476;
+    --ng: #c0392b;
+    --border: #dde4ea;
+    --hover: #eef4f3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+  }
+  header {
+    background: linear-gradient(135deg, #103c37, #1f8476);
+    color: #fff; padding: 18px 24px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  header h1 { font-size: 1.15rem; font-weight: 700; }
+  header .sub { font-size: .8rem; opacity: .85; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  h2 { font-size: 1.05rem; margin-bottom: 12px; }
+  h3 { font-size: .95rem; margin-bottom: 8px; }
+  button {
+    font: inherit; cursor: pointer; border: 1px solid var(--border);
+    background: #fff; border-radius: 8px; padding: 10px 16px; color: var(--text);
+    transition: background .15s;
+  }
+  button:hover { background: var(--hover); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:hover { background: var(--accent-dark); }
+  button.ghost { border: none; background: none; color: var(--sub); text-decoration: underline; padding: 4px; }
+  button:disabled { opacity: .45; cursor: default; }
+  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .mode-btn {
+    text-align: left; padding: 16px; border-radius: 12px;
+  }
+  .mode-btn .t { font-weight: 700; display: block; margin-bottom: 4px; color: var(--accent-dark); }
+  .mode-btn .d { font-size: .8rem; color: var(--sub); }
+  table.progress { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  table.progress th, table.progress td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+  table.progress th { color: var(--sub); font-weight: 600; font-size: .75rem; }
+  .bar { background: #e6ecef; border-radius: 6px; height: 8px; overflow: hidden; min-width: 80px; }
+  .bar > div { height: 100%; background: var(--accent); border-radius: 6px; }
+  .qmeta { font-size: .78rem; color: var(--sub); margin-bottom: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  .qtext { font-weight: 600; margin-bottom: 14px; font-size: 1rem; }
+  .choice {
+    display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 12px 14px;
+    border-radius: 10px; border: 1.5px solid var(--border); background: #fff;
+  }
+  .choice.selected { border-color: var(--accent); background: #eaf5f3; }
+  .choice.correct { border-color: var(--ok); background: #e3f3ef; font-weight: 600; }
+  .choice.wrong { border-color: var(--ng); background: #faeae8; }
+  .expl {
+    margin-top: 14px; padding: 14px; border-radius: 10px; font-size: .9rem;
+    background: #f2f7f6; border-left: 4px solid var(--accent);
+  }
+  .expl.ng { background: #fdf3f2; border-left-color: var(--ng); }
+  .verdict { font-weight: 700; margin-bottom: 6px; }
+  .verdict.ok { color: var(--ok); }
+  .verdict.ng { color: var(--ng); }
+  .nav-row { display: flex; justify-content: space-between; margin-top: 18px; gap: 8px; flex-wrap: wrap; }
+  .timer { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .timer.warn { color: #ffd2ad; }
+  .pill {
+    display: inline-block; font-size: .72rem; padding: 2px 10px; border-radius: 999px;
+    background: #e4efed; color: var(--accent-dark); margin-right: 6px;
+  }
+  .score-big { font-size: 2.2rem; font-weight: 800; }
+  .score-big.pass { color: var(--ok); }
+  .score-big.fail { color: var(--ng); }
+  .domain-select label {
+    display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  }
+  .domain-select label:hover { background: var(--hover); }
+  .muted { color: var(--sub); font-size: .85rem; }
+  .browse-item { border-bottom: 1px solid var(--border); padding: 14px 0; }
+  .browse-item:last-child { border: none; }
+  .browse-item .ans { color: var(--accent-dark); font-weight: 600; font-size: .88rem; margin-top: 6px; }
+  .browse-item .ex { font-size: .85rem; color: var(--sub); margin-top: 4px; }
+  .multi-note { font-size: .78rem; color: var(--ng); font-weight: 600; margin-bottom: 8px; }
+  .mistake-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
+  .mistake-item:last-child { border: none; }
+  .mistake-row {
+    display: flex; align-items: center; gap: 8px; cursor: pointer; flex-wrap: wrap;
+  }
+  .mistake-row .pill { flex: none; }
+  .mistake-text { flex: 1 1 160px; min-width: 120px; font-size: .88rem; }
+  .mistake-stats { font-size: .78rem; color: var(--sub); white-space: nowrap; }
+  .mistake-detail { display: none; margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: #f2f7f6; border-left: 4px solid var(--accent); font-size: .85rem; }
+  .mistake-item.open .mistake-detail { display: block; }
+  .mistake-detail .ans { color: var(--accent-dark); font-weight: 600; margin-bottom: 4px; }
+  .mistake-detail .ex { color: var(--text); }
+  .mock-tooltip {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: .76rem; line-height: 1.5;
+    box-shadow: 0 4px 10px rgba(0,0,0,.14); pointer-events: none; z-index: 20;
+    max-width: 200px;
+  }
+  .mock-badge {
+    margin: 0 0 12px; padding: 8px 12px; border-radius: 8px;
+    background: #e4efed; color: var(--accent-dark); font-weight: 700; font-size: .85rem;
+    display: inline-block;
+  }
+  footer { text-align: center; color: var(--sub); font-size: .75rem; padding: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ServiceNow CSA 学習システム</h1>
+    <div class="sub">Certified System Administrator 試験対策</div>
+  </div>
+  <div id="header-right"></div>
+</header>
+<main id="app"></main>
+<footer>問題は app/questions.js で管理。進捗はこのブラウザの localStorage に保存されます。</footer>
+
+<script src="questions.js"></script>
+<script>
+"use strict";
+
+/* ===== 進捗ストア ===== */
+const STORE_KEY = "csa_progress_v1";
+const SPACED_INTERVALS = [3, 7, 14, 30, 60]; // 日
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveProgress(p) { localStorage.setItem(STORE_KEY, JSON.stringify(p)); }
+function recordAnswer(qid, correct) {
+  const p = loadProgress();
+  const e = p[qid] || { a: 0, c: 0, w: false, stg: 0, due: 0 };
+  e.a++; if (correct) e.c++;
+  e.w = !correct; // 直近の正誤(弱点復習の対象判定)
+  // 間隔反復(SM-2簡易版): 正解でステージ進行・間隔拡大、不正解でリセット
+  if (correct) {
+    e.stg = (e.stg || 0) + 1;
+    const days = SPACED_INTERVALS[Math.min(e.stg - 1, SPACED_INTERVALS.length - 1)];
+    e.due = Date.now() + days * 86400000;
+  } else {
+    e.stg = 0;
+    e.due = Date.now() + 1 * 86400000;
+  }
+  p[qid] = e;
+  saveProgress(p);
+}
+// 挑戦済みかつ復習期限が到来した問題のID一覧(due未設定の既存データは期限到来済み扱い)
+function getDueReviewIds() {
+  const p = loadProgress();
+  const now = Date.now();
+  const ids = [];
+  for (const qid in p) {
+    const e = p[qid];
+    if (!e || !(e.a > 0)) continue;
+    if (e.due === undefined || e.due === null || e.due <= now) ids.push(Number(qid));
+  }
+  return ids;
+}
+
+/* ===== 模擬試験スコア履歴ストア ===== */
+const MOCK_HISTORY_KEY = "csa_mock_history_v1";
+function loadMockHistory() {
+  try { return JSON.parse(localStorage.getItem(MOCK_HISTORY_KEY)) || []; } catch (e) { return []; }
+}
+function saveMockHistory(h) { localStorage.setItem(MOCK_HISTORY_KEY, JSON.stringify(h)); }
+
+/* ===== ユーティリティ ===== */
+const $app = document.getElementById("app");
+const $hdr = document.getElementById("header-right");
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function sameSet(a, b) {
+  if (a.length !== b.length) return false;
+  const s = new Set(b);
+  return a.every(x => s.has(x));
+}
+
+/* ===== セッション状態 ===== */
+let session = null; // {mode, questions, idx, answers, startedAt, timerId, limitSec}
+let mockHistoryChartData = []; // ホーム画面のチャート描画用(ホバー参照用に保持)
+
+function stopTimer() {
+  if (session && session.timerId) { clearInterval(session.timerId); session.timerId = null; }
+  $hdr.innerHTML = "";
+}
+
+/* ===== よく間違える問題 TOP10 ===== */
+function truncate60(s) {
+  const str = String(s);
+  return str.length > 60 ? str.slice(0, 60) + "…" : str;
+}
+function getTopMistakes() {
+  const p = loadProgress();
+  const list = [];
+  for (const qid in p) {
+    const e = p[qid];
+    const a = e.a || 0, c = e.c || 0;
+    const wrong = a - c;
+    if (wrong >= 1) list.push({ qid, a, c, wrong, rate: a ? wrong / a : 0 });
+  }
+  list.sort((x, y) => (y.wrong - x.wrong) || (y.rate - x.rate));
+  return list.slice(0, 10);
+}
+function buildMistakeSection() {
+  const top = getTopMistakes();
+  if (top.length === 0) return "";
+  let items = "";
+  for (const m of top) {
+    const q = QUESTIONS.find(qq => qq.id === Number(m.qid));
+    if (!q) continue;
+    items += `<div class="mistake-item" id="mistake-item-${q.id}">
+      <div class="mistake-row" onclick="toggleMistake(${q.id})">
+        <span class="pill">分野${q.domain}</span>
+        <span class="mistake-text">${esc(truncate60(q.q))}</span>
+        <span class="mistake-stats">誤答 ${m.wrong}回 / 挑戦 ${m.a}回</span>
+      </div>
+      <div class="mistake-detail">
+        <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+        <div class="ex">${esc(q.expl)}</div>
+      </div>
+    </div>`;
+  }
+  return `<div class="card">
+    <h2>よく間違える問題 TOP10</h2>
+    ${items}
+  </div>`;
+}
+function toggleMistake(qid) {
+  const el = document.getElementById(`mistake-item-${qid}`);
+  if (el) el.classList.toggle("open");
+}
+
+/* ===== 模擬試験スコアの推移グラフ ===== */
+function fmtMD(ts) {
+  const d = new Date(ts);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+}
+function weakestDomain(perDomain) {
+  let worstKey = null, worstRate = Infinity;
+  for (const d in perDomain || {}) {
+    const e = perDomain[d];
+    const rate = e.t ? e.c / e.t : 1;
+    if (rate < worstRate) { worstRate = rate; worstKey = d; }
+  }
+  if (worstKey === null) return "—";
+  const name = DOMAINS[worstKey] ? DOMAINS[worstKey].name : "";
+  return `分野${worstKey}: ${name}`;
+}
+function buildMockHistorySection() {
+  const hist = loadMockHistory();
+  mockHistoryChartData = hist;
+  if (hist.length === 0) return "";
+
+  const n = hist.length;
+  const plotLeft = 40, plotRight = 520, plotTop = 16, plotBottom = 164;
+  const xOf = i => n > 1 ? plotLeft + i * (plotRight - plotLeft) / (n - 1) : (plotLeft + plotRight) / 2;
+  const yOf = score => plotBottom - (Math.max(0, Math.min(100, score)) / 100) * (plotBottom - plotTop);
+
+  let gridHtml = "";
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = yOf(v);
+    gridHtml += `<line x1="${plotLeft}" y1="${y}" x2="${plotRight}" y2="${y}" stroke="#e6ecef" stroke-width="1"/>`;
+    gridHtml += `<text x="${plotLeft - 8}" y="${y + 3}" text-anchor="end" font-size="9" style="fill:var(--sub)">${v}</text>`;
+  });
+
+  const y70 = yOf(70), y85 = yOf(85);
+  const baseHtml = `
+    <line x1="${plotLeft}" y1="${y70}" x2="${plotRight}" y2="${y70}" stroke="#9aa9b5" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${plotRight + 6}" y="${y70 + 3}" font-size="9" style="fill:var(--sub)">合格目安70%</text>
+    <line x1="${plotLeft}" y1="${y85}" x2="${plotRight}" y2="${y85}" stroke="#9aa9b5" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${plotRight + 6}" y="${y85 + 3}" font-size="9" style="fill:var(--sub)">受験判断85%</text>`;
+
+  let pathD = "";
+  hist.forEach((d, i) => { pathD += (i === 0 ? "M" : "L") + xOf(i) + "," + yOf(d.score) + " "; });
+  const lineHtml = `<path d="${pathD.trim()}" fill="none" stroke="#0f9d82" stroke-width="2"/>`;
+
+  const showEvery = n > 8 ? Math.ceil(n / 8) : 1;
+  let xLabelsHtml = "";
+  hist.forEach((d, i) => {
+    if (i % showEvery !== 0 && i !== n - 1) return;
+    xLabelsHtml += `<text x="${xOf(i)}" y="${plotBottom + 16}" text-anchor="middle" font-size="9" style="fill:var(--sub)">${fmtMD(d.t)}</text>`;
+  });
+
+  let markersHtml = "";
+  hist.forEach((d, i) => {
+    const x = xOf(i), y = yOf(d.score);
+    markersHtml += `<circle cx="${x}" cy="${y}" r="4" fill="#0f9d82" stroke="#fff" stroke-width="2"/>`;
+    markersHtml += `<circle cx="${x}" cy="${y}" r="14" fill="transparent" style="cursor:pointer"
+      onmouseenter="showMockTip(event, ${i})" onmouseleave="hideMockTip()" onclick="showMockTip(event, ${i})"/>`;
+  });
+
+  const lastIdx = n - 1;
+  const lastLabelHtml = `<text x="${xOf(lastIdx)}" y="${yOf(hist[lastIdx].score) - 12}" text-anchor="middle" font-size="12" font-weight="700" style="fill:var(--text)">${hist[lastIdx].score}%</text>`;
+
+  const svg = `<svg viewBox="0 0 640 220" style="width:100%;height:auto;display:block" role="img" aria-label="模擬試験スコア推移">
+    ${gridHtml}${baseHtml}${lineHtml}${xLabelsHtml}${markersHtml}${lastLabelHtml}
+  </svg>`;
+
+  let badgeHtml = "";
+  if (n >= 2 && hist[n - 1].score >= 85 && hist[n - 2].score >= 85) {
+    badgeHtml = `<div class="mock-badge">🎉 受験予約レベル到達(2回連続85%以上)</div>`;
+  }
+
+  const recent = hist.slice().reverse().slice(0, 10);
+  let rows = "";
+  recent.forEach(d => {
+    const dt = new Date(d.t);
+    const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, "0")}/${String(dt.getDate()).padStart(2, "0")}`;
+    rows += `<tr><td>${dateStr}</td><td>${d.score}%</td><td>${esc(weakestDomain(d.perDomain))}</td></tr>`;
+  });
+  const table = `<table class="progress"><tr><th>日付</th><th>スコア</th><th>最弱分野</th></tr>${rows}</table>`;
+
+  return `<div class="card" id="mock-chart-wrap" style="position:relative">
+    <h2>模擬試験の推移</h2>
+    ${badgeHtml}
+    ${svg}
+    <div id="mock-tooltip" class="mock-tooltip" style="display:none;position:absolute;"></div>
+    ${table}
+  </div>`;
+}
+function showMockTip(evt, idx) {
+  const d = mockHistoryChartData[idx];
+  const tip = document.getElementById("mock-tooltip");
+  const wrap = document.getElementById("mock-chart-wrap");
+  if (!d || !tip || !wrap) return;
+  tip.innerHTML = `<div><strong>${fmtMD(d.t)}</strong></div><div>スコア: ${d.score}%</div><div>最弱分野: ${esc(weakestDomain(d.perDomain))}</div>`;
+  tip.style.display = "block";
+  const rect = wrap.getBoundingClientRect();
+  let x = evt.clientX - rect.left + 12;
+  let y = evt.clientY - rect.top - 10;
+  x = Math.max(4, Math.min(x, rect.width - 210));
+  tip.style.left = x + "px";
+  tip.style.top = y + "px";
+  evt.stopPropagation();
+}
+function hideMockTip() {
+  const tip = document.getElementById("mock-tooltip");
+  if (tip) tip.style.display = "none";
+}
+
+/* ===== ホーム画面 ===== */
+function renderHome() {
+  stopTimer();
+  session = null;
+  const p = loadProgress();
+  const wrongCount = QUESTIONS.filter(q => p[q.id] && p[q.id].w).length;
+  const dueCount = getDueReviewIds().length;
+
+  let rows = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const qs = QUESTIONS.filter(q => q.domain == d);
+    let attempted = 0, correctSum = 0, attemptSum = 0;
+    for (const q of qs) {
+      const e = p[q.id];
+      if (e && e.a > 0) { attempted++; correctSum += e.c; attemptSum += e.a; }
+    }
+    const cov = qs.length ? Math.round(attempted / qs.length * 100) : 0;
+    const acc = attemptSum ? Math.round(correctSum / attemptSum * 100) : null;
+    rows += `<tr>
+      <td>${d}. ${esc(DOMAINS[d].name)}</td>
+      <td>${DOMAINS[d].weight}%</td>
+      <td>${attempted}/${qs.length}<div class="bar"><div style="width:${cov}%"></div></div></td>
+      <td>${acc === null ? "—" : acc + "%"}</td>
+    </tr>`;
+  }
+
+  $app.innerHTML = `
+    <div class="card">
+      <h2>学習モード</h2>
+      <div class="mode-grid">
+        <button class="mode-btn" onclick="renderDomainSelect()">
+          <span class="t">分野別練習</span>
+          <span class="d">分野を選んで1問ずつ演習。即時に解説を表示</span>
+        </button>
+        <button class="mode-btn" onclick="startMock()">
+          <span class="t">模擬試験</span>
+          <span class="d">本番同様 60問・90分。配点比率で出題</span>
+        </button>
+        <button class="mode-btn" onclick="startReview()" ${wrongCount === 0 ? "disabled" : ""}>
+          <span class="t">弱点復習 (${wrongCount}問)</span>
+          <span class="d">直近で間違えた問題だけを再演習</span>
+        </button>
+        <button class="mode-btn" onclick="startSpacedReview()" ${dueCount === 0 ? "disabled" : ""}>
+          <span class="t">今日の復習 (${dueCount}問)</span>
+          <span class="d">間隔反復で記憶を定着。期限が来た問題を再演習</span>
+        </button>
+        <button class="mode-btn" onclick="renderBrowse()">
+          <span class="t">全問ブラウズ</span>
+          <span class="d">全${QUESTIONS.length}問の問題・解答・解説を一覧表示</span>
+        </button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>進捗ダッシュボード</h2>
+      <table class="progress">
+        <tr><th>分野</th><th>配点</th><th>演習カバー率</th><th>正答率</th></tr>
+        ${rows}
+      </table>
+      <div style="margin-top:12px">
+        <button class="ghost" onclick="resetProgress()">進捗リセット</button>
+      </div>
+    </div>
+    ${buildMockHistorySection()}
+    ${buildMistakeSection()}
+    <div class="card">
+      <h2>学習の進め方</h2>
+      <ol style="padding-left:1.4em; font-size:.9rem">
+        <li>notes/ の学習ノートを分野順に読む</li>
+        <li>分野別練習で全分野をひと通り演習する</li>
+        <li>模擬試験 → 弱点復習 → 該当ノート再読、のループを回す</li>
+        <li>模擬試験で2回連続85%以上になったら受験を予約する</li>
+      </ol>
+    </div>`;
+}
+
+function resetProgress() {
+  if (confirm("進捗(正答率・弱点データ・間隔反復の復習期限)と模擬試験のスコア履歴をすべてリセットしますか?")) {
+    localStorage.removeItem(STORE_KEY);
+    localStorage.removeItem(MOCK_HISTORY_KEY);
+    renderHome();
+  }
+}
+
+/* ===== 分野別練習 ===== */
+function renderDomainSelect() {
+  stopTimer();
+  let items = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const n = QUESTIONS.filter(q => q.domain == d).length;
+    items += `<label><input type="checkbox" value="${d}" checked>
+      ${d}. ${esc(DOMAINS[d].name)} <span class="muted">(${n}問・配点${DOMAINS[d].weight}%)</span></label>`;
+  }
+  $app.innerHTML = `
+    <div class="card">
+      <h2>分野別練習 — 出題範囲を選択</h2>
+      <div class="domain-select" id="dsel">${items}</div>
+      <div style="margin-top:10px">
+        <label style="display:flex;gap:8px;align-items:center;padding:8px 10px">
+          <input type="checkbox" id="opt-shuffle" checked> 出題順をシャッフル
+        </label>
+      </div>
+      <div class="nav-row">
+        <button onclick="renderHome()">← 戻る</button>
+        <button class="primary" onclick="startPractice()">練習を開始</button>
+      </div>
+    </div>`;
+}
+
+function startPractice() {
+  const checked = [...document.querySelectorAll("#dsel input:checked")].map(i => Number(i.value));
+  if (checked.length === 0) { alert("分野を1つ以上選択してください"); return; }
+  let qs = QUESTIONS.filter(q => checked.includes(q.domain));
+  if (document.getElementById("opt-shuffle").checked) qs = shuffle(qs);
+  beginSession("practice", qs);
+}
+
+function startReview() {
+  const p = loadProgress();
+  const qs = shuffle(QUESTIONS.filter(q => p[q.id] && p[q.id].w));
+  if (qs.length === 0) { alert("復習対象の問題はありません"); return; }
+  beginSession("review", qs);
+}
+
+function startSpacedReview() {
+  const dueIds = getDueReviewIds();
+  const qs = shuffle(QUESTIONS.filter(q => dueIds.includes(q.id)));
+  if (qs.length === 0) { alert("今日の復習対象の問題はありません"); return; }
+  beginSession("spaced", qs);
+}
+
+/* ===== 模擬試験 ===== */
+const MOCK_TOTAL = 60, MOCK_LIMIT_SEC = 90 * 60;
+function startMock() {
+  // 配点比率で各分野から出題数を決める
+  const counts = {};
+  let assigned = 0;
+  const keys = Object.keys(DOMAINS);
+  for (const d of keys) {
+    counts[d] = Math.round(MOCK_TOTAL * DOMAINS[d].weight / 100);
+    assigned += counts[d];
+  }
+  // 丸め誤差は最大配点の分野で調整
+  counts[5] += MOCK_TOTAL - assigned;
+  let qs = [];
+  for (const d of keys) {
+    const pool = shuffle(QUESTIONS.filter(q => q.domain == d));
+    qs = qs.concat(pool.slice(0, Math.min(counts[d], pool.length)));
+  }
+  qs = shuffle(qs);
+  beginSession("mock", qs, MOCK_LIMIT_SEC);
+}
+
+/* ===== セッション共通 ===== */
+// 正解位置の偏りを消すため、出題時に選択肢をシャッフルした複製を作る
+function permuteQuestion(q) {
+  const perm = shuffle(q.choices.map((_, i) => i));
+  return {
+    ...q,
+    choices: perm.map(i => q.choices[i]),
+    answer: q.answer.map(a => perm.indexOf(a)),
+  };
+}
+
+function beginSession(mode, questions, limitSec) {
+  questions = questions.map(permuteQuestion);
+  session = {
+    mode, questions, idx: 0,
+    answers: new Array(questions.length).fill(null), // 各要素: {sel:[], correct:bool}
+    limitSec: limitSec || null,
+    remainSec: limitSec || null,
+    timerId: null,
+    checked: false, // practice: 解説表示済みか
+    curSel: new Set(),
+  };
+  if (limitSec) {
+    session.timerId = setInterval(() => {
+      session.remainSec--;
+      updateTimer();
+      if (session.remainSec <= 0) { finishMock(); }
+    }, 1000);
+  }
+  renderQuestion();
+}
+
+function updateTimer() {
+  if (!session || session.remainSec === null) { $hdr.innerHTML = ""; return; }
+  const m = Math.floor(session.remainSec / 60), s = session.remainSec % 60;
+  const warn = session.remainSec < 600 ? " warn" : "";
+  $hdr.innerHTML = `<span class="timer${warn}">残り ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}</span>`;
+}
+
+function modeLabel() {
+  return { practice: "分野別練習", mock: "模擬試験", review: "弱点復習", spaced: "今日の復習" }[session.mode];
+}
+
+function renderQuestion() {
+  const q = session.questions[session.idx];
+  const isMulti = q.answer.length > 1;
+  const total = session.questions.length;
+  updateTimer();
+
+  let choicesHtml = "";
+  q.choices.forEach((c, i) => {
+    const sel = session.curSel.has(i) ? " selected" : "";
+    choicesHtml += `<button class="choice${sel}" data-i="${i}" onclick="toggleChoice(${i})">${esc(c)}</button>`;
+  });
+
+  const isMock = session.mode === "mock";
+  $app.innerHTML = `
+    <div class="card">
+      <div class="qmeta">
+        <span><span class="pill">${modeLabel()}</span>問 ${session.idx + 1} / ${total}</span>
+        <span>分野${q.domain}: ${esc(DOMAINS[q.domain].name)}</span>
+      </div>
+      ${isMulti ? '<div class="multi-note">※ 複数選択(該当するものをすべて選ぶ)</div>' : ""}
+      <div class="qtext">${esc(q.q)}</div>
+      <div id="choices">${choicesHtml}</div>
+      <div id="feedback"></div>
+      <div class="nav-row">
+        <button onclick="quitSession()">中断してホームへ</button>
+        <div style="display:flex;gap:8px">
+          ${isMock && session.idx > 0 ? '<button onclick="mockPrev()">← 前へ</button>' : ""}
+          <button class="primary" id="main-btn" onclick="mainAction()">${isMock ? (session.idx === total - 1 ? "採点する" : "次へ →") : "回答する"}</button>
+        </div>
+      </div>
+    </div>`;
+
+  // 模擬試験: 過去の選択を復元
+  if (isMock && session.answers[session.idx]) {
+    session.curSel = new Set(session.answers[session.idx].sel);
+    refreshChoices();
+  }
+  session.checked = false;
+}
+
+function toggleChoice(i) {
+  if (session.checked) return; // 解説表示後は変更不可
+  const q = session.questions[session.idx];
+  const isMulti = q.answer.length > 1;
+  if (isMulti) {
+    session.curSel.has(i) ? session.curSel.delete(i) : session.curSel.add(i);
+  } else {
+    session.curSel = new Set([i]);
+  }
+  refreshChoices();
+}
+
+function refreshChoices() {
+  document.querySelectorAll("#choices .choice").forEach(btn => {
+    const i = Number(btn.dataset.i);
+    btn.classList.toggle("selected", session.curSel.has(i));
+  });
+}
+
+function mainAction() {
+  const isMock = session.mode === "mock";
+  if (isMock) {
+    saveCurrentMockAnswer();
+    if (session.idx === session.questions.length - 1) { finishMock(); }
+    else { session.idx++; session.curSel = new Set(); renderQuestion(); }
+    return;
+  }
+  // 練習/復習モード
+  if (!session.checked) { checkAnswer(); }
+  else { nextPractice(); }
+}
+
+function checkAnswer() {
+  if (session.curSel.size === 0) { alert("選択肢を選んでください"); return; }
+  const q = session.questions[session.idx];
+  const sel = [...session.curSel];
+  const correct = sameSet(sel, q.answer);
+  recordAnswer(q.id, correct);
+  session.answers[session.idx] = { sel, correct };
+  session.checked = true;
+
+  document.querySelectorAll("#choices .choice").forEach(btn => {
+    const i = Number(btn.dataset.i);
+    if (q.answer.includes(i)) btn.classList.add("correct");
+    else if (session.curSel.has(i)) btn.classList.add("wrong");
+  });
+
+  document.getElementById("feedback").innerHTML = `
+    <div class="expl ${correct ? "" : "ng"}">
+      <div class="verdict ${correct ? "ok" : "ng"}">${correct ? "✔ 正解" : "✘ 不正解"}</div>
+      ${esc(q.expl)}
+    </div>`;
+  const btn = document.getElementById("main-btn");
+  btn.textContent = session.idx === session.questions.length - 1 ? "結果を見る" : "次の問題 →";
+}
+
+function nextPractice() {
+  if (session.idx === session.questions.length - 1) { finishPractice(); return; }
+  session.idx++;
+  session.curSel = new Set();
+  renderQuestion();
+}
+
+function finishPractice() {
+  stopTimer();
+  const answered = session.answers.filter(Boolean);
+  const correct = answered.filter(a => a.correct).length;
+  const pct = answered.length ? Math.round(correct / answered.length * 100) : 0;
+  $app.innerHTML = `
+    <div class="card" style="text-align:center">
+      <h2>${modeLabel()} 終了</h2>
+      <div class="score-big ${pct >= 70 ? "pass" : "fail"}">${pct}%</div>
+      <p class="muted">${answered.length}問中 ${correct}問正解</p>
+      <div class="nav-row" style="justify-content:center">
+        <button class="primary" onclick="renderHome()">ホームへ</button>
+      </div>
+    </div>`;
+  session = null;
+}
+
+/* 模擬試験専用 */
+function saveCurrentMockAnswer() {
+  const q = session.questions[session.idx];
+  const sel = [...session.curSel];
+  session.answers[session.idx] = { sel, correct: sameSet(sel, q.answer) };
+}
+function mockPrev() {
+  saveCurrentMockAnswer();
+  session.idx--;
+  session.curSel = new Set(session.answers[session.idx] ? session.answers[session.idx].sel : []);
+  renderQuestion();
+}
+
+function finishMock() {
+  stopTimer();
+  // タイマー切れで未保存の現在問題を保存
+  if (session.answers[session.idx] === null && session.curSel.size > 0) saveCurrentMockAnswer();
+
+  let correct = 0;
+  const perDomain = {};
+  session.questions.forEach((q, i) => {
+    const a = session.answers[i];
+    const ok = a ? a.correct : false;
+    recordAnswer(q.id, ok);
+    if (ok) correct++;
+    perDomain[q.domain] = perDomain[q.domain] || { t: 0, c: 0 };
+    perDomain[q.domain].t++;
+    if (ok) perDomain[q.domain].c++;
+  });
+  const total = session.questions.length;
+  const pct = Math.round(correct / total * 100);
+
+  // スコア推移用の履歴に記録(タイマー切れ終了時も含む)
+  const mh = loadMockHistory();
+  mh.push({ t: Date.now(), score: pct, correct, total, perDomain });
+  saveMockHistory(mh);
+
+  let rows = "";
+  for (const d of Object.keys(DOMAINS)) {
+    if (!perDomain[d]) continue;
+    const e = perDomain[d];
+    const dp = Math.round(e.c / e.t * 100);
+    rows += `<tr><td>${d}. ${esc(DOMAINS[d].name)}</td><td>${e.c}/${e.t}</td>
+      <td><div class="bar"><div style="width:${dp}%"></div></div></td><td>${dp}%</td></tr>`;
+  }
+
+  // 間違えた問題の解説一覧
+  let wrongHtml = "";
+  session.questions.forEach((q, i) => {
+    const a = session.answers[i];
+    if (a && a.correct) return;
+    wrongHtml += `<div class="browse-item">
+      <div><span class="pill">分野${q.domain}</span>${esc(q.q)}</div>
+      <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+      <div class="ex">${esc(q.expl)}</div>
+    </div>`;
+  });
+
+  $app.innerHTML = `
+    <div class="card" style="text-align:center">
+      <h2>模擬試験 結果</h2>
+      <div class="score-big ${pct >= 70 ? "pass" : "fail"}">${pct}%</div>
+      <p class="muted">${total}問中 ${correct}問正解 — ${pct >= 85 ? "受験レベル到達。この調子で仕上げる" : pct >= 70 ? "合格ライン相当。85%を目指して弱点を潰す" : "まだ演習不足。弱点復習+ノート再読へ"}</p>
+    </div>
+    <div class="card">
+      <h3>分野別スコア</h3>
+      <table class="progress"><tr><th>分野</th><th>正解</th><th></th><th>正答率</th></tr>${rows}</table>
+    </div>
+    ${wrongHtml ? `<div class="card"><h3>間違えた問題の解説</h3>${wrongHtml}</div>` : ""}
+    <div class="nav-row" style="justify-content:center">
+      <button class="primary" onclick="renderHome()">ホームへ</button>
+    </div>`;
+  session = null;
+}
+
+function quitSession() {
+  if (confirm("セッションを中断してホームに戻りますか?(模擬試験の場合、回答は破棄されます)")) {
+    renderHome();
+  }
+}
+
+/* ===== 全問ブラウズ ===== */
+function renderBrowse() {
+  stopTimer();
+  let html = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const qs = QUESTIONS.filter(q => q.domain == d);
+    let items = "";
+    qs.forEach((q, i) => {
+      items += `<div class="browse-item">
+        <div><strong>Q${i + 1}.</strong> ${esc(q.q)}</div>
+        <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+        <div class="ex">${esc(q.expl)}</div>
+      </div>`;
+    });
+    html += `<div class="card"><h3>分野${d}: ${esc(DOMAINS[d].name)}(${qs.length}問・配点${DOMAINS[d].weight}%)</h3>${items}</div>`;
+  }
+  $app.innerHTML = `
+    <div class="nav-row" style="margin-bottom:12px">
+      <button onclick="renderHome()">← ホームへ</button>
+    </div>${html}
+    <div class="nav-row" style="justify-content:center">
+      <button class="primary" onclick="renderHome()">ホームへ</button>
+    </div>`;
+}
+
+document.addEventListener("click", hideMockTip);
+renderHome();
+</script>
+</body>
+</html>
