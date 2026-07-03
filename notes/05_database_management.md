@@ -6,7 +6,7 @@
 
 ## 2. テーブルの拡張(継承)
 
-taskがIncident/Problem/Change等の親。cmdb_ciがCI系の親。sys_userは単独テーブル(拡張ではない)。親のリストには子のレコードも表示される。新規テーブルにはu_プレフィックス。
+taskがIncident/Problem/Change等の親。cmdb_ciがCI系の親。sys_userは単独テーブル(拡張ではない)。親のリストには子のレコードも表示される。新規テーブルにu_プレフィックス。
 
 ## 3. フィールドタイプと参照
 
@@ -20,147 +20,173 @@ Reference(1対多)、List(複数参照)、Choice(sys_choiceで管理)。Dot-walk
 
 CI基底テーブルはcmdb_ci。CIリレーションシップはcmdb_rel_ciテーブル。
 
-## 6. ACL(アクセス制御) — 最頻出
+## 6. ACL(アクセス制御) — 最頼出
 
-評価順序: テーブルレベル(具体→親→ワイルドカード)→フィールドレベル(具体→ワイルドカード)。両方パスしてアクセス可能。ACL変更にはsecurity_adminへのelevate roleが必要。条件3種類: ロール/条件(フィルター)/スクリプト。
+評価順序: テーブルレベル(具体→親→ワイルドカード)→フィールドレベル(具体→ワイルドカード)。両方パスしてアクセス可能。ACL変更にsecurity_adminへのelevate roleが必要。条件3種類: ロール/条件(フィルター)/スクリプト。
+
+**ACLスクリプトフィールド:**
+- `answer` 変数に `true` または `false` をセットして返す
+- `current` でカレントレコードを参照
+- `gs.hasRole('role')` でロールチェック
+- admin ロールはACLを無条件でバイパス
 
 ## 7. UI Policy / Data Policy / Business Rule
 
 UI Policy=フォームのみ。Data Policy=全入力経路(インポート・API含む)。Business Ruleはサーバーサイドのinsert/update/delete/queryロジック。
 
-## 8. 監査・辞書オーバーライド
+## 8. Business Rule 詳細
 
-Auditingはsys_auditに記録。辞書オーバーライドで子テーブルだけ属性変更(親の定義は変えない)。
+**実行タイミング(When):**
+- `Before`: DB保存前に実行。フィールド値の変更や処理のアボートに使用
+- `After`: DB保存後に実行。他レコードの更新などに使用
+- `Async`: 非同期実行。メール送信など重い処理に使用
+- `Display`: フォーム表示前に実行。スクラッチパッドでデータを渡す
+
+**current オブジェクト:**
+- `current.field_name`: フィールドの現在値を取得/設定
+- `current.getValue('field')`: 文字列として取得
+- `current.setValue('field', value)`: 値をセット
+
+**previous オブジェクト:**
+- `previous.field_name`: 更新前の古い値を参照（Beforeのupdate時のみ有効）
+- `previous.state`: 変更前のStatフィールド値
+
+**setAbortAction(true):**
+- `current.setAbortAction(true)`: DB保存をアボートしロールバック
+- `gs.addErrorMessage('メッセージ')`: ユーザーへエラーメッセージ表示
+- Before Business Ruleでバリデーションロジックを実装する際に使用
+
+**Scratchpad オブジェクト:**
+- `g_scratchpad.key = value`: Display Business RuleかClient Scriptにデータを渡す
+
+## 9. GlideRecord API
+
+サーバーサイドでテーブルを操作するJavaScript API。
+
+**単一レコード取得:**
+- `gr.get(sys_id)` または `gr.get('number', 'INC0000001')`
+
+**クエリ実行:**
+- `gr.addQuery('state', '1')` — state = 1
+- `gr.addQuery('priority', '<', '3')` — priority < 3
+- `gr.addEncodedQuery('active=true^state=1')` — エンコードクエリ
+- `gr.setLimit(10)` — 件数制限
+- `gr.orderBy('priority')` / `gr.orderByDesc('sys_created_on')`
+- `gr.query()` — クエリ実行
+- `while (gr.next()) { ... }` — レコード反復
+
+**OR条件:**
+- `var qc = gr.addQuery('state', '1'); qc.addOrCondition('state', '2');`
+
+**値の取得・設定:**
+- `gr.getValue('field')` — 文字列値
+- `gr.getDisplayValue('field')` — 表示値
+- `gr.setValue('field', value)` — 値セット
+
+**レコード操作:**
+- `gr.insert()` — 作成。sys_idを返す
+- `gr.update()` — 更新。保存
+- `gr.deleteRecord()` — 削除
+
+## 10. テーブルと辞書の詳細
+
+**Auto Number (自動番号):**
+- Prefix: 番号のプレフィックス(例: INC)
+- Next value: 次に付与される数値
+- Padding: 桁数(0埋め)
+
+**Dictionary Entry の主なフィールド:**
+- Type: 文字列/整数/日付/Reference等
+- Max length: 最大文字数
+- Default value: デフォルト値
+- Mandatory: 必須フラグ
+
+**Reference フィールド:** Reference qualifier で参照先レコードを絞り込む条件スクリプト
+
+**辞書オーバーライド:** 子テーブルだけフィールド属性を変更（親の定義はたそのまま）
+
+## 11. 監査・辞書オーバーライド
+
+**Auditing**: sys_auditに変更履歴を記録（テーブルごとに有効化必要）。
+
+**辞書オーバーライド**: 子テーブルだけ属性変更（親の定義は変えない）。
 
 ## 全体構造マップ
 
 ```
 【スキーマ層】
   sys_db_object(テーブル定義)
-      │
-      ├──→ sys_dictionary(フィールド定義・辞書)
-      │         │
-      │         └──→ sys_documentation(ラベル・翻訳)
-      │
-      └──→ sys_choice(Choiceフィールドの選択肢)
+      ├─→ sys_dictionary(フィールド定義・辞書)
+      └─→ sys_choice(Choiceフィールドの選択肢)
 
 【テーブル継承ツリー】
-  task(親)
-    ├── incident
-    ├── problem
-    └── change_request
+  task(親) → incident / problem / change_request
+  cmdb_ci(親) → cmdb_ci_computer / cmdb_ci_server
+  sys_user — (継承なし・独立テーブル)
 
-  cmdb_ci(親)
-    ├── cmdb_ci_computer
-    ├── cmdb_ci_server
-    └── cmdb_ci_appl
+【ACL 評価フロー】
+  リクエスト → テーブルACL評価(具体→親→*)
+  → フィールドACL評価(具体→*) → アクセス許可/拒否
+  ACL条件: ロール → 条件 → スクリプト(answer=true/false)
+  admin ロールはACLをバイパス
 
-  sys_user ── (継承なし・独立テーブル)
+【Business Rule タイミング】
+  Before  — DB保存前 — current変更・setAbortAction・バリデーション
+  After   — DB保存後 — 他レコード更新・後処理
+  Async   — 非同期   — メール送信・重い処理
+  Display — 表示前   — scratchpadでClient Scriptにデータ渡し
 
-  【子→親の参照】
-  子テーブルのレコード ──→ 親テーブルのリストにも表示される
+  current.setAbortAction(true) → 保存をロールバック
+  previous.field → 更新前の値(Beforeのupdate時)
 
-【リレーションシップ層】
-  1対多  : Referenceフィールド ──→ 参照先テーブル
-  多対多  : m2mテーブル(例: sys_user_has_role)
-                ├── sys_user へのReference
-                └── sys_user_role へのReference
-  結合表示: Database View(読み取り専用・JOINの仮想テーブル)
-  Dot-walk: caller_id ──→ .company ──→ .name
-
-【アクセス制御層】
-  リクエスト
-      ↓
-  ACL評価(テーブルレベル)
-      具体テーブル名 → 親テーブル名 → *(ワイルドカード)
-      ↓ パス
-  ACL評価(フィールドレベル)
-      具体フィールド名 → *(ワイルドカード)
-      ↓ パス
-  アクセス許可
-      ↓ どちらか失敗
-  アクセス拒否
-
-  ACL条件の評価順序:
-    ロールチェック → 条件(フィルター) → スクリプト
-    ※すべての条件がtrueの場合のみACL通過
-
-  ACL変更操作:
-    通常ロール ──→ elevate ──→ security_admin ──→ ACL編集可能
-
-【変更管理ポリシー層】
-  データ入力経路
-    ┌─ フォーム操作 ──→ UI Policy が適用される
-    ├─ フォーム操作 ──→ Data Policy も適用される
-    ├─ インポート  ──→ Data Policy のみ適用される
-    └─ API/REST    ──→ Data Policy のみ適用される
-
-  Business Rule(サーバーサイド)
-    insert / update / delete / query のタイミングで実行
-    Before / After / Async の実行タイプ
-
-【監査層】
-  レコード変更
-      └──→ sys_audit(変更履歴を自動記録)
-                ※テーブルごとにAudit有効化が必要
-
-  辞書オーバーライド
-      親テーブルの定義はそのまま
-      └──→ 子テーブルだけ属性を上書き(必須化など)
+【GlideRecord APIフロー】
+  new GlideRecord('table')
+      ├─ addQuery() / addEncodedQuery()
+      ├─ setLimit() / orderBy()
+      ├─ query() → while (gr.next())
+      ├─ getValue / getDisplayValue / setValue
+      └─ insert() / update() / deleteRecord()
 ```
 
 ## PDI 操作ガイド
 
-**タスク1: sys_db_objectとsys_dictionaryを直接閲覧する**
+**タスク1: Business Ruleを作成してsetAbortActionを試す**
 
-1. ナビゲーションフィルターに `sys_db_object.list` と入力してEnterを押す
-2. 検索フィルターで `Name` = `incident` と入力してレコードを開く
-3. 「Dictionary Entries」関連リストを確認し、incidentテーブルが持つ全フィールドを一覧で見る
-4. 任意のフィールド(例: `caller_id`)をクリックし、タイプが `Reference` で参照先が `sys_user` になっていることを確認する
-5. 【確認ポイント】sys_db_objectが「テーブルの入れ物」、sys_dictionaryが「フィールドの設計図」であることを視覚的に把握する
+1. **All → System Definition → Business Rules** を開く
+2. 「New」をクリック。Table: `incident`、When: `Before`、InsertとUpdateにチェック
+3. AdvancedタブのScript欄にバリデーションスクリプトを入力して保存
+4. Incidentフォームで条件違反状態で保存しようとするとアボートされることを確認
 
-**タスク2: テーブル継承の親子関係を確認する**
+**タスク2: GlideRecordをBackground Scriptで試す**
 
-1. `All → System Definition → Tables` を開く(またはナビゲーターに `sys_db_object.list`)
-2. `incident` テーブルを開き、「Extends table」フィールドが `task` になっていることを確認する
-3. `task.list` をナビゲーターに入力し、taskリストを開く
-4. リストにincident/problem/change_requestのレコードが混在して表示されることを確認する
-5. 【確認ポイント】親テーブルのリストには子テーブルのレコードも表示されるという継承の動作を体感する
+1. **All → System Definition → Scripts - Background** を開く
+2. GlideRecordでincidentをクエリし、numberとshort_descriptionをgs.info()で出力する
+3. 実行ログでincidentレコードが出力されることを確認する
 
 **タスク3: ACLのelevate roleとACL編集を体験する**
 
-1. `All → User Administration → Users` から自分のユーザーを開き、Rolesを確認する(`security_admin`がないことを確認)
-2. 右上のアバターアイコン → `Elevate Roles` をクリックし、`security_admin` にチェックを入れてOKを押す
-3. `All → System Security → Access Control (ACL)` を開く
-4. `incident` テーブルのACLを1件開き、「Requires role」「Condition」「Script」の3タブを確認する
-5. 評価順序(ロール → 条件 → スクリプト)がUIの構造として現れていることを確認する
-6. 【確認ポイント】elevateなしではACL一覧が読み取り専用になること、またはメニューが制限されることを比較して観察する
+1. 右上のアバターアイコン → `Elevate Roles` をクリックし、`security_admin` にチェック
+2. **All → System Security → Access Control (ACL)** を開く
+3. `incident` テーブルのACLを開き、Roles/Condition/Scriptの3タブを確認する
+4. Scriptタブで `answer = gs.hasRole('itil');` のようなスクリプトを確認する
 
-**タスク4: UI PolicyとData Policyの適用範囲の違いを確認する**
+**タスク4: 辞書オーバーライドで子テーブルだけ属性変更する**
 
-1. `All → System UI → UI Policies` を開き、任意のUI Policyを1件開く
-2. 「Applies on」フィールドが「Form」のみであることを確認する
-3. `All → System Policy → Data Policies` を開き、任意のData Policyを1件開く
-4. 「Applies to」に「Import Sets」や「REST API」が含まれる設定を確認する
-5. 同じフィールドを必須化する場合、フォームのみならUI Policy、API経由も含むならData Policyが必要であることを比較メモする
-
-**タスク5: 辞書オーバーライドで子テーブルだけ属性変更する**
-
-1. `All → System Definition → Dictionary` を開く
-2. 検索フィルターで `Table` = `incident`、`Column name` = `short_description` を探して開く
-3. 「Dictionary Overrides」関連リストを確認する(または新規追加ボタンを押す)
-4. 子テーブル(`u_`プレフィックスのカスタムテーブル)を指定し、`Mandatory` を `true` に変更して保存する
-5. 親テーブル(task)の`short_description`定義は変わっていないことをsys_dictionaryで確認する
-6. 【確認ポイント】親の定義を汚さずに子だけ属性を変えられることを手で確かめる
+1. **All → System Definition → Dictionary** を開く
+2. `incident` テーブルの `short_description` フィールドを開く
+3. 「Dictionary Overrides」関連リストで子テーブルに `Mandatory` を `true` に設定して保存
+4. 親テーブル(task)の定義は変わっていないことを確認する
 
 ## 試験との接続
 
-「新しいカスタムテーブルを作成した場合、テーブル名のプレフィックスはどうなるか」→ PDIでテーブル作成画面(`System Definition → Tables → New`)を実際に開くと、Label入力後に自動で`u_`が付与されるのを目で見て確認でき、「u_プレフィックスは自動付与」という事実が体に入る。
+「新しいカスタムテーブルのプレフィックスは」→ `u_` が自動付与される。
 
-「ACLの評価順序として正しいものはどれか」→ PDIでACL一覧(`System Security → Access Control`)をテーブル名でソートすると、具体テーブル→ワイルドカード(`*`)の順にレコードが並ぶのを確認でき、「具体的なものが先に評価される」という順序が一覧の並び順として直感的にわかる。
+「ACLの評価順序として正しいものはどれか」→ テーブルレベル(具体→親→*)の後にフィールドレベル(具体→*)。両方パスで初めてアクセス可能。
 
-「UI PolicyとData Policyの違いとして正しい記述はどれか」→ PDIで両方のフォームを開いて並べると、UI Policyには「Show/Hide」「Mandatory」「Read Only」を「フォーム上で」制御するフィールドしかないのに対し、Data Policyには「Import Sets」チェックボックスがあることが視覚的に比較でき、適用範囲の違いが一目でわかる。
+「UI PolicyとData Policyの違いとして正しい記述はどれか」→ UI Policyはフォームのみ。Data PolicyはAPIやImport Setにも適用される。
 
-「Dot-walkingの説明として正しいものはどれか」→ PDIでReportかList Filterを作成する際に`caller_id.company.name`のようにフィールドをドットでたどれることを実際に試すと、「参照フィールドを経由して別テーブルの値にアクセスできる」という概念が操作として染みこみ、選択肢の誤記述(「Dot-walkingは書き込みにも使える」等)を即座に排除できるようになる。
+「Business RuleのcurrentとpreviousはどのWhenで両方使えるか」→ Before + Updateの組み合わせでのみ `previous` が有効。
 
-「テーブル継承に関して正しい記述はどれか」→ PDIで`task.list`を開くと、Incidentのレコードが混在して一覧に現れることを確認でき、「親テーブルのリストには子テーブルのレコードも表示される」という仕様が体験として定着し、「sys_userはtaskを拡張している」などの誤りの選択肢を自信を持って除外できる。
+「GlideRecordでクエリを実行した後にレコードを反復するメソッドは」→ `gr.next()`。whileループで使用。
+
+「setAbortAction(true)を使う主な目的は何か」→ バリデーション失敗時にデータベースへの保存をキャンセルするため。
