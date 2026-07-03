@@ -1,79 +1,152 @@
 # 分野6: Data Migration and Integration(配点 15%)
 
-## 1. Import Set(インポートセット)— 中心テーマ
+## 1. Import Set — 中心テーマ
 
-外部データをServiceNowに取り込む標準の仕組み。**流れを丸ごと覚える**:
+Data Source → Import Set Table(ステージング) → Transform Map(変換) の3ステップ。Coalesceがキー: 一致→更新、不一致→挿入、未指定→常に挿入。結果ステータス: Inserted/Updated/Ignored/Skipped/Error。
+
+## 2. スケジュールインポート
+
+Scheduled Importで定期実行。LDAP統合ではユーザー・グループを定期同期。
+
+## 3. Web Services / API
+
+Table APIなどREST APIを標準提供。REST API Explorerでインスタンス内テスト可能。IntegrationHubはFlow Designerから外部連携するSpoke群(有償)。
+
+## 4. エクスポート
+
+CSV/Excel/PDF/XML/JSONでエクスポート可能。Export to XMLはsys_idを維持したまま移送できる。
+
+## 5. Update Set vs Import Set
+
+Update Set=構成・カスタマイズのインスタンス間移送。Import Set=外部データの取り込み。
+
+## 全体構造マップ
 
 ```
-① Data Source(データソース)を定義
-      ↓ Load Data
-② Import Set Table(ステージングテーブル)にロード
-      ↓ Transform
-③ Transform Map で ターゲットテーブルへ変換・投入
+【外部データ取り込み: Import Set フロー】
+
+  外部ソース (CSV / Excel / JDBC / REST)
+        │
+        ▼
+  Data Source (接続定義: sys_data_source)
+        │
+        ▼
+  Import Set Table [ステージング領域]
+  (u_imp_xxxx / テーブル名は自動生成)
+        │
+        ├─ 手動ロード: Load All Records
+        └─ 自動ロード: Scheduled Import (sys_trigger)
+                │
+                ▼
+        Transform Map (sys_transform_map)
+          ├─ Field Map (列の対応定義)
+          │    例: [source: name] → [target: sys_user.first_name]
+          ├─ Coalesce フィールド指定
+          │    一致あり → Update (sys_user 既存レコード更新)
+          │    一致なし → Insert (sys_user 新規行追加)
+          │    未指定  → 常に Insert
+          └─ Transform Script (変換前後のロジック: onBefore / onAfter)
+                │
+                ▼
+        ターゲットテーブル (例: sys_user / cmdb_ci_server など)
+                │
+                ▼
+        Import Set Run Log (結果確認)
+          Inserted / Updated / Ignored / Skipped / Error
+
+【インスタンス間移送: Update Set フロー】
+
+  開発インスタンス (Dev)
+    └─ Update Set を "In Progress" に設定
+         └─ カスタマイズ作業 (フォーム / スクリプト / フロー など)
+              → 変更が自動的に Update Set に記録 (sys_update_xml)
+                   │
+                   ▼
+              Update Set をエクスポート (XML)
+                   │
+                   ▼
+  本番インスタンス (Prod)
+    └─ Update Set をインポート → Preview → Commit
+
+【API / 外部連携】
+
+  外部システム
+    ├─ REST (Table API / Scripted REST)
+    │    └─ REST API Explorer (All → System Web Services → REST API Explorer)
+    ├─ SOAP (Web Service Import Sets)
+    └─ IntegrationHub Spoke
+         └─ Flow Designer → Action → HTTP Step など (有償)
+
+【LDAP 同期】
+
+  LDAP サーバー
+    └─ LDAP Server 定義 (sys_ldap_server)
+         └─ Scheduled Import で定期同期
+              └─ sys_user / sys_user_group へ反映
 ```
 
-- **Data Source**: 取り込み元の定義。ファイル(CSV/Excel/XML/JSON)、**JDBC**(外部DB)、**LDAP**、REST等。ファイルは添付・FTP・HTTP経由で指定可。
-- **Import Set Table**: 一時的な受け皿(ステージング)。ロード時に自動作成され、列は取り込みデータから推定される。`sys_import_set_row` を拡張。
-- **Transform Map**: ステージング→ターゲットのマッピング定義。
-  - **Field Map**: ソース列→ターゲット列の対応(Auto Map で名前一致を自動対応)。
-  - **Coalesce(コアレス)**: **キー指定**。coalesce フィールドが一致する既存レコードがあれば**更新**、なければ**新規作成**。coalesce未指定なら**常に新規作成**(重複が生まれる)。複数フィールドcoalesce も可。
-  - **Transform Script**: onBefore / onAfter / onStart / onComplete 等のタイミングでスクリプト補正。
+## PDI 操作ガイド
 
-## 2. インポート結果のステータス
+### タスク1: Import Set で CSV をインポートする
 
-Import Set Row ごとに結果が記録される:
+1. サンプル CSV を準備する (列: first_name, last_name, email)
+2. **All → System Import Sets → Load Data** を開く
+3. "Create table" を選択し、テーブルラベルに `Test User Import` と入力
+4. Import from: File を選択し、CSV をアップロードして **Submit**
+5. ステージングテーブル (`u_imp_test_user_import`) に行が作成されたことを確認する
+6. 観察: Import Set Rows の各行に raw データが格納されていることを確認する
 
-| ステータス | 意味 |
-|------|------|
-| Inserted | 新規作成された |
-| Updated | coalesce 一致で更新された |
-| Ignored | 変更なし等でスキップ |
-| Skipped | 条件・エラーでスキップ(例: coalesce対象が複数一致) |
-| Error | 変換エラー |
+### タスク2: Transform Map を作成して Coalesce を確認する
 
-- インポート後は Import Set の一覧・Transform History で結果を必ず確認する。
+1. **All → System Import Sets → Transform Maps** を開く
+2. **New** をクリックし、Source Table に `u_imp_test_user_import`、Target Table に `sys_user` を設定して保存
+3. **Field Maps** タブで **Auto Map Matching Fields** をクリックし、自動マッピングを生成する
+4. email フィールドの Field Map を開き、**Coalesce** チェックボックスをオンにして保存
+5. Transform Map 画面上部の **Transform** ボタンをクリックして実行する
+6. 観察: Import Set Run Log で Inserted / Updated の件数を確認し、Coalesce の効果を体感する
 
-## 3. スケジュールインポート
+### タスク3: Coalesce なしとの比較実験
 
-- **Scheduled Import** で定期実行(日次のLDAP取り込み等)。
-- 実行順序の依存(親子)を設定できる。
+1. タスク2と同じ CSV を再度 Load Data でロードする (新しい Import Set Run)
+2. Transform Map の email の Coalesce チェックを**外して** Transform を実行する
+3. 観察: sys_user に重複レコードが挿入される (Inserted のみで Updated が 0) ことを確認し、Coalesce の重要性を理解する
 
-## 4. LDAP統合
+### タスク4: REST API Explorer で Table API を試す
 
-- LDAP(Active Directory等)から**ユーザー・グループ情報を取り込む**代表的統合。
-- LDAP Server 定義 → OU Definition(取り込み範囲)→ Data Source → Transform Map の構成。
-- **LDAPはユーザーデータのインポートと認証(SSOの一種)の両方に使える**。
-- スケジュールで定期同期するのが一般的。
+1. **All → System Web Services → REST API Explorer** を開く
+2. API Namespace: `now`、API Name: `Table API`、API Version: 最新を選択する
+3. Method: GET、tableName: `incident`、sysparm_limit: `3` を入力して **Send** をクリックする
+4. 観察: JSON レスポンスに incident レコードが返ることを確認し、Table API の構造を把握する
+5. 次に Method: POST で incident を 1 件作成し、sys_id が発行されることを確認する
 
-## 5. Web Services / API
+### タスク5: Update Set の作成と移送の流れを体験する
 
-- **REST API**: ServiceNowは **Table API** 等のREST APIを標準提供(外部からレコードCRUD可能)。
-- **SOAP** も利用可(レガシー)。
-- **REST API Explorer**: インスタンス内でAPIリクエストを試せるツール。
-- インバウンド(外部→SN)とアウトバウンド(SN→外部、RESTメッセージ/IntegrationHub)の区別。
-- **IntegrationHub**: Flow Designer から外部システム連携(Spoke)を行う有償拡張。
+1. **All → System Update Sets → Local Update Sets** を開き、**New** で Update Set を作成して "In Progress" にする
+2. Application: Global のまま、フォームに軽微な変更 (例: incident フォームにフィールド追加) を加える
+3. Update Set に変更が記録されたことを **Preview Update Set** で確認する
+4. **Export to XML** でファイルをダウンロードし、別 PDI があれば **Retrieved Update Sets** からインポートする
+5. 観察: sys_update_xml テーブルに各変更の XML が 1 行ずつ記録されていることを確認する
 
-## 6. エクスポート
+### タスク6: Scheduled Import の設定を確認する
 
-- リストから右クリック等で **CSV / Excel / PDF / XML / JSON** にエクスポート可能。
-- **XMLエクスポート/インポート(Export to XML / Import XML)**: sys_id を保ったままレコードを移送できる(管理者向け。少量データの環境間移動に使う)。
-- エクスポート上限はプロパティで制御されている。
+1. **All → System Import Sets → Scheduled Imports** を開く
+2. **New** をクリックし、Name・Import Set Table・実行間隔 (例: Daily) を設定する
+3. Data Source を選択し (タスク1で作成したもの)、**Execute Now** で即時実行する
+4. 観察: Import Set Run が自動で作成され、ログに実行結果が記録されることを確認する
 
-## 7. Update Set と Import Set の違い(頻出)
+## 試験との接続
 
-| | Update Set | Import Set |
-|---|---|---|
-| 対象 | **構成・カスタマイズ**(フォーム、ビジネスルール等) | **データ**(ユーザー、CI、タスク等) |
-| 方向 | インスタンス間の移送 | 外部→インスタンスの取り込み |
-| 仕組み | XML化された構成変更の記録 | ステージング+Transform Map |
+「Coalesce フィールドを指定しない場合、Transform の結果はどうなるか」
+→ PDIでタスク3の重複挿入実験を行うと、Coalesce 未指定では既存レコードを無視して毎回 Insert が走ることが目で見てわかる。試験では「常に挿入される」が正解肢であることを体感として確認できる。
 
----
+「Import Set と Update Set の用途の違いを問う問題」
+→ PDIでタスク2 (外部 CSV → sys_user への取り込み) とタスク5 (カスタマイズの XML 移送) を両方実施すると、Import Set は"データ"・Update Set は"設定"という役割の違いが操作レベルで明確になる。試験では混同しやすいため、この体験が決め手になる。
 
-## 頻出ポイント
+「Transform Map の実行結果ステータス (Inserted / Updated / Ignored / Error) の意味を問う問題」
+→ PDIのタスク2で Import Set Run Log を開くと各ステータスが色分けで表示される。Ignored は Transform Script で `ignore=true` を設定した行、Error は必須フィールド不足などと対応していることを Log の詳細行から読み取れ、選択肢を絞り込む根拠になる。
 
-- インポートの3ステップ(Data Source → Import Set Table → Transform Map)
-- **Coalesce の挙動**(一致→更新 / 不一致→挿入 / 未指定→常に挿入)
-- Import Set Row のステータス(Inserted / Updated / Ignored / Skipped / Error)
-- LDAPで取り込めるもの(ユーザー・グループ)
-- Update Set(構成)と Import Set(データ)の役割分担
-- Export to XML は sys_id を維持する
+「REST API Explorer の主な用途を問う問題」
+→ PDIのタスク4で実際に GET / POST を送信すると「インスタンス内でテスト・検証できるツール」であることが直感的にわかる。試験では「外部ツールなしで API をテストする方法」として REST API Explorer が正解肢になるパターンが頻出。
+
+「LDAP 統合でユーザーを定期同期するために使うのはどの機能か」
+→ PDIのタスク6で Scheduled Import の設定画面を確認すると、Data Source・Import Set Table・実行スケジュールの三点セットが LDAP 同期にもそのまま適用されることがわかる。試験では「LDAP Server 定義だけでは同期されない / Scheduled Import が必要」という引っかけが出るため、操作経験が判断を助ける。
