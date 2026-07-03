@@ -82,18 +82,18 @@
   }
   header {
     background: linear-gradient(135deg, #103c37, #1f8476);
-    color: #fff; padding: 14px 24px;
+    color: #fff; padding: 10px 20px;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
     position: sticky; top: 0; z-index: 100;
   }
-  header h1 { font-size: 1.1rem; font-weight: 700; }
+  header h1 { font-size: .95rem; font-weight: 700; }
   header .sub { font-size: .78rem; opacity: .85; }
 
   /* ===== TAB BAR ===== */
   .tab-bar-wrap {
     background: var(--tab-bg);
     border-bottom: 1px solid var(--tab-border);
-    position: sticky; top: 56px; z-index: 90;
+    position: sticky; top: 44px; z-index: 90;
     box-shadow: 0 2px 6px rgba(0,0,0,.06);
   }
   .tab-bar {
@@ -103,8 +103,8 @@
   }
   .tab-bar::-webkit-scrollbar { display: none; }
   .tab-btn {
-    flex: none; padding: 13px 22px;
-    font: inherit; font-size: .88rem; font-weight: 600;
+    flex: none; padding: 9px 16px;
+    font: inherit; font-size: .82rem; font-weight: 600;
     background: none; border: none; border-bottom: 3px solid transparent;
     color: var(--sub); cursor: pointer;
     transition: color .15s, border-color .15s;
@@ -113,7 +113,7 @@
   .tab-btn:hover { color: var(--accent); background: var(--hover); }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 80px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 14px 12px 60px; }
 
   /* ===== STUDY TAB ===== */
   .study-layout {
@@ -128,7 +128,7 @@
     border-radius: 12px;
     padding: 12px;
     position: sticky;
-    top: 112px;
+    top: 90px;
   }
   .study-sidebar h3 {
     font-size: .72rem;
@@ -170,7 +170,7 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 32px 36px;
+    padding: 18px 20px;
     min-height: 400px;
   }
   .note-body {
@@ -284,7 +284,7 @@
   /* ===== EXISTING STYLES ===== */
   .card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+    border-radius: 12px; padding: 14px; margin-bottom: 12px;
   }
   h2 { font-size: 1.05rem; margin-bottom: 12px; }
   h3 { font-size: .95rem; margin-bottom: 8px; }
@@ -397,57 +397,57 @@
 
 /* ===== NOTES DATA ===== */
 const NOTES = {
-  1: `# 分野1: Platform Overview and Navigation（配点 7%）
+  1: `# 分野1: Platform Overview and Navigation(配点 7%)
 
 ## 1. Now Platform の基本
 
-- ServiceNow は **PaaS（Platform as a Service）** 型のクラウドプラットフォーム。単一のデータモデル上に ITSM / ITOM / HR / CSM などのアプリケーションが載る。
-- 各顧客は専用の**インスタンス**（例: \`company.service-now.com\`）を持つ。**シングルテナント型**（インスタンスごとに独立したDB）。
-- **リリース**: 年2回のメジャーリリース。都市名のアルファベット順で命名（例: Xanadu → Yokohama → Zurich）。
-- **Now Support（旧HI）**: ServiceNowへのサポート依頼・インスタンス管理を行うポータル。
+- ServiceNow は **PaaS(Platform as a Service)** 型のクラウドプラットフォーム。単一のデータモデル上に ITSM / ITOM / HR / CSM などのアプリケーションが載る。
+- 各顧客は専用の**インスタンス**(例: \`company.service-now.com\`)を持つ。**シングルテナント型**(インスタンスごとに独立したDB)。
+- **リリース**: 年2回のメジャーリリース。都市名のアルファベット順で命名(例: Xanadu → Yokohama → Zurich)。
+- **Now Support(旧HI)**: ServiceNowへのサポート依頼・インスタンス管理を行うポータル。
 
-## 2. Next Experience UI（統合ナビゲーション）
+## 2. Next Experience UI(統合ナビゲーション)
 
 現行のデフォルトUI。画面上部のヘッダーに主要メニューが集約されている。
 
 | 要素 | 役割 |
 |------|------|
-| **All（すべて）** | 全アプリケーション・モジュールのメニュー（旧アプリケーションナビゲーター）。フィルター入力で絞り込み |
-| **Favorites（お気に入り）** | ★を付けたモジュールへのショートカット。名前・アイコン編集可 |
-| **History（履歴）** | 直近に開いたレコード・リスト・フォーム |
-| **Workspaces** | ロールに応じたワークスペース（Agent Workspace等）一覧 |
-| **Admin** | 管理者向けクイックアクセス（adminロール保持者のみ） |
+| **All(すべて)** | 全アプリケーション・モジュールのメニュー(旧アプリケーションナビゲーター)。フィルター入力で絞り込み |
+| **Favorites(お気に入り)** | ★を付けたモジュールへのショートカット。名前・アイコン編集可 |
+| **History(履歴)** | 直近に開いたレコード・リスト・フォーム |
+| **Workspaces** | ロールに応じたワークスペース(Agent Workspace等)一覧 |
+| **Admin** | 管理者向けクイックアクセス(adminロール保持者のみ) |
 | **グローバル検索** | ヘッダーの虫眼鏡。検索グループ・検索ソースで対象を制御 |
 | **ユーザーメニュー** | 右上アバター。プロファイル・設定・impersonate・ログアウト |
-| **Contextual App Pill** | 現在のアプリケーションスコープ・更新セットの表示/切替（開発者向け設定） |
+| **Contextual App Pill** | 現在のアプリケーションスコープ・更新セットの表示/切替(開発者向け設定) |
 
 - **モジュール**: メニューの1項目。リスト表示・フォーム表示・URL・スクリプト実行などのリンクタイプを持つ。
 - **アプリケーションメニュー**: モジュールをまとめる親項目。ロールで表示制御できる。
 
-## 3. Impersonation（ユーザー代理）
+## 3. Impersonation(ユーザー代理)
 
-- adminは他ユーザーに**なりすまし（impersonate）**て、そのユーザーの見え方・権限を確認できる（\`impersonator\` ロールでも可）。
+- adminは他ユーザーに**なりすまし(impersonate)**て、そのユーザーの見え方・権限を確認できる(\`impersonator\` ロールでも可)。
 - impersonate中の操作は**そのユーザーの操作として記録**されるが、システムログにはimpersonateの事実も記録される。
-- テスト目的でのアクセス権確認（ACL・UIポリシーの見え方）に必須のテクニック。
+- テスト目的でのアクセス権確認(ACL・UIポリシーの見え方)に必須のテクニック。
 
-## 4. リストとフォーム（基本操作）
+## 4. リストとフォーム(基本操作)
 
 - **リスト**: テーブル内レコードの一覧。列ソート・フィルター・グループ化・インライン編集が可能。
-  - **リストコントロールメニュー**（左上ハンバーガー）から列の設定・エクスポート等。
+  - **リストコントロールメニュー**(左上ハンバーガー)から列の設定・エクスポート等。
   - **ブレッドクラム**: 現在のフィルター条件を表示。クリックで条件を段階的に解除。条件は**左から右にAND**で絞り込まれる。
-- **フォーム**: 1レコードの表示・編集画面。関連リスト（Related Lists）で子レコードを表示。
-- **右クリックメニュー**（フォームヘッダー）: Configure > Form Layout / Form Design、Export、履歴表示など管理操作の入口。
+- **フォーム**: 1レコードの表示・編集画面。関連リスト(Related Lists)で子レコードを表示。
+- **右クリックメニュー**(フォームヘッダー): Configure > Form Layout / Form Design、Export、履歴表示など管理操作の入口。
 
 ## 5. 検索
 
-- **グローバル検索**: 複数テーブル横断。ワイルドカード（\`*text\`）や完全一致（\`"text"\`）が使える。
+- **グローバル検索**: 複数テーブル横断。ワイルドカード(\`*text\`)や完全一致(\`"text"\`)が使える。
 - **リスト検索**: 列ヘッダー上の検索行。\`*\`前方付与で部分一致。
-- **Zing**: ServiceNowの検索エンジン（グローバル検索・ナレッジ検索等を支える）。
+- **Zing**: ServiceNowの検索エンジン(グローバル検索・ナレッジ検索等を支える)。
 
-## 6. 設定（Preferences）
+## 6. 設定(Preferences)
 
 - ユーザーメニュー > Preferences でテーマ・表示密度・言語・タイムゾーン等を個人単位で設定。
-- 管理者はシステムプロパティでインスタンス全体のデフォルトを設定（分野2参照）。
+- 管理者はシステムプロパティでインスタンス全体のデフォルトを設定(分野2参照)。
 
 ---
 
@@ -456,7 +456,7 @@ const NOTES = {
 - All / Favorites / History の役割の区別
 - モジュールとアプリケーションメニューの関係、ロールによる表示制御
 - impersonate で何が確認できるか・誰ができるか
-- ブレッドクラムの読み方（AND条件・クリックによる解除）
+- ブレッドクラムの読み方(AND条件・クリックによる解除)
 - リリースが年2回・都市名順であること
 
 ---
@@ -465,12 +465,12 @@ const NOTES = {
 
 \`\`\`
 【Now Platform インスタンス】
-  ├── シングルテナント（顧客ごとに独立したDB）
+  ├── シングルテナント(顧客ごとに独立したDB)
   ├── URL: company.service-now.com
-  └── 年2回リリース（都市名順: Xanadu → Yokohama → Zurich ...）
+  └── 年2回リリース(都市名順: Xanadu → Yokohama → Zurich ...)
 
          ┌─────────────────────────────────┐
-         │   Next Experience UI (ヘッダー)  │
+         │      Next Experience UI (ヘッダー) │
          └───────────────┬─────────────────┘
                          │
           ┌──────────────┼──────────────┐
@@ -480,12 +480,12 @@ const NOTES = {
           │
           ↓ フィルター入力で絞り込み
   ┌───────────────────────┐
-  │ アプリケーションメニュー │  ← ロールで表示制御
+  │  アプリケーションメニュー  │  ← ロールで表示制御
   └──────────┬────────────┘
              │
              ↓ クリック
   ┌───────────────────────┐
-  │       モジュール        │  ← リンクタイプ: リスト/フォーム/URL
+  │       モジュール        │  ← リンクタイプ: リスト/フォーム/URL/スクリプト
   └──────────┬────────────┘
              │
        ┌─────┴─────┐
@@ -493,95 +493,141 @@ const NOTES = {
    【リスト】     【フォーム】
    (テーブル全体)  (1レコード)
        │               │
-   ブレッドクラム   関連リスト
-   [条件A > 条件B]  (子レコード表示)
-   ← AND で絞込
+       │  ブレッドクラム   │  関連リスト
+       │  [条件A > 条件B] │  (子レコード表示)
+       │  ← AND で絞込   │
+       ↓               ↓
+   インライン編集     右クリックメニュー
+   グループ化         └── Configure > Form Layout
+   エクスポート            Form Design
+
+【グローバル検索(Zing エンジン)】
+  ヘッダー虫眼鏡
+  └── 複数テーブル横断
+       ├── *text  → 部分一致(前方ワイルドカード)
+       └── "text" → 完全一致
+
+【ユーザー管理 / 権限確認】
+  sys_user テーブル(ユーザー情報)
+      │
+      ↓ adminが impersonate 実行
+  対象ユーザーの目線でUI確認
+      ├── ACL の効き方
+      ├── UIポリシーの表示/非表示
+      └── モジュールの見え方
+  ※ 操作はそのユーザーとして記録
+  ※ impersonate自体はシステムログに記録
 \`\`\`
 
----
-
 ## PDI 操作ガイド
+
+PDI(Personal Developer Instance)は \`developer.servicenow.com\` で無料取得できる。
 
 ### タスク1: All メニューの構造を確認する
 
 1. \`All\` をクリックし、左サイドパネルを開く。
 2. フィルター入力欄に \`user\` と入力し、メニューが絞り込まれることを確認する。
-3. \`User Administration\` の下に \`Users\`・\`Groups\`・\`Roles\` などのモジュールを確認する。
+3. \`User Administration\` (アプリケーションメニュー)の下に \`Users\`・\`Groups\`・\`Roles\` などのモジュールが並んでいることを確認する。
 4. \`Users\` をクリックし、\`sys_user\` テーブルのリスト画面が開くことを確認する。
+5. \`Users\` モジュールの右に表示される ★ をクリックして Favorites に登録し、ヘッダーの \`Favorites\` タブに表示されることを確認する。
 
-### タスク2: ブレッドクラムを操作する
+### タスク2: リストのブレッドクラムを操作する
 
-1. \`All → Incident → All\` を開く。
-2. 列ヘッダーを右クリック → \`Filter By\` を選択しフィルターを追加する。
-3. 上部ブレッドクラムに条件が表示されることを確認する。
-4. さらに別列でフィルターを追加し、AND で条件が積まれることを確認する。
-5. 左の条件をクリックし、それより右の条件が解除されることを確認する。
+1. \`All → Incident → All\`(インシデント全件リスト)を開く。
+2. 任意のレコードの \`State\` セル上で右クリック → \`Filter By\` を選択し、フィルターを追加する。
+3. 画面上部のブレッドクラムに \`State = New\` のような条件が表示されることを確認する。
+4. さらに \`Priority\` 列でも同様にフィルターを追加し、ブレッドクラムに2つ目の条件が AND で追加されることを確認する。
+5. ブレッドクラムの最初の条件(左側)をクリックし、2つ目の条件が解除されることを確認する。
 
-### タスク3: Impersonation を実行する
+### タスク3: Impersonation を実行して権限の違いを確認する
 
 1. ユーザーメニュー → \`Impersonate User\` をクリックする。
-2. \`Abel Tuter\` を選択してセッションを切り替える。
-3. \`All\` メニューの項目が減っていること、\`Admin\` メニューが消えていることを確認する。
-4. \`End Impersonation\` で元の admin セッションに戻る。
+2. 検索ボックスに \`Abel\` と入力し、サンプルユーザー \`Abel Tuter\` を選択する。
+3. 画面が切り替わり、ヘッダーに \`Impersonating Abel Tuter\` と表示されることを確認する。
+4. \`All\` メニューを開き、admin 時と比べてメニュー項目が減っていることを確認する。
+5. ユーザーメニュー → \`End Impersonation\` を選択し、元の admin セッションに戻る。
+
+### タスク4: グローバル検索の動作を確認する
+
+1. 虫眼鏡をクリックし、検索ボックスに \`network\` と入力して Enter を押す。
+2. 検索結果ページが開き、複数のカテゴリに分かれて結果が表示されることを確認する。
+3. 次に \`*work\` と入力して検索し、前方ワイルドカードで "network" などが引っかかることを確認する。
+4. \`"network outage"\` (ダブルクォート付き)で検索し、完全一致フレーズのみがヒットすることを確認する。
+
+## 試験との接続
+
+「All / Favorites / History のどれを使うべきか」→ Allは探す、Favoritesは繰り返し使う、Historyは戻る。
+
+「impersonate できるのは誰か、何のために使うか」→ admin または impersonator ロール保持者。ACL・ロールの効果をそのユーザーの目線で確認するため。
+
+「ブレッドクラムの条件をクリックするとどうなるか」→ クリックした条件より右側の条件が解除される。条件は左から右にANDで積み上がる。
+
+「グローバル検索で部分一致検索するにはどうするか」→ \`*\` を前に付ける(例: \`*work\`)。\`"..."\` はフレーズ完全一致。ServiceNow固有の記法。
 `,
+  2: `# 分野2: Instance Configuration(配点 11%)
 
-  2: `# 分野2: Instance Configuration（配点 11%）
-
-## 1. システムプロパティ（System Properties）
+## 1. システムプロパティ(System Properties)
 
 - インスタンス全体の動作を制御する設定値。テーブルは \`sys_properties\`。
-- 例: \`glide.ui.session_timeout\`（セッションタイムアウト）、メール送受信の有効化など。
+- 例: \`glide.ui.session_timeout\`(セッションタイムアウト)、メール送受信の有効化など。
 - 変更はインスタンス全体に影響するため、変更前に影響範囲を確認する。
 
 ## 2. ブランディング / テーマ
 
-- **Next Experience**では、テーマ（ロゴ・配色）を **Next Experience の Theme（ブランディング設定）** で構成する。
+- **Next Experience**では、テーマ(ロゴ・配色)を **Next Experience の Theme(ブランディング設定)** で構成する。
 - 会社ロゴ・ブラウザタブのタイトル・バナー画像などを設定可能。
-- ポータル（Service Portal / Employee Center）のブランディングは別途ポータル側で設定する。
+- ポータル(Service Portal / Employee Center)のブランディングは別途ポータル側で設定する。
 
 ## 3. フォーム設定
 
 | 手段 | 用途 |
 |------|------|
-| **Form Layout** | フィールドの追加・削除・並び替え（シンプルなスレート型UI） |
+| **Form Layout** | フィールドの追加・削除・並び替え(シンプルなスレート型UI) |
 | **Form Design** | ドラッグ&ドロップのWYSIWYG。セクション・列構成も編集可 |
-| **ビュー（View）** | 同じテーブルに複数のフォーム/リストレイアウトを持たせる仕組み |
+| **ビュー(View)** | 同じテーブルに複数のフォーム/リストレイアウトを持たせる仕組み。例: 標準ビュー・モバイルビュー・ロール別ビュー |
 
-- ビューはリストにも適用される。**ビュールール（View Rules）**で条件に応じたビュー自動切替が可能。
+- ビューはリストにも適用される。**ビュールール(View Rules)**で条件に応じたビュー自動切替が可能。
+- フォームのセクションは2列表示等に設定できる。
 
 ## 4. リスト設定
 
-- **List Layout** で列の追加・削除・順序変更（管理者は全員向けデフォルトを変更、一般ユーザーは個人設定）。
-- 個人の列設定（Personal List）はデフォルトより優先される。
+- **List Layout** で列の追加・削除・順序変更(管理者は全員向けデフォルトを変更、一般ユーザーは個人設定)。
+- 個人の列設定(Personal List)はデフォルトより優先される。
 
-## 5. プラグイン（Plugins）
+## 5. プラグイン(Plugins)
 
-- 機能単位の拡張モジュール。**有効化はできるが、基本的に無効化（アンインストール）はできない**。
-- 一部プラグインは有償・要ライセンス。
-- 有効化するとデモデータを含められる場合がある（本番では通常含めない）。
+- 機能単位の拡張モジュール。**有効化はできるが、基本的に無効化(アンインストール)はできない**。
+- 一部プラグインは有償・要ライセンス。有効化はNow Supportからのリクエストが必要なものもある。
+- 有効化するとデモデータを含められる場合がある(本番では通常含めない)。
 
-## 6. Update Set（更新セット）— CSA頻出
+## 6. Update Set(更新セット)
 
-構成変更（カスタマイズ）をインスタンス間で移送するための仕組み。
+構成変更(カスタマイズ)をインスタンス間で移送するための仕組み。**CSA頻出**。
 
-- **記録されるもの**: 構成レコード（フォームレイアウト、ビジネスルール、ACL等）。
-- **記録されないもの**: **データ（タスクレコード等）・スケジュールジョブの実行結果・ホームページ/ダッシュボード**。
-- 流れ: 開発環境で Update Set 作成 → **Complete** に変更 → テスト環境で **Retrieve（取得）** → **Preview（プレビュー）** で衝突検出 → **Commit（コミット）**。
+- **記録されるもの**: 構成レコード(フォームレイアウト、ビジネスルール、ACL等の「カスタマイズ」)。
+- **記録されないもの**: **データ(タスクレコード等)・スケジュールジョブの実行結果・ホームページ/ダッシュボード(手動追加が必要な場合あり)・新規テーブルのデータ**。
+- 流れ: 開発環境で Update Set 作成 → **Complete** に変更 → テスト環境で **Retrieve(取得)** → **Preview(プレビュー)** で衝突検出 → **Commit(コミット)**。
 - **Default update set**: 更新セットを指定しないときの受け皿。移送用には使わない。
-- プレビューで衝突（Collision）が出たら、Accept/Skip を判断してからコミット。
+- 複数の更新セットは**バッチ(親子関係)**にまとめて一括移送できる。
+- プレビューで衝突(Collision)が出たら、Accept/Skip を判断してからコミット。
 
-## 7. 開発プロセス
+## 7. 開発プロセス(インスタンス構成)
 
-- 典型構成: **開発（Dev） → テスト（Test） → 本番（Prod）** の3インスタンス。
+- 典型構成: **開発(Dev) → テスト(Test) → 本番(Prod)** の3インスタンス。
 - カスタマイズは Dev で行い、Update Set で昇格。本番で直接変更しない。
-- **クローン（Clone）**: 本番インスタンスのデータ・構成を下位環境へコピーする機能（逆方向はしない）。
+- **クローン(Clone)**: 本番インスタンスのデータ・構成を下位環境へコピーする機能(逆方向はしない)。
+
+## 8. 多言語・ローカライゼーション
+
+- 言語プラグイン(I18N)を有効化するとUIの多言語化が可能。
+- ユーザーごとに言語・タイムゾーン・日付書式を設定できる。
 
 ---
 
 ## 頻出ポイント
 
-- Update Set に**含まれるもの/含まれないもの**（データは含まれない）
-- Update Set の移送フロー（Complete → Retrieve → Preview → Commit）
+- Update Set に**含まれるもの/含まれないもの**(データは含まれない)
+- Update Set の移送フロー(Complete → Retrieve → Preview → Commit)
 - Form Layout と Form Design の違い、ビューの概念
 - プラグインは基本的に無効化できない
 - クローンは本番→下位環境の方向
@@ -591,80 +637,205 @@ const NOTES = {
 ## 全体構造マップ
 
 \`\`\`
+【インスタンス全体の制御】
+  sys_properties (System Properties テーブル)
+      │
+      ├── セッション・メール・UI動作などを制御
+      └── Next Experience テーマ設定 ──→ ロゴ・配色・バナー
+              │
+              └── Service Portal ブランディング(別管理)
+
 【フォーム・リスト表示の制御】
   テーブル定義 (sys_dictionary)
       │
-      ├── Form Layout  → フィールドの追加/並び替えのみ
-      ├── Form Design  → セクション・列構成もドラッグ編集
-      └── ビュー(View) → ビュールールで自動切替
-              ├── 標準ビュー
-              ├── モバイルビュー
-              └── ロール別ビュー
+      ├── Form Layout / Form Design
+      │       └── ビュー(View) ──→ ビュールール(View Rules)で自動切替
+      │               ├── 標準ビュー
+      │               ├── モバイルビュー
+      │               └── ロール別ビュー
+      │
+      └── List Layout
+              ├── 管理者設定(全員のデフォルト)
+              └── 個人設定(Personal List) ← デフォルトより優先
+
+【機能拡張】
+  Plugins (sys_store_app / sys_plugins)
+      └── 有効化のみ可(無効化は原則不可)
+              └── デモデータ含める/含めない を選択
 
 【環境間の変更管理】
-  開発(Dev)
-    └─ Update Set 作成 → Complete
-          ↓
-    テスト(Test) → Retrieve → Preview → Commit
-          ↓
-    本番(Prod)  → Retrieve → Preview → Commit
+  開発(Dev) ──Update Set作成──→ Complete
+                                    │
+                          テスト(Test)でRetrieve(取得)
+                                    │
+                               Preview(プレビュー)
+                                    │
+                          衝突(Collision)? ──→ Accept / Skip 判断
+                                    │
+                               Commit(コミット)
+                                    │
+                          本番(Prod)でも同様に適用
 
-  ※ 記録対象: 構成レコード（カスタマイズ）のみ
-  ※ 非記録: データレコード・ダッシュボード・実行結果
+  ※ Update Set テーブル: sys_update_set / sys_update_xml
+  ※ 記録対象: 構成レコード(カスタマイズ)のみ
+  ※ 非記録: データレコード(incident等)・ダッシュボード・実行結果
 
 【環境コピー】
   本番(Prod) ──Clone──→ テスト(Test) / 開発(Dev)
-  ※ 逆方向（下位→本番）のクローンは行わない
+  ※ 逆方向(下位→本番)のクローンは行わない
 \`\`\`
-`,
 
-  3: `# 分野3: Configuring Applications for Collaboration（配点 20%）
+## PDI 操作ガイド
+
+### タスク1: System Properties を閲覧する
+
+1. ナビゲーションバーの検索欄に \`sys_properties.list\` と入力してEnter。
+2. 検索フィルターで Name に \`glide.ui.session_timeout\` と入力して絞り込む。
+3. レコードを開き、Value の値を確認する(デフォルト: 30分相当)。
+4. 値の型(文字列/整数)と説明(Description)フィールドがあることを確認する。
+
+### タスク2: Update Set を作成してフォームレイアウトを変更する
+
+1. \`All → System Update Sets → Local Update Sets\` を開く。
+2. 「New」をクリックし、Name に \`練習用UpdateSet_01\` と入力して保存。
+3. 保存したレコードを開き、右上の「Make Current」をクリック。
+4. インシデントフォームを開き、歯車アイコン → 「Form Layout」を選択。
+5. 利用可能フィールドから「Impact」を追加して保存。
+6. \`Local Update Sets\` に戻り、「Customer Updates」関連リストに変更が記録されていることを確認する。
+7. State を「Complete」に変更して保存。
+
+### タスク3: Form Layout と Form Design の違いを確認する
+
+1. インシデントフォームを開く。
+2. 歯車アイコン → 「Form Layout」を選択 → シンプルな2列選択UIを確認。
+3. 同じフォームに戻り、歯車アイコン → 「Form Design」を選択。
+4. ドラッグ&ドロップ可能なキャンバスUI、セクション追加が可能なことを確認する。
+
+### タスク4: プラグインの有効化画面を確認する
+
+1. \`All → System Definition → Plugins\` を開く。
+2. 検索欄に \`Survey\` と入力して絞り込む。
+3. 「Surveys and Assessments」プラグインのレコードを開く。
+4. 「Activate/Upgrade」ボタンをクリックすると「Load demo data?」のダイアログが表示されることを確認する(実際には保存しない)。
+5. 有効化済みプラグインに「Deactivate」ボタンが存在しないことを確認する。
+
+## 試験との接続
+
+「Update Set に含まれないものはどれか」→ データレコード(incident等)は含まれない。Customer Updates関連リストを見れば、構成レコードのみが記録されることが確認できる。
+
+「Update Set をテスト環境に移送する正しい順序はどれか」→ Complete → Retrieve → Preview → Commit。PDIでボタンが段階的にしか有効にならない設計を見ると自然に記憶される。
+
+「Form Layout と Form Design の主な違いはどれか」→ Form Layoutはシンプルなフィールド追加/並び替えのみ。Form Designはセクション・列構成をドラッグで変更できる。
+
+「プラグインの有効化に関して正しい記述はどれか」→ 有効化は一方通行(無効化不可)。有効化時にデモデータを含めるか選択できる。本番ではデモデータを含めない。
+`,
+  3: `# 分野3: Configuring Applications for Collaboration(配点 20%)
 
 ## 1. ユーザー・グループ・ロール
 
-ユーザー（sys_user）、グループ（sys_user_group）、ロール（sys_user_role）の3層構造。ロールはグループに付与してユーザーはグループに所属させるのがベストプラクティス。\`security_admin\` は elevate role で一時昇格して使う。
+ユーザー(sys_user)、グループ(sys_user_group)、ロール(sys_user_role)の3層構造。ロールはグループに付与してユーザーはグループに所属させるのがベストプラクティス。security_adminはelevate roleで一時昇格して使う。
 
-## 2. タスクテーブル（Task Table）
+## 2. タスクテーブル(Task Table)
 
-\`task\` テーブルが親で、Incident / Problem / Change / Request などが拡張（継承）する。共通フィールドを継承。
+taskテーブルが親で、Incident/Problem/Change/Requestなどが拡張。共通フィールドを継承。
 
-## 3. Visual Task Board（VTB）
+## 3. Visual Task Board(VTB)
 
-| 種類 | 特徴 |
-|------|------|
-| **Flexible** | レーンを手動で自由に作成、タスクを自由配置 |
-| **Guided** | フィールド値（例: State）にレーンが連動、移動で値が変わる |
-| **Freeform** | ボードに直接カード（レコード外）を自由追加可能 |
+Flexible(自由レーン)、Guided(フィールド連動)、Freeform(自由追加)の3種類。
 
-## 4. 通知（Notifications）
+## 4. 通知(Notifications)
 
-3要素: **When to send / Who will receive / What it will contain**。イベント駆動（\`gs.eventQueue()\`）も可。
+3要素: When to send / Who will receive / What it will contain。イベント駆動(gs.eventQueue())も可。
 
 ## 5. レポートとダッシュボード
 
-- **レポート**: 「今」のデータをスナップショット表示。
-- **Performance Analytics（PA）**: 「経時変化」のトレンド分析。スコアを定期収集してScorecardで可視化。
+レポートは「今」のデータ、Performance Analytics(PA)は「経時変化」のトレンド分析。
 
-## 6. ナレッジ管理（Knowledge Management）
+## 6. ナレッジ管理(Knowledge Management)
 
-KB > Category > Article の階層。**Draft → Review → Published → Retired** のライフサイクル。**User Criteria** で Can Read / Can Contribute を制御。
+KB > Category > Article の階層。Draft → Review → Published → Retired のライフサイクル。User Criteria で Can Read / Can Contribute を制御。
 
 ## 7. Connect / チャット
 
-- **Work notes（作業メモ）**: 内部向け。顧客には表示されない。
-- **Additional comments（コメント）**: 顧客向け。メールで通知される。
+Work notes(内部) / Additional comments(顧客向け)の使い分け。
 
----
+## 8. Client Scripts
 
-## 頻出ポイント
+クライアントサイドで実行されるJavaScript。フォームの動的制御に使用。
 
-- ロールをグループ経由で付与するのがベストプラクティス
-- 通知の3要素（When / Who / What）
-- VTBの3種類の違い（特にGuidedはフィールド値と連動）
-- PA vs レポートの使い分け（トレンド vs スナップショット）
-- User Criteria でナレッジのアクセスを制御
+**種類:**
+- \`onLoad\`: フォーム読み込み時に実行
+- \`onChange\`: フィールド値変更時に実行
+- \`onSubmit\`: フォーム送信(保存)時に実行
+- \`onCellEdit\`: リストのインライン編集時に実行
 
----
+**g_form API (フォーム操作):**
+- \`g_form.getValue('field')\`: フィールド値を取得
+- \`g_form.setValue('field', value)\`: フィールド値をセット
+- \`g_form.setMandatory('field', true/false)\`: 必須/任意を切替
+- \`g_form.setVisible('field', true/false)\`: 表示/非表示を切替
+- \`g_form.setReadOnly('field', true/false)\`: 読み取り専用を切替
+- \`g_form.addInfoMessage('msg')\`: 情報メッセージを表示
+- \`g_form.clearMessages()\`: メッセージをクリア
+
+**g_user API (ユーザー情報):**
+- \`g_user.hasRole('role_name')\`: ロール保持確認
+- \`g_user.getFullName()\`: フルネーム取得
+- \`g_user.getUserID()\`: sys_id取得
+
+**UI Policy vs Client Script:**
+- UI Policy: コードなしで表示/必須/読み取り専用を制御（推奨）
+- Client Script: より複雑な条件ロジックやAPIコール時に使用
+
+## 9. Performance Analytics (PA)
+
+**PA Indicators (指標/KPI):**
+- 測定対象を定義するKPI（例: 未解決インシデント数）
+- \`Automated\` タイプ: データを自動収集するスクリプト
+- \`Manual\` タイプ: 手動入力
+
+**PA Breakdowns (分解):**
+- Indicatorのデータを切り口で分解（例: Priority別、Assignment Group別）
+- BreakdownとIndicatorをマッピングして多角分析
+
+**PA Scheduled Jobs:**
+- Indicatorのデータを定期収集するジョブ
+- 収集頻度: 日次/週次/月次等
+
+**Scores / Targets / Thresholds:**
+- Score: 実測値
+- Target: 目標値
+- Threshold: アラート閾値
+
+**PA Dashboards:** Scorecard(時系列グラフ)とWidgetで可視化
+
+## 10. 通知詳細
+
+**Notification Digest:** 複数の通知をまとめてバッチ送信（メール爆発防止）
+
+**Notification Subscriptions:** ユーザーが通知のオン/オフを自分で設定できる仕組み
+
+**Notification Devices:** Email / SMS / Push Notification の送信先デバイス
+
+**通知トリガー条件:**
+- レコードの Insert/Update 時
+- 特定フィールドの変更時
+- イベント発生時 (gs.eventQueue())
+
+**通知テンプレート変数:** \`\${field_name}\` でフィールド値を本文に挿入
+
+## 11. グループ詳細
+
+**グループタイプ:**
+- Assignment Group: タスクの担当グループ
+- Notification Group: 通知の送信先グループ
+- 両方兼用も可
+
+**ロール継承:** グループに付与したロールはメンバー全員に継承される
+
+**Contains Roles:** ロールが別のロールを包含する（例: admin は itil を含む）
+
+**Manager:** グループのマネージャーフィールド。承認フローで参照されることがある
 
 ## 全体構造マップ
 
@@ -676,323 +847,688 @@ KB > Category > Article の階層。**Draft → Review → Published → Retired
                     └─ 付与 ──→ sys_user_role (ロール)
                                     └─ 制御 ──→ ACL / Application Access
 
-  ※ security_admin: Elevate Role → 一時昇格 → セッション終了で失効
+  ※ security_admin ロール: Elevate Role → 一時昇格 → セッション終了で失効
 
 【タスク継承ツリー】
 
-  task (親テーブル)
-    ├── incident
-    ├── problem
-    ├── change_request
-    └── sc_request
-              └── sc_req_item
+  task (親テーブル: 共通フィールドを定義)
+    ├── incident          (インシデント管理)
+    ├── problem           (問題管理)
+    ├── change_request    (変更管理)
+    └── sc_request        (サービスリクエスト)
+              └── sc_req_item (カタログアイテム)
+
+  ※ sys_dictionary にフィールド定義が格納される
 
 【通知フロー】
 
-  トリガー条件 (レコード変更 / イベント)
-    └─→ Notification
-              ├── When to send  (条件フィルター / イベント名)
+  トリガー条件(レコード変更 / イベント)
+    └─→ Notification レコード
+              ├── When to send  (条件: フィルター / イベント名)
               ├── Who receives  (ユーザー / グループ / フィールド値)
-              └── What contains (件名 / 本文テンプレート)
+              └── What contains (件名 / 本文 / 変数テンプレート \${field_name})
 
-【ナレッジ管理】
+  gs.eventQueue("event.name", record) ──→ Event Queue ──→ 通知 or Script Action
 
-  Knowledge Base
-    └── Category
-              └── Article
-                      Draft → Review → Published → Retired
+【ナレッジ管理の階層と公開フロー】
 
-  User Criteria → Can Read / Can Contribute を制御
+  Knowledge Base (kb_knowledge_base)
+    └── Category (kb_category)
+              └── Article (kb_knowledge)
+                      ライフサイクル:
+                      Draft ──→ Review ──→ Published ──→ Retired
+
+  アクセス制御:
+  User Criteria ──→ Can Read / Can Contribute を KB または Category 単位で適用
+
+【VTBの種類と用途】
+
+  Visual Task Board
+    ├── Flexible   : レーンを手動で自由に作成、タスクを自由配置
+    ├── Guided     : フィールド値(例: State)にレーンが連動、移動で値が変わる
+    └── Freeform   : ボードに直接カード(レコード外)を自由追加可能
+
+【Client Script の種類と g_form API】
+
+  onLoad  ──→ フォーム読込時
+  onChange ──→ フィールド変更時 (fieldName, newValue, oldValue)
+  onSubmit ──→ 保存前
+  onCellEdit ──→ リストのインライン編集時
+
+  g_form.getValue / setValue / setMandatory / setVisible / setReadOnly
+
+【Performance Analytics 構造】
+
+  Indicator (KPI定義)
+    └── Scheduled Job (データ収集)
+          └── Score (実測値)
+                ├── Target (目標値)
+                └── Threshold (閾値)
+
+  Breakdown ──→ Indicatorをセグメント分解
+  Scorecard / Widget ──→ ダッシュボードに表示
+
+【レポート vs Performance Analytics】
+
+  Report (レポート)
+    └── 現時点のデータをスナップショット表示
+          → テーブル / 棒グラフ / 円グラフ など
+
+  Performance Analytics (PA)
+    └── スコアを定期収集(Job) → 時系列でトレンド分析
+          → Scorecard / Breakdown で経時変化を可視化
 \`\`\`
+
+## PDI 操作ガイド
+
+### タスク1: ユーザー・グループ・ロールの付与を体験する
+
+1. **All → User Administration → Users** を開く
+2. 「New」をクリックし、テスト用ユーザーを作成する（User ID: \`test.csa\`、First name、Last name を入力して Save）
+3. **All → User Administration → Groups** を開き、「New」でテスト用グループを作成する（Name: \`CSA Test Group\`）
+4. グループレコードの「Roles」タブを開き、「Edit」から \`itil\` ロールを追加する
+5. グループレコードの「Members」タブを開き、先ほど作成した \`test.csa\` ユーザーを追加する
+6. **確認**: test.csa でログインし直し、Incident モジュールが表示されることを確認する（itil ロールの効果）
+
+### タスク2: Client Scriptを作成してg_form APIを試す
+
+1. **All → System Definition → Client Scripts** を開く
+2. 「New」をクリック。Table: \`incident\`、Type: \`onChange\`、Field name: \`priority\` を指定
+3. Script 欄に以下を入力して保存:
+   \`\`\`
+   function onChange(control, oldValue, newValue, isLoading) {
+     if (newValue == '1') {
+       g_form.setMandatory('short_description', true);
+       g_form.addInfoMessage('優先度1: 説明を必ず入力してください');
+     } else {
+       g_form.setMandatory('short_description', false);
+       g_form.clearMessages();
+     }
+   }
+   \`\`\`
+4. Incidentフォームを開き、Priority を「1 - Critical」に変更して動作を確認する
+
+### タスク3: 通知(Notification)の3要素を確認する
+
+1. **All → System Notification → Email → Notifications** を開く
+2. 既存の通知（例: \`Incident opened for user\`）をクリックして開く
+3. 以下の3タブを順に確認する:
+   - **When to send** タブ: 送信条件（テーブル名・条件フィルター・イベント）
+   - **Who will receive** タブ: 受信者（Users / Groups / フィールド値）
+   - **What it will contain** タブ: 件名と本文テンプレート（\`\${field_name}\` 変数）
+4. **確認**: 「Send to event creator」チェックボックスの位置と意味を把握する
+
+### タスク4: ナレッジベースの記事を作成し公開フローを体験する
+
+1. **All → Knowledge → Knowledge Bases** を開き、「New」でナレッジベースを作成する（Title: \`CSA Practice KB\`）
+2. **All → Knowledge → Articles** を開き、「New」をクリック
+3. Knowledge Base に \`CSA Practice KB\` を指定し、Title と本文を入力して **Save** する（状態: Draft）
+4. レコード上部の **Submit for Review** ボタンをクリック → 状態が \`Review\` に変わることを確認
+5. **Publish** ボタンをクリック → 状態が \`Published\` になることを確認
+
+### タスク5: Visual Task Boardを3種類作成して違いを体験する
+
+1. **All → Visual Task Board** を開き、「New Board」をクリック
+2. **Guided** を選択し、テーブルに \`incident\`、レーンフィールドに \`State\` を指定して作成する
+3. カードを別レーンにドラッグし、インシデントの State フィールドが自動変更されることを確認する
+4. 再度「New Board」→ **Freeform** を選択し、ボード上で直接カードを追加してみる（テーブルレコードと紐づかない点を確認）
+
+## 試験との接続
+
+「ロールをユーザーに直接付与するのとグループ経由で付与するのはどちらが推奨か」→ グループ経由が推奨。1か所の変更が全メンバーに波及するため管理が効率的。
+
+「通知の受信者をフィールド値（例: Assigned to）で指定するにはどこで設定するか」→ Notificationの「Who will receive」タブの「Fields」欄でテーブルのユーザー型フィールドを指定する。
+
+「ナレッジ記事の Can Read と Can Contribute は何で制御するか」→ User Criteria で制御する。ロールや部署単位でのアクセス制御。
+
+「Guided VTBでカードを移動すると何が起きるか」→ 背後のレコードのフィールド値（例: State）が自動変更される。
+
+「ReportとPerformance Analyticsの用途の違いは何か」→ Reportはスナップショット（今のデータ）、PAはトレンド（経時変化）。
+
+「onChangeスクリプトでフィールドを必須にするAPIはどれか」→ g_form.setMandatory('field', true)。
+
+「Client ScriptとUI Policyはどちらが先に試みるべきか」→ UI Policyを先に試みる（コード不要で保守しやすい）。複雑な条件がある場合のみClient Scriptを使う。
 `,
+  4: `# 分野4: Self-Service & Automation(配点 20%)
 
-  4: `# 分野4: Self-Service & Automation（配点 20%）
+## 1. サービスカタログ(Service Catalog)
 
-## 1. サービスカタログ（Service Catalog）
-
-**Catalog > Category > Catalog Item** の階層。注文すると **REQ（sc_request） > RITM（sc_req_item） > SCTASK（sc_task）** の親子構造が作られる。
-
-- **Record Producer**: 任意テーブルへのレコード直接作成（REQ/RITMは生成されない）。
-- **Order Guide**: 複数アイテム一括注文。
-- **Variable Set**: 変数を複数アイテムで再利用。
+Catalog > Category > Catalog Item の階層。注文するとREQ(Request) > RITM(Requested Item) > SCTASK(Catalog Task)の親子構造が作られる。Record Producerは任意テーブルへのレコード直接作成。Order Guideは複数アイテム一括注文。Variable Setで変数を再利用。
 
 ## 2. Service Portal / Employee Center
 
-ウィジェットベースのセルフサービスポータル。Employee Center が新標準。
+ウィジェットベースのセルフサービスポータル。Employee Centerが新標準。
 
 ## 3. Flow Designer
 
-**トリガー（Record/Schedule/Application） + Action** の並び。
+トリガー(Record/Schedule/Application) + Action の並び。Subflowはトリガーなしの再利用部品。Spokeはアプリ/外部サービス単位のコネクタ。Data Pillで前ステップの値を後続に渡す。
 
-- **Subflow**: トリガーなしの再利用部品。Flowから呼び出す。
-- **Spoke**: アプリ/外部サービス単位のコネクタ。
-- **Data Pill**: 前ステップの値を後続に渡す仕組み。
+## 4. 承認(Approvals)
 
-## 4. 承認（Approvals）
-
-**Ask for Approval** アクションで承認依頼。\`sysapproval_approver\` テーブルに記録。
+Ask for Approvalアクションで承認依頼。sysapproval_approverテーブルに記録。
 
 ## 5. SLA
 
-SLA Definition で開始/停止/一時停止条件と目標時間を定義。**Task SLA（task_sla）** レコードとして各タスクに付く。**Retroactive Start** で過去時点から計時開始。
+SLA Definitionで開始/停止/一時停止条件と目標時間を定義。Task SLA(task_sla)レコードとして各タスクに付く。Retroactive Startで過去時点から計時開始。
 
-## 6. Assignment（自動割当）
+## 6. Assignment(自動割当)
 
-**Assignment Rules** で条件一致時に Assignment group / Assigned to を自動設定。
-
----
-
-## 頻出ポイント
-
-- Record Producer は REQ/RITM を生成しない（任意テーブルへ直接）
-- REQ > RITM > SCTASK の親子構造
-- SubflowはFlowと異なりトリガーを持たない再利用部品
-- SLAの開始/停止/一時停止条件は独立して設定
-- Variable Set で変数を複数アイテムに再利用
-
----
+Assignment Rulesで条件一致時にAssignment group/Assigned toを自動設定。
 
 ## 全体構造マップ
 
 \`\`\`
-【カタログ注文フロー】
-
+【ユーザーの入口】
   Service Portal / Employee Center
-        ↓ 注文
-  sc_catalog → sc_category → sc_cat_item
-        ↓
-  REQ (sc_request)          ← 1注文=1REQ
-    └─ RITM (sc_req_item)   ← 1アイテム=1RITM
+        ↓ アクセス
+  ┌─────────────────────────────────┐
+  │        Service Catalog          │
+  │  sc_catalog (カタログ)          │
+  │    └─ sc_category (カテゴリ)    │
+  │         └─ sc_cat_item (アイテム)│
+  │              └─ Variable / Variable Set │
+  └─────────────────────────────────┘
+        ↓ 注文(Order)
+  REQ (sc_request)
+    └─ RITM (sc_req_item)  ←── Record Producerもここに関与
          └─ SCTASK (sc_task)
+                ↓ トリガー
+  ┌─────────────────────────────────────┐
+  │           Flow Designer             │
+  │  ┌──────────┐   ┌────────────────┐  │
+  │  │ Trigger  │──▶│ Action Step 1  │  │
+  │  │(Record/  │   │  (Ask for      │  │
+  │  │ Schedule)│   │   Approval)    │  │
+  │  └──────────┘   └───────┬────────┘  │
+  │                         │ Data Pill  │
+  │                   ┌─────▼────────┐  │
+  │                   │ Action Step 2 │  │
+  │                   │ (Create Task) │  │
+  │                   └──────────────┘  │
+  │  Subflow (トリガーなし・再利用部品)  │
+  │  Spoke  (外部サービス連携単位)      │
+  └─────────────────────────────────────┘
 
   Record Producer → 対象テーブルへ直接 (REQ/RITMなし)
   Order Guide     → 複数アイテムを束ねて一括注文
 
-【Flow Designer 構造】
-
-  Flow
-    ├── Trigger (Record/Schedule/Application)
-    └── Actions
-          ├── Ask for Approval → sysapproval_approver
-          ├── Create Task
-          ├── Update Record
-          └── Call Subflow (トリガーなし再利用部品)
-
-  Data Pill: 前ステップの値を後続Actionに渡す
-
 【SLA フロー】
-
   SLA Definition
     ├── Start condition  → 計時開始
     ├── Pause condition  → 一時停止
     ├── Stop condition   → 計時終了
     └── Retroactive Start → 過去時点から計時
 
-  → Task SLA (task_sla) として各レコードに1対多で付く
+  → Task SLA (task_sla) として各レコードに付く
 \`\`\`
-`,
 
-  5: `# 分野5: Database Management（配点 27%・最重要）
+## PDI 操作ガイド
+
+**タスク1: カタログアイテムを作成して注文する**
+
+1. \`All → Service Catalog → Catalog Definitions → Maintain Items\` を開く
+2. \`New\` をクリック。Name に「テスト貸出PC」、Catalogs に「Service Catalog」、Category に任意のカテゴリを設定して保存
+3. 関連リスト \`Variables\` で \`New\` をクリック。Type を \`Single Line Text\`、Question を「用途を記入してください」として保存
+4. \`Try It\` ボタンで注文を実行
+5. \`All → Service Catalog → Open Records → Requests\` を開き、生成されたREQ/RITM/SCTASKの親子構造を確認する
+
+**タスク2: Record Producerを作成する**
+
+1. \`All → Service Catalog → Catalog Definitions → Record Producers\` を開く
+2. \`New\` をクリック。Name に「インシデント報告フォーム」、Table に \`incident\` を選択して保存
+3. Variables タブで \`New\` → Short Description 用の変数を作成し、Script タブで \`current.short_description = producer.変数名;\` と記述
+4. Service Portal でフォームを検索・送信し、\`All → Incident → All\` に新規インシデントが作成されたことを確認する
+   - 確認ポイント: REQやRITMは生成されず、incidentテーブルに直接レコードが作られること
+
+**タスク3: Flow Designer でApprovalフローを作成する**
+
+1. \`All → Flow Designer\` を開き、\`New → Flow\` をクリック
+2. Flow Name に「PC承認フロー」と入力し、\`Add a trigger → Record → Created\` を選択。Table は \`sc_req_item\` を指定
+3. \`Add an Action → ServiceNow Core → Ask for Approval\` を選択
+4. Activate してカタログアイテムを注文し、\`All → My Approvals\` に承認依頼が届いていることを確認する
+
+**タスク4: SLA Definitionを作成して動作を確認する**
+
+1. \`All → SLA → SLA Definitions → New\` を開く
+2. Name に「RITM 2時間SLA」、Table に \`sc_req_item\`、Duration に \`2 Hours\` を設定
+3. Start condition を \`State is Open\`、Stop condition を \`State is Closed Complete\` に設定して保存
+4. カタログアイテムを注文し、生成されたRITMを開く
+5. 関連リスト \`SLAs\` を確認し、Task SLA(task_sla)レコードが生成されていること、および残り時間が計時されていることを確認する
+
+## 試験との接続
+
+「Record ProducerとCatalog Itemの違いは何か」→ Record Producerは任意テーブルへ直接レコード作成。REQ/RITMは生成されない。
+
+「注文後に作成されるレコードの親子関係はどれか」→ REQ(sc_request) > RITM(sc_req_item) > SCTASK(sc_task)。
+
+「Flow DesignerのSubflowとFlowの違いは何か」→ SubflowはTriggerを持たない。Flowから呼び出す再利用部品。
+
+「SLAが一時停止(Pause)するのはどの条件が設定されている場合か」→ Pause condition フィールドに条件が設定されている場合。Start/Stop/Pauseは独立したフィールド。
+
+「Variable Setを使う主な目的はどれか」→ 変数の定義を1か所で管理して複数アイテムに再利用するため。
+`,
+  5: `# 分野5: Database Management(配点 27%・最重要)
 
 ## 1. データスキーマの基本
 
-- 全テーブル定義は \`sys_db_object\`。フィールド定義（辞書）は \`sys_dictionary\`。ラベルは \`sys_documentation\`。
-- \`sys_id\` は32文字GUIDで全レコードに存在。
+全テーブル定義はsys_db_object。フィールド定義(辞書)はsys_dictionary。ラベルはsys_documentation。sys_idは32文字GUIDで全レコードに存在。
 
-## 2. テーブルの拡張（継承）
+## 2. テーブルの拡張(継承)
 
-- \`task\` が Incident / Problem / Change 等の親。
-- \`cmdb_ci\` が CI系の親。
-- \`sys_user\` は単独テーブル（拡張ではない）。
-- 親のリストには子のレコードも表示される。
-- 新規カスタムテーブルには **\`u_\` プレフィックス**が自動付与。
+taskがIncident/Problem/Change等の親。cmdb_ciがCI系の親。sys_userは単独テーブル(拡張ではない)。親のリストには子のレコードも表示される。新規テーブルにはu_プレフィックス。
 
 ## 3. フィールドタイプと参照
 
-- **Reference**（1対多）: 参照先テーブルの1レコードを指す。
-- **List**（複数参照）: 複数レコードを参照。
-- **Choice**: \`sys_choice\` テーブルで管理。
-- **Dot-walking**: 参照先フィールドにアクセス（例: \`caller_id.company.name\`）。
+Reference(1対多)、List(複数参照)、Choice(sys_choiceで管理)。Dot-walkingで参照先フィールドにアクセス(例: caller_id.company.name)。
 
 ## 4. リレーションシップ
 
-- 1対多 = Reference フィールド
-- 多対多 = m2m テーブル（例: \`sys_user_has_role\`）
-- Database View = JOIN（読み取り専用の仮想テーブル）
+1対多=Reference、多対多=m2mテーブル、Database View=JOIN(読み取り専用)。
 
 ## 5. CMDB
 
-- CI基底テーブルは \`cmdb_ci\`。
-- CIリレーションシップは \`cmdb_rel_ci\` テーブル。
+CI基底テーブルはcmdb_ci。CIリレーションシップはcmdb_rel_ciテーブル。
 
-## 6. ACL（アクセス制御）— 最頻出
+## 6. ACL(アクセス制御) — 最頻出
 
-評価順序:
-1. **テーブルレベル**（具体テーブル名 → 親テーブル名 → ワイルドカード \`*\`）
-2. **フィールドレベル**（具体フィールド名 → ワイルドカード \`*\`）
+評価順序: テーブルレベル(具体→親→ワイルドカード)→フィールドレベル(具体→ワイルドカード)。両方パスしてアクセス可能。ACL変更にはsecurity_adminへのelevate roleが必要。条件3種類: ロール/条件(フィルター)/スクリプト。
 
-両方パスしてアクセス可能。**ACL変更には \`security_admin\` への elevate role が必要**。
+**ACLスクリプトフィールド:**
+- \`answer\` 変数に \`true\` または \`false\` をセットして返す
+- \`current\` でカレントレコードを参照
+- \`gs.hasRole('role')\` でロールチェック
+- \`answer = true;\` でアクセス許可
 
-条件の3種類: **ロール / 条件（フィルター） / スクリプト**（この順で評価、すべてtrueで通過）。
+**admin ロール:** ACLを無条件でバイパス（管理者は全ACLを通過）
 
 ## 7. UI Policy / Data Policy / Business Rule
 
-| 機能 | 適用範囲 | 用途 |
-|------|----------|------|
-| **UI Policy** | フォームのみ | フィールドの表示/非表示・必須・読み取り専用 |
-| **Data Policy** | 全入力経路（インポート・API含む） | 必須・読み取り専用の強制 |
-| **Business Rule** | サーバーサイド | insert/update/delete/query のロジック |
+UI Policy=フォームのみ。Data Policy=全入力経路(インポート・API含む)。Business Ruleはサーバーサイドのinsert/update/delete/queryロジック。
 
-## 8. 監査・辞書オーバーライド
+## 8. Business Rule 詳細
 
-- **Auditing**: \`sys_audit\` に変更履歴を記録（テーブルごとに有効化必要）。
-- **辞書オーバーライド**: 子テーブルだけ属性変更（親の定義は変えない）。
+**実行タイミング(When):**
+- \`Before\`: DB保存前に実行。フィールド値の変更や処理のアボートに使用
+- \`After\`: DB保存後に実行。他レコードの更新などに使用
+- \`Async\`: 非同期実行。メール送信など重い処理に使用
+- \`Display\`: フォーム表示前に実行。スクラッチパッドでデータを渡す
 
----
+**current オブジェクト:**
+- \`current.field_name\`: フィールドの現在値を取得/設定
+- \`current.getValue('field')\`: 文字列として取得
+- \`current.setValue('field', value)\`: 値をセット
 
-## 頻出ポイント
+**previous オブジェクト:**
+- \`previous.field_name\`: 更新前の古い値を参照（Beforeのupdate時のみ有効）
+- \`previous.state\`: 変更前のstateフィールド値
 
-- ACL評価順序（テーブル→フィールド、具体→ワイルドカード）
-- UI Policy vs Data Policy の適用範囲の違い
-- Dot-walking の概念と書き方
-- sys_user は task を拡張していない（独立テーブル）
-- 辞書オーバーライドで子だけ属性変更
+**setAbortAction(true):**
+- \`current.setAbortAction(true)\`: DB保存をアボートしロールバック
+- \`gs.addErrorMessage('メッセージ')\`: ユーザーへエラーメッセージ表示
+- 組み合わせてバリデーションロジックを実装:
+  \`\`\`
+  if (current.state == '3' && current.assigned_to.nil()) {
+    current.setAbortAction(true);
+    gs.addErrorMessage('担当者を指定してください');
+  }
+  \`\`\`
 
----
+**Scratchpad オブジェクト:**
+- \`g_scratchpad.key = value\`: Display Business RuleからClient Scriptにデータを渡す
+
+## 9. GlideRecord API
+
+サーバーサイドでテーブルを操作するJavaScript API。
+
+**単一レコード取得:**
+\`\`\`
+var gr = new GlideRecord('incident');
+gr.get('sys_id_value');
+// または
+gr.get('number', 'INC0000001');
+\`\`\`
+
+**クエリ実行:**
+\`\`\`
+var gr = new GlideRecord('incident');
+gr.addQuery('state', '1');              // state = 1
+gr.addQuery('priority', '<', '3');      // priority < 3
+gr.addEncodedQuery('active=true^state=1'); // エンコードクエリ
+gr.setLimit(10);                        // 件数制限
+gr.orderBy('priority');                 // 昇順
+gr.orderByDesc('sys_created_on');       // 降順
+gr.query();
+while (gr.next()) {
+  // レコード処理
+  var val = gr.getValue('short_description'); // 文字列取得
+  var disp = gr.getDisplayValue('state');     // 表示値取得
+}
+\`\`\`
+
+**OR条件:**
+\`\`\`
+var qc = gr.addQuery('state', '1');
+qc.addOrCondition('state', '2');   // state=1 OR state=2
+\`\`\`
+
+**レコード操作:**
+\`\`\`
+var gr = new GlideRecord('incident');
+gr.initialize();
+gr.setValue('short_description', '新規インシデント');
+var sysId = gr.insert();           // 作成。sys_idを返す
+
+// 更新
+gr.get(sysId);
+gr.setValue('state', '2');
+gr.update();
+
+// 削除
+gr.deleteRecord();
+\`\`\`
+
+**参照フィールドのトラバース:**
+\`\`\`
+gr.caller_id.getRefRecord();  // 参照先レコードを取得
+gr.getValue('caller_id.email'); // dot-walkで値取得
+\`\`\`
+
+## 10. テーブルと辞書の詳細
+
+**Auto Number (自動番号):**
+- Prefix: 番号のプレフィックス（例: INC）
+- Next value: 次に付与される数値
+- Padding: 桁数（0埋め）
+
+**Dictionary Entry の主なフィールド:**
+- Type: 文字列/整数/日付/Reference等
+- Max length: 最大文字数
+- Default value: デフォルト値
+- Mandatory: 必須フラグ
+
+**Reference フィールド:**
+- Reference qualifier: 参照先レコードを絞り込む条件スクリプト
+
+**Choice リスト:**
+- sys_choice テーブルで管理
+- Dependent field: 別フィールドの値に連動して選択肢を絞り込む
+
+**テーブル継承:**
+- Extends table: 親テーブルを指定
+- 親フィールドは子テーブルに自動的に継承
+- sys_metadata: 全設定レコードの基底テーブル
+
+**辞書オーバーライド:**
+- 子テーブルだけフィールド属性を変更（親の定義はそのまま）
+- 例: 子テーブルでshort_descriptionを必須化
+
+## 11. 監査・辞書オーバーライド
+
+**Auditing**: sys_auditに変更履歴を記録（テーブルごとに有効化必要）。
+
+**辞書オーバーライド**: 子テーブルだけ属性変更（親の定義は変えない）。
 
 ## 全体構造マップ
 
 \`\`\`
 【スキーマ層】
-  sys_db_object (テーブル定義)
-    ├──→ sys_dictionary (フィールド定義)
-    │         └──→ sys_documentation (ラベル)
-    └──→ sys_choice (Choice選択肢)
+  sys_db_object(テーブル定義)
+      │
+      ├──→ sys_dictionary(フィールド定義・辞書)
+      │         │
+      │         └──→ sys_documentation(ラベル・翻訳)
+      │
+      └──→ sys_choice(Choiceフィールドの選択肢)
 
 【テーブル継承ツリー】
-  task (親)
+  task(親)
     ├── incident
     ├── problem
     └── change_request
 
-  cmdb_ci (親)
+  cmdb_ci(親)
     ├── cmdb_ci_computer
-    └── cmdb_ci_server
+    ├── cmdb_ci_server
+    └── cmdb_ci_appl
 
   sys_user ── (継承なし・独立テーブル)
 
-【ACL 評価フロー】
+【アクセス制御層】
   リクエスト
       ↓
-  テーブルACL評価
-    具体テーブル名 → 親テーブル名 → *(ワイルドカード)
-      ↓ 通過
-  フィールドACL評価
-    具体フィールド名 → *(ワイルドカード)
-      ↓ 通過       ↓ 失敗
-  アクセス許可  アクセス拒否
+  ACL評価(テーブルレベル)
+      具体テーブル名 → 親テーブル名 → *(ワイルドカード)
+      ↓ パス
+  ACL評価(フィールドレベル)
+      具体フィールド名 → *(ワイルドカード)
+      ↓ パス
+  アクセス許可
+      ↓ どちらか失敗
+  アクセス拒否
 
-  ACL条件評価順序:
-    ロールチェック → 条件(フィルター) → スクリプト
-    ※すべてtrueの場合のみ通過
+  ACL条件の評価順序:
+    ロールチェック → 条件(フィルター) → スクリプト(answer=true/false)
+    ※すべての条件がtrueの場合のみACL通過
+    ※admin ロールはACLをバイパス
+
+【Business Rule タイミング】
+  Before  ── DB保存前 ── current変更・setAbortAction・バリデーション
+  After   ── DB保存後 ── 他レコード更新・後処理
+  Async   ── 非同期   ── メール送信・重い処理
+  Display ── 表示前   ── scratchpadでClientScriptにデータ渡し
+
+  current.setAbortAction(true) → 保存をロールバック
+  previous.field              → 更新前の値(Beforeのupdate時)
+
+【GlideRecord APIフロー】
+  new GlideRecord('table')
+      ├── addQuery() / addEncodedQuery() → 条件追加
+      ├── setLimit() / orderBy()         → 件数・並び順
+      ├── query()                         → クエリ実行
+      └── while (gr.next())              → レコード反復
+              ├── getValue('field')       → 文字列値
+              ├── getDisplayValue('field') → 表示値
+              ├── setValue('field', val)  → 値セット
+              └── update() / insert() / deleteRecord()
 
 【変更管理ポリシー層】
-  フォーム操作  → UI Policy + Data Policy 両方適用
-  インポート   → Data Policy のみ適用
-  API/REST    → Data Policy のみ適用
+  データ入力経路
+    ┌─ フォーム操作 ──→ UI Policy が適用される
+    ├─ フォーム操作 ──→ Data Policy も適用される
+    ├─ インポート  ──→ Data Policy のみ適用される
+    └─ API/REST    ──→ Data Policy のみ適用される
 
-  Business Rule (サーバーサイド)
-    Before / After / Async × insert/update/delete/query
+【監査層】
+  レコード変更
+      └──→ sys_audit(変更履歴を自動記録)
+                ※テーブルごとにAudit有効化が必要
+
+  辞書オーバーライド
+      親テーブルの定義はそのまま
+      └──→ 子テーブルだけ属性を上書き(必須化など)
 \`\`\`
-`,
 
-  6: `# 分野6: Data Migration and Integration（配点 15%）
+## PDI 操作ガイド
+
+**タスク1: sys_db_objectとsys_dictionaryを直接閲覧する**
+
+1. ナビゲーションフィルターに \`sys_db_object.list\` と入力してEnterを押す
+2. 検索フィルターで \`Name\` = \`incident\` と入力してレコードを開く
+3. 「Dictionary Entries」関連リストを確認し、incidentテーブルが持つ全フィールドを一覧で見る
+4. 任意のフィールド(例: \`caller_id\`)をクリックし、タイプが \`Reference\` で参照先が \`sys_user\` になっていることを確認する
+
+**タスク2: Business Ruleを作成してsetAbortActionを試す**
+
+1. **All → System Definition → Business Rules** を開く
+2. 「New」をクリック。Table: \`incident\`、When: \`Before\`、操作: \`Insert\`、\`Update\` にチェック
+3. 「Advanced」タブのScript欄に以下を入力:
+   \`\`\`
+   if (current.state == '6' && current.assigned_to.nil()) {
+     current.setAbortAction(true);
+     gs.addErrorMessage('Resolved状態にする前に担当者を割り当ててください');
+   }
+   \`\`\`
+4. Incidentフォームで担当者未設定のまま「Resolved」にしようとすると保存がアボートされることを確認
+
+**タスク3: GlideRecordをBackground Scriptで試す**
+
+1. **All → System Definition → Scripts - Background** を開く
+2. 以下のスクリプトを実行して動作確認:
+   \`\`\`
+   var gr = new GlideRecord('incident');
+   gr.addQuery('state', '1');
+   gr.setLimit(3);
+   gr.query();
+   while (gr.next()) {
+     gs.info(gr.getValue('number') + ': ' + gr.getValue('short_description'));
+   }
+   \`\`\`
+3. 実行ログでincidentレコードが出力されることを確認する
+
+**タスク4: ACLのelevate roleとACL編集を体験する**
+
+1. 右上のアバターアイコン → \`Elevate Roles\` をクリックし、\`security_admin\` にチェック
+2. **All → System Security → Access Control (ACL)** を開く
+3. \`incident\` テーブルのACLを1件開き、「Requires role」「Condition」「Script」の3タブを確認する
+4. Scriptタブで \`answer = gs.hasRole('itil');\` のようなスクリプトを確認する
+
+**タスク5: 辞書オーバーライドで子テーブルだけ属性変更する**
+
+1. **All → System Definition → Dictionary** を開く
+2. 検索フィルターで \`Table\` = \`incident\`、\`Column name\` = \`short_description\` を探して開く
+3. 「Dictionary Overrides」関連リストを確認する
+4. 子テーブルに \`Mandatory\` を \`true\` に変更して保存する
+5. 親テーブル(task)の定義は変わっていないことをsys_dictionaryで確認する
+
+## 試験との接続
+
+「新しいカスタムテーブルを作成した場合、テーブル名のプレフィックスはどうなるか」→ \`u_\` が自動付与される。
+
+「ACLの評価順序として正しいものはどれか」→ テーブルレベル(具体→親→*)の後にフィールドレベル(具体→*)。両方パスで初めてアクセス可能。
+
+「UI PolicyとData Policyの違いとして正しい記述はどれか」→ UI Policyはフォームのみ。Data PolicyはAPIやImport Setにも適用される。
+
+「Dot-walkingの説明として正しいものはどれか」→ 参照フィールドを経由して別テーブルの値にアクセスできる機能。書き込みには使えない（読み取りのみ）。
+
+「Business RuleのcurrentとpreviousはどのWhenで両方使えるか」→ Before + Update の組み合わせでのみ \`previous\` が有効。
+
+「GlideRecordでクエリを実行した後にレコードを反復するメソッドはどれか」→ \`gr.next()\`。whileループで使用。
+
+「setAbortAction(true)を使う主な目的は何か」→ バリデーション失敗時にデータベースへの保存をキャンセルするため。
+`,
+  6: `# 分野6: Data Migration and Integration(配点 15%)
 
 ## 1. Import Set — 中心テーマ
 
-**Data Source → Import Set Table（ステージング） → Transform Map（変換）** の3ステップ。
-
-**Coalesce** がキー:
-- 一致あり → **Update**（既存レコード更新）
-- 一致なし → **Insert**（新規挿入）
-- 未指定   → **常に Insert**
-
-結果ステータス: **Inserted / Updated / Ignored / Skipped / Error**
+Data Source → Import Set Table(ステージング) → Transform Map(変換) の3ステップ。Coalesceがキー: 一致→更新、不一致→挿入、未指定→常に挿入。結果ステータス: Inserted/Updated/Ignored/Skipped/Error。
 
 ## 2. スケジュールインポート
 
-**Scheduled Import** で定期実行。LDAP統合ではユーザー・グループを定期同期。
+Scheduled Importで定期実行。LDAP統合ではユーザー・グループを定期同期。
 
 ## 3. Web Services / API
 
-- **Table API** などREST APIを標準提供。
-- **REST API Explorer** でインスタンス内テスト可能。
-- **IntegrationHub** はFlow Designerから外部連携するSpoke群（有償）。
+Table APIなどREST APIを標準提供。REST API Explorerでインスタンス内テスト可能。IntegrationHubはFlow Designerから外部連携するSpoke群(有償)。
 
 ## 4. エクスポート
 
-CSV / Excel / PDF / XML / JSON でエクスポート可能。**Export to XML** は sys_id を維持したまま移送できる。
+CSV/Excel/PDF/XML/JSONでエクスポート可能。Export to XMLはsys_idを維持したまま移送できる。
 
 ## 5. Update Set vs Import Set
 
-| | Update Set | Import Set |
-|--|-----------|-----------|
-| 用途 | 構成・カスタマイズのインスタンス間移送 | 外部データの取り込み |
-| 対象 | 構成レコード（スクリプト・フォーム等） | データレコード（ユーザー・CIなど） |
-
----
-
-## 頻出ポイント
-
-- Coalesce 未指定では常に Insert（重複に注意）
-- Import Set の3ステップ（Data Source → Staging → Transform）
-- REST API Explorer はインスタンス内テストツール
-- Update Set はデータを含まない（構成のみ）
-- LDAP 同期には Scheduled Import が必要
-
----
+Update Set=構成・カスタマイズのインスタンス間移送。Import Set=外部データの取り込み。
 
 ## 全体構造マップ
 
 \`\`\`
-【Import Set フロー】
+【外部データ取り込み: Import Set フロー】
 
   外部ソース (CSV / Excel / JDBC / REST)
-        ↓
-  Data Source (sys_data_source)
-        ↓
-  Import Set Table [ステージング]
+        │
+        ▼
+  Data Source (接続定義: sys_data_source)
+        │
+        ▼
+  Import Set Table [ステージング領域]
   (u_imp_xxxx)
-        ↓
-  Transform Map (sys_transform_map)
-    ├── Field Map (列の対応定義)
-    ├── Coalesce フィールド指定
-    │     一致あり → Update
-    │     一致なし → Insert
-    │     未指定  → 常に Insert
-    └── Transform Script (onBefore / onAfter)
-        ↓
-  ターゲットテーブル (sys_user / cmdb_ci など)
-        ↓
-  Import Set Run Log
-    Inserted / Updated / Ignored / Skipped / Error
+        │
+        ├─ 手動ロード: Load All Records
+        └─ 自動ロード: Scheduled Import (sys_trigger)
+                │
+                ▼
+        Transform Map (sys_transform_map)
+          ├─ Field Map (列の対応定義)
+          │    例: [source: name] → [target: sys_user.first_name]
+          ├─ Coalesce フィールド指定
+          │    一致あり → Update (既存レコード更新)
+          │    一致なし → Insert (新規行追加)
+          │    未指定  → 常に Insert
+          └─ Transform Script (onBefore / onAfter)
+                │
+                ▼
+        ターゲットテーブル (例: sys_user / cmdb_ci_server など)
+                │
+                ▼
+        Import Set Run Log
+          Inserted / Updated / Ignored / Skipped / Error
 
-【API 連携】
+【API / 外部連携】
 
   外部システム
-    ├── REST → Table API / Scripted REST API
-    │     └── REST API Explorer でテスト可能
-    ├── SOAP
-    └── IntegrationHub Spoke (有償)
-          └── Flow Designer → Action → HTTP Step
+    ├─ REST (Table API / Scripted REST)
+    │    └─ REST API Explorer でインスタンス内テスト
+    ├─ SOAP
+    └─ IntegrationHub Spoke (有償)
+         └─ Flow Designer → Action → HTTP Step
 
 【LDAP 同期】
 
   LDAP サーバー
-    └── LDAP Server 定義
-         └── Scheduled Import で定期同期
-              └── sys_user / sys_user_group へ反映
+    └─ LDAP Server 定義 (sys_ldap_server)
+         └─ Scheduled Import で定期同期
+              └─ sys_user / sys_user_group へ反映
 \`\`\`
+
+## PDI 操作ガイド
+
+### タスク1: Import Set で CSV をインポートする
+
+1. サンプル CSV を準備する (列: first_name, last_name, email)
+2. **All → System Import Sets → Load Data** を開く
+3. "Create table" を選択し、テーブルラベルに \`Test User Import\` と入力
+4. Import from: File を選択し、CSV をアップロードして **Submit**
+5. ステージングテーブル (\`u_imp_test_user_import\`) に行が作成されたことを確認する
+
+### タスク2: Transform Map を作成して Coalesce を確認する
+
+1. **All → System Import Sets → Transform Maps** を開く
+2. **New** をクリックし、Source Table に \`u_imp_test_user_import\`、Target Table に \`sys_user\` を設定して保存
+3. **Field Maps** タブで **Auto Map Matching Fields** をクリックし、自動マッピングを生成する
+4. email フィールドの Field Map を開き、**Coalesce** チェックボックスをオンにして保存
+5. Transform Map 画面上部の **Transform** ボタンをクリックして実行する
+6. Import Set Run Log で Inserted / Updated の件数を確認する
+
+### タスク3: Coalesce なしとの比較実験
+
+1. タスク2と同じ CSV を再度 Load Data でロードする
+2. Transform Map の email の Coalesce チェックを**外して** Transform を実行する
+3. sys_user に重複レコードが挿入される (Inserted のみで Updated が 0) ことを確認する
+
+### タスク4: REST API Explorer で Table API を試す
+
+1. **All → System Web Services → REST API Explorer** を開く
+2. API Name: \`Table API\`、Method: GET、tableName: \`incident\`、sysparm_limit: \`3\` を入力して **Send** をクリックする
+3. JSON レスポンスに incident レコードが返ることを確認する
+
+## 試験との接続
+
+「Coalesce フィールドを指定しない場合、Transform の結果はどうなるか」→ 常に Insert される（既存レコードを無視して毎回新規挿入）。
+
+「Import Set と Update Set の用途の違いを問う問題」→ Import Setは外部データの取り込み、Update Setは構成カスタマイズの移送。
+
+「REST API Explorer の主な用途を問う問題」→ インスタンス内でAPIをテスト・検証できるツール。
+
+「LDAP 統合でユーザーを定期同期するために使うのはどの機能か」→ Scheduled Import。LDAP Server定義だけでは同期されない。
 `
 };
 
@@ -1018,13 +1554,38 @@ function renderMarkdown(md) {
 
   function inlineFormat(s) {
     s = escHtml(s);
-    // code
     s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-    // bold
     s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    // italic
     s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
     return s;
+  }
+
+  function buildUL(listLines, idx, minIndent) {
+    let out = '<ul>';
+    while (idx < listLines.length) {
+      const indent = listLines[idx].match(/^( *)/)[1].length;
+      if (indent < minIndent) break;
+      if (indent === minIndent) {
+        const text = listLines[idx].replace(/^ *- /, '');
+        idx++;
+        if (idx < listLines.length) {
+          const nextIndent = listLines[idx].match(/^( *)/)[1].length;
+          if (nextIndent > minIndent) {
+            const sub = buildUL(listLines, idx, nextIndent);
+            out += '<li>' + inlineFormat(text) + sub.html + '</li>';
+            idx = sub.nextIdx;
+          } else {
+            out += '<li>' + inlineFormat(text) + '</li>';
+          }
+        } else {
+          out += '<li>' + inlineFormat(text) + '</li>';
+        }
+      } else {
+        idx++;
+      }
+    }
+    out += '</ul>';
+    return { html: out, nextIdx: idx };
   }
 
   while (i < lines.length) {
@@ -1038,7 +1599,7 @@ function renderMarkdown(md) {
         code += escHtml(lines[i]) + '\n';
         i++;
       }
-      html += `<pre><code>${code}</code></pre>`;
+      html += '<pre><code>' + code + '</code></pre>';
       i++;
       continue;
     }
@@ -1048,7 +1609,7 @@ function renderMarkdown(md) {
       const m = line.match(/^(#{1,3}) (.*)/);
       const level = m[1].length;
       const text = inlineFormat(m[2]);
-      html += `<h${level}>${text}</h${level}>`;
+      html += '<h' + level + '>' + text + '</h' + level + '>';
       i++;
       continue;
     }
@@ -1062,28 +1623,28 @@ function renderMarkdown(md) {
 
     // table
     if (line.startsWith('|') && i + 1 < lines.length && lines[i+1].match(/^\|[\s\-|]+\|$/)) {
-      const headers = line.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(h => `<th>${inlineFormat(h.trim())}</th>`).join('');
-      i += 2; // skip separator
+      const headers = line.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(h => '<th>' + inlineFormat(h.trim()) + '</th>').join('');
+      i += 2;
       let rows = '';
       while (i < lines.length && lines[i].startsWith('|')) {
-        const cells = lines[i].split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(c => `<td>${inlineFormat(c.trim())}</td>`).join('');
-        rows += `<tr>${cells}</tr>`;
+        const cells = lines[i].split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(c => '<td>' + inlineFormat(c.trim()) + '</td>').join('');
+        rows += '<tr>' + cells + '</tr>';
         i++;
       }
-      html += `<div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
+      html += '<div class="table-wrap"><table><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
       continue;
     }
 
-    // unordered list
-    if (/^(\s*)- /.test(line)) {
-      const baseIndent = line.match(/^(\s*)/)[1].length;
-      let items = '';
-      while (i < lines.length && /^(\s*)- /.test(lines[i])) {
-        const text = lines[i].replace(/^\s*- /, '');
-        items += `<li>${inlineFormat(text)}</li>`;
+    // unordered list (with nesting support)
+    if (/^\s*- /.test(line)) {
+      const listLines = [];
+      while (i < lines.length && /^\s*- /.test(lines[i])) {
+        listLines.push(lines[i]);
         i++;
       }
-      html += `<ul>${items}</ul>`;
+      const baseIndent = listLines[0].match(/^( *)/)[1].length;
+      const result = buildUL(listLines, 0, baseIndent);
+      html += result.html;
       continue;
     }
 
@@ -1092,10 +1653,10 @@ function renderMarkdown(md) {
       let items = '';
       while (i < lines.length && /^\d+\. /.test(lines[i])) {
         const text = lines[i].replace(/^\d+\. /, '');
-        items += `<li>${inlineFormat(text)}</li>`;
+        items += '<li>' + inlineFormat(text) + '</li>';
         i++;
       }
-      html += `<ol>${items}</ol>`;
+      html += '<ol>' + items + '</ol>';
       continue;
     }
 
@@ -1107,11 +1668,14 @@ function renderMarkdown(md) {
 
     // paragraph
     let para = '';
-    while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#') && !lines[i].startsWith('|') && !lines[i].startsWith('```') && !lines[i].startsWith('- ') && !/^\d+\. /.test(lines[i]) && !/^---+$/.test(lines[i].trim())) {
+    while (i < lines.length && lines[i].trim() !== '' &&
+           !lines[i].startsWith('#') && !lines[i].startsWith('|') &&
+           !lines[i].startsWith('```') && !/^\s*- /.test(lines[i]) &&
+           !/^\d+\. /.test(lines[i]) && !/^---+$/.test(lines[i].trim())) {
       para += (para ? ' ' : '') + lines[i];
       i++;
     }
-    if (para) html += `<p>${inlineFormat(para)}</p>`;
+    if (para) html += '<p>' + inlineFormat(para) + '</p>';
   }
 
   return html;
