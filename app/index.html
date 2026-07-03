@@ -1,1 +1,1817 @@
-placeholder
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ServiceNow CSA 学習システム</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #1c2b36;
+    --sub: #5f7382;
+    --accent: #1f8476;
+    --accent-dark: #14655a;
+    --accent-bg: #eaf5f3;
+    --ok: #1f8476;
+    --ng: #c0392b;
+    --border: #dde4ea;
+    --hover: #eef4f3;
+    --code-bg: #1a2733;
+    --code-text: #d4e8e3;
+    --tab-bg: #ffffff;
+    --tab-border: #dde4ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111b22;
+      --card: #192430;
+      --text: #dce8f0;
+      --sub: #7a9aad;
+      --accent: #25a090;
+      --accent-dark: #1f8476;
+      --accent-bg: #0e2822;
+      --ok: #25a090;
+      --ng: #e05c4a;
+      --border: #253545;
+      --hover: #1a2e3a;
+      --code-bg: #0d1a22;
+      --code-text: #c8e0d8;
+      --tab-bg: #192430;
+      --tab-border: #253545;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111b22;
+    --card: #192430;
+    --text: #dce8f0;
+    --sub: #7a9aad;
+    --accent: #25a090;
+    --accent-dark: #1f8476;
+    --accent-bg: #0e2822;
+    --ok: #25a090;
+    --ng: #e05c4a;
+    --border: #253545;
+    --hover: #1a2e3a;
+    --code-bg: #0d1a22;
+    --code-text: #c8e0d8;
+    --tab-bg: #192430;
+    --tab-border: #253545;
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #1c2b36;
+    --sub: #5f7382;
+    --accent: #1f8476;
+    --accent-dark: #14655a;
+    --accent-bg: #eaf5f3;
+    --ok: #1f8476;
+    --ng: #c0392b;
+    --border: #dde4ea;
+    --hover: #eef4f3;
+    --code-bg: #1a2733;
+    --code-text: #d4e8e3;
+    --tab-bg: #ffffff;
+    --tab-border: #dde4ea;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+  }
+  header {
+    background: linear-gradient(135deg, #103c37, #1f8476);
+    color: #fff; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header h1 { font-size: 1.1rem; font-weight: 700; }
+  header .sub { font-size: .78rem; opacity: .85; }
+
+  /* ===== TAB BAR ===== */
+  .tab-bar-wrap {
+    background: var(--tab-bg);
+    border-bottom: 1px solid var(--tab-border);
+    position: sticky; top: 56px; z-index: 90;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  }
+  .tab-bar {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: none; padding: 13px 22px;
+    font: inherit; font-size: .88rem; font-weight: 600;
+    background: none; border: none; border-bottom: 3px solid transparent;
+    color: var(--sub); cursor: pointer;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--accent); background: var(--hover); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  /* ===== STUDY TAB ===== */
+  .study-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .study-sidebar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    position: sticky;
+    top: 112px;
+  }
+  .study-sidebar h3 {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--sub);
+    padding: 4px 8px 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .domain-nav-btn {
+    display: block; width: 100%;
+    text-align: left; padding: 9px 12px;
+    font: inherit; font-size: .83rem; font-weight: 500;
+    background: none; border: none; border-radius: 8px;
+    color: var(--text); cursor: pointer;
+    transition: background .13s, color .13s;
+    margin-bottom: 2px;
+    line-height: 1.35;
+  }
+  .domain-nav-btn:hover { background: var(--hover); color: var(--accent); }
+  .domain-nav-btn.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .domain-nav-btn .d-num {
+    display: inline-block; width: 18px; height: 18px; line-height: 18px;
+    font-size: .68rem; font-weight: 800; text-align: center;
+    background: var(--accent); color: #fff; border-radius: 4px;
+    margin-right: 7px; flex-shrink: 0;
+    vertical-align: middle;
+  }
+  .domain-nav-btn.active .d-num { background: var(--accent-dark); }
+
+  /* ===== NOTE CONTENT ===== */
+  .note-content-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 36px;
+    min-height: 400px;
+  }
+  .note-body {
+    max-width: 720px;
+    line-height: 1.75;
+    font-size: .95rem;
+    color: var(--text);
+  }
+  .note-body h1 {
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--accent-dark);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    text-wrap: balance;
+  }
+  .note-body h2 {
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent);
+    text-wrap: balance;
+  }
+  .note-body h3 {
+    font-size: .95rem; font-weight: 700;
+    color: var(--sub);
+    margin: 20px 0 8px;
+    text-wrap: balance;
+  }
+  .note-body p { margin-bottom: 10px; }
+  .note-body ul, .note-body ol {
+    padding-left: 1.4em; margin-bottom: 10px;
+  }
+  .note-body li { margin-bottom: 3px; }
+  .note-body strong { font-weight: 700; color: var(--text); }
+  .note-body em { font-style: italic; }
+  .note-body code {
+    font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+    font-size: .83em;
+    background: var(--hover);
+    color: var(--accent-dark);
+    padding: 1px 5px; border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .note-body pre {
+    font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+    font-size: .8rem;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 18px 20px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 14px 0;
+    line-height: 1.55;
+    white-space: pre;
+  }
+  .note-body pre code {
+    background: none; border: none; padding: 0;
+    color: inherit; font-size: inherit;
+  }
+  .note-body hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+  .note-body table {
+    width: 100%; border-collapse: collapse;
+    font-size: .88rem; margin: 14px 0;
+  }
+  .note-body th {
+    background: var(--hover);
+    color: var(--sub); font-weight: 700; font-size: .78rem;
+    letter-spacing: .04em; text-transform: uppercase;
+    padding: 8px 12px; text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  .note-body td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .note-body tr:last-child td { border-bottom: none; }
+  .note-body .table-wrap { overflow-x: auto; }
+
+  /* Mobile sidebar pills */
+  .study-pills { display: none; }
+
+  @media (max-width: 680px) {
+    .study-layout { grid-template-columns: 1fr; gap: 12px; }
+    .study-sidebar { display: none; }
+    .study-pills {
+      display: flex; gap: 8px; flex-wrap: nowrap;
+      overflow-x: auto; scrollbar-width: none;
+      padding: 4px 0 10px; margin-bottom: 4px;
+    }
+    .study-pills::-webkit-scrollbar { display: none; }
+    .study-pill-btn {
+      flex: none; padding: 7px 14px;
+      font: inherit; font-size: .8rem; font-weight: 600;
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 999px; color: var(--sub); cursor: pointer;
+      transition: all .13s; white-space: nowrap;
+    }
+    .study-pill-btn.active {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .note-content-wrap { padding: 18px 16px; }
+  }
+
+  /* ===== EXISTING STYLES ===== */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  h2 { font-size: 1.05rem; margin-bottom: 12px; }
+  h3 { font-size: .95rem; margin-bottom: 8px; }
+  button {
+    font: inherit; cursor: pointer; border: 1px solid var(--border);
+    background: var(--card); border-radius: 8px; padding: 10px 16px; color: var(--text);
+    transition: background .15s;
+  }
+  button:hover { background: var(--hover); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:hover { background: var(--accent-dark); }
+  button.ghost { border: none; background: none; color: var(--sub); text-decoration: underline; padding: 4px; }
+  button:disabled { opacity: .45; cursor: default; }
+  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .mode-btn { text-align: left; padding: 16px; border-radius: 12px; }
+  .mode-btn .t { font-weight: 700; display: block; margin-bottom: 4px; color: var(--accent-dark); }
+  .mode-btn .d { font-size: .8rem; color: var(--sub); }
+  table.progress { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  table.progress th, table.progress td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+  table.progress th { color: var(--sub); font-weight: 600; font-size: .75rem; }
+  .bar { background: #e6ecef; border-radius: 6px; height: 8px; overflow: hidden; min-width: 80px; }
+  .bar > div { height: 100%; background: var(--accent); border-radius: 6px; }
+  .qmeta { font-size: .78rem; color: var(--sub); margin-bottom: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  .qtext { font-weight: 600; margin-bottom: 14px; font-size: 1rem; }
+  .choice {
+    display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 12px 14px;
+    border-radius: 10px; border: 1.5px solid var(--border); background: var(--card);
+  }
+  .choice.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .choice.correct { border-color: var(--ok); background: var(--accent-bg); font-weight: 600; }
+  .choice.wrong { border-color: var(--ng); background: #faeae8; }
+  .expl {
+    margin-top: 14px; padding: 14px; border-radius: 10px; font-size: .9rem;
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+  }
+  .expl.ng { background: #fdf3f2; border-left-color: var(--ng); }
+  .verdict { font-weight: 700; margin-bottom: 6px; }
+  .verdict.ok { color: var(--ok); }
+  .verdict.ng { color: var(--ng); }
+  .nav-row { display: flex; justify-content: space-between; margin-top: 18px; gap: 8px; flex-wrap: wrap; }
+  .timer { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .timer.warn { color: #ffd2ad; }
+  .pill {
+    display: inline-block; font-size: .72rem; padding: 2px 10px; border-radius: 999px;
+    background: var(--accent-bg); color: var(--accent-dark); margin-right: 6px;
+  }
+  .score-big { font-size: 2.2rem; font-weight: 800; }
+  .score-big.pass { color: var(--ok); }
+  .score-big.fail { color: var(--ng); }
+  .domain-select label {
+    display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  }
+  .domain-select label:hover { background: var(--hover); }
+  .muted { color: var(--sub); font-size: .85rem; }
+  .browse-item { border-bottom: 1px solid var(--border); padding: 14px 0; }
+  .browse-item:last-child { border: none; }
+  .browse-item .ans { color: var(--accent-dark); font-weight: 600; font-size: .88rem; margin-top: 6px; }
+  .browse-item .ex { font-size: .85rem; color: var(--sub); margin-top: 4px; }
+  .multi-note { font-size: .78rem; color: var(--ng); font-weight: 600; margin-bottom: 8px; }
+  .mistake-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
+  .mistake-item:last-child { border: none; }
+  .mistake-row { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-wrap: wrap; }
+  .mistake-row .pill { flex: none; }
+  .mistake-text { flex: 1 1 160px; min-width: 120px; font-size: .88rem; }
+  .mistake-stats { font-size: .78rem; color: var(--sub); white-space: nowrap; }
+  .mistake-detail { display: none; margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: var(--accent-bg); border-left: 4px solid var(--accent); font-size: .85rem; }
+  .mistake-item.open .mistake-detail { display: block; }
+  .mistake-detail .ans { color: var(--accent-dark); font-weight: 600; margin-bottom: 4px; }
+  .mistake-detail .ex { color: var(--text); }
+  .mock-tooltip {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: .76rem; line-height: 1.5;
+    box-shadow: 0 4px 10px rgba(0,0,0,.14); pointer-events: none; z-index: 20;
+    max-width: 200px;
+  }
+  .mock-badge {
+    margin: 0 0 12px; padding: 8px 12px; border-radius: 8px;
+    background: var(--accent-bg); color: var(--accent-dark); font-weight: 700; font-size: .85rem;
+    display: inline-block;
+  }
+  footer { text-align: center; color: var(--sub); font-size: .75rem; padding: 20px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ServiceNow CSA 学習システム</h1>
+    <div class="sub">Certified System Administrator 試験対策</div>
+  </div>
+  <div id="header-right"></div>
+</header>
+
+<div class="tab-bar-wrap">
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" id="tab-study"   role="tab" onclick="switchTab('study')"  >学習ノート</button>
+    <button class="tab-btn"        id="tab-practice" role="tab" onclick="switchTab('practice')">分野別練習</button>
+    <button class="tab-btn"        id="tab-mock"     role="tab" onclick="switchTab('mock')"    >模擬試験</button>
+    <button class="tab-btn"        id="tab-review"   role="tab" onclick="switchTab('review')"  >弱点復習</button>
+    <button class="tab-btn"        id="tab-browse"   role="tab" onclick="switchTab('browse')"  >全問一覧</button>
+    <button class="tab-btn"        id="tab-home"     role="tab" onclick="switchTab('home')"    >ダッシュボード</button>
+  </div>
+</div>
+
+<main id="app"></main>
+<footer>問題データは questions.js で管理。進捗はこのブラウザの localStorage に保存されます。</footer>
+
+<script src="questions.js"></script>
+<script>
+"use strict";
+
+/* ===== NOTES DATA ===== */
+const NOTES = {
+  1: `# 分野1: Platform Overview and Navigation（配点 7%）
+
+## 1. Now Platform の基本
+
+- ServiceNow は **PaaS（Platform as a Service）** 型のクラウドプラットフォーム。単一のデータモデル上に ITSM / ITOM / HR / CSM などのアプリケーションが載る。
+- 各顧客は専用の**インスタンス**（例: \`company.service-now.com\`）を持つ。**シングルテナント型**（インスタンスごとに独立したDB）。
+- **リリース**: 年2回のメジャーリリース。都市名のアルファベット順で命名（例: Xanadu → Yokohama → Zurich）。
+- **Now Support（旧HI）**: ServiceNowへのサポート依頼・インスタンス管理を行うポータル。
+
+## 2. Next Experience UI（統合ナビゲーション）
+
+現行のデフォルトUI。画面上部のヘッダーに主要メニューが集約されている。
+
+| 要素 | 役割 |
+|------|------|
+| **All（すべて）** | 全アプリケーション・モジュールのメニュー（旧アプリケーションナビゲーター）。フィルター入力で絞り込み |
+| **Favorites（お気に入り）** | ★を付けたモジュールへのショートカット。名前・アイコン編集可 |
+| **History（履歴）** | 直近に開いたレコード・リスト・フォーム |
+| **Workspaces** | ロールに応じたワークスペース（Agent Workspace等）一覧 |
+| **Admin** | 管理者向けクイックアクセス（adminロール保持者のみ） |
+| **グローバル検索** | ヘッダーの虫眼鏡。検索グループ・検索ソースで対象を制御 |
+| **ユーザーメニュー** | 右上アバター。プロファイル・設定・impersonate・ログアウト |
+| **Contextual App Pill** | 現在のアプリケーションスコープ・更新セットの表示/切替（開発者向け設定） |
+
+- **モジュール**: メニューの1項目。リスト表示・フォーム表示・URL・スクリプト実行などのリンクタイプを持つ。
+- **アプリケーションメニュー**: モジュールをまとめる親項目。ロールで表示制御できる。
+
+## 3. Impersonation（ユーザー代理）
+
+- adminは他ユーザーに**なりすまし（impersonate）**て、そのユーザーの見え方・権限を確認できる（\`impersonator\` ロールでも可）。
+- impersonate中の操作は**そのユーザーの操作として記録**されるが、システムログにはimpersonateの事実も記録される。
+- テスト目的でのアクセス権確認（ACL・UIポリシーの見え方）に必須のテクニック。
+
+## 4. リストとフォーム（基本操作）
+
+- **リスト**: テーブル内レコードの一覧。列ソート・フィルター・グループ化・インライン編集が可能。
+  - **リストコントロールメニュー**（左上ハンバーガー）から列の設定・エクスポート等。
+  - **ブレッドクラム**: 現在のフィルター条件を表示。クリックで条件を段階的に解除。条件は**左から右にAND**で絞り込まれる。
+- **フォーム**: 1レコードの表示・編集画面。関連リスト（Related Lists）で子レコードを表示。
+- **右クリックメニュー**（フォームヘッダー）: Configure > Form Layout / Form Design、Export、履歴表示など管理操作の入口。
+
+## 5. 検索
+
+- **グローバル検索**: 複数テーブル横断。ワイルドカード（\`*text\`）や完全一致（\`"text"\`）が使える。
+- **リスト検索**: 列ヘッダー上の検索行。\`*\`前方付与で部分一致。
+- **Zing**: ServiceNowの検索エンジン（グローバル検索・ナレッジ検索等を支える）。
+
+## 6. 設定（Preferences）
+
+- ユーザーメニュー > Preferences でテーマ・表示密度・言語・タイムゾーン等を個人単位で設定。
+- 管理者はシステムプロパティでインスタンス全体のデフォルトを設定（分野2参照）。
+
+---
+
+## 頻出ポイント
+
+- All / Favorites / History の役割の区別
+- モジュールとアプリケーションメニューの関係、ロールによる表示制御
+- impersonate で何が確認できるか・誰ができるか
+- ブレッドクラムの読み方（AND条件・クリックによる解除）
+- リリースが年2回・都市名順であること
+
+---
+
+## 全体構造マップ
+
+\`\`\`
+【Now Platform インスタンス】
+  ├── シングルテナント（顧客ごとに独立したDB）
+  ├── URL: company.service-now.com
+  └── 年2回リリース（都市名順: Xanadu → Yokohama → Zurich ...）
+
+         ┌─────────────────────────────────┐
+         │   Next Experience UI (ヘッダー)  │
+         └───────────────┬─────────────────┘
+                         │
+          ┌──────────────┼──────────────┐
+          ↓              ↓              ↓
+        [All]       [Favorites]    [History]
+          │           (★登録済み)   (直近閲覧)
+          │
+          ↓ フィルター入力で絞り込み
+  ┌───────────────────────┐
+  │ アプリケーションメニュー │  ← ロールで表示制御
+  └──────────┬────────────┘
+             │
+             ↓ クリック
+  ┌───────────────────────┐
+  │       モジュール        │  ← リンクタイプ: リスト/フォーム/URL
+  └──────────┬────────────┘
+             │
+       ┌─────┴─────┐
+       ↓           ↓
+   【リスト】     【フォーム】
+   (テーブル全体)  (1レコード)
+       │               │
+   ブレッドクラム   関連リスト
+   [条件A > 条件B]  (子レコード表示)
+   ← AND で絞込
+\`\`\`
+
+---
+
+## PDI 操作ガイド
+
+### タスク1: All メニューの構造を確認する
+
+1. \`All\` をクリックし、左サイドパネルを開く。
+2. フィルター入力欄に \`user\` と入力し、メニューが絞り込まれることを確認する。
+3. \`User Administration\` の下に \`Users\`・\`Groups\`・\`Roles\` などのモジュールを確認する。
+4. \`Users\` をクリックし、\`sys_user\` テーブルのリスト画面が開くことを確認する。
+
+### タスク2: ブレッドクラムを操作する
+
+1. \`All → Incident → All\` を開く。
+2. 列ヘッダーを右クリック → \`Filter By\` を選択しフィルターを追加する。
+3. 上部ブレッドクラムに条件が表示されることを確認する。
+4. さらに別列でフィルターを追加し、AND で条件が積まれることを確認する。
+5. 左の条件をクリックし、それより右の条件が解除されることを確認する。
+
+### タスク3: Impersonation を実行する
+
+1. ユーザーメニュー → \`Impersonate User\` をクリックする。
+2. \`Abel Tuter\` を選択してセッションを切り替える。
+3. \`All\` メニューの項目が減っていること、\`Admin\` メニューが消えていることを確認する。
+4. \`End Impersonation\` で元の admin セッションに戻る。
+`,
+
+  2: `# 分野2: Instance Configuration（配点 11%）
+
+## 1. システムプロパティ（System Properties）
+
+- インスタンス全体の動作を制御する設定値。テーブルは \`sys_properties\`。
+- 例: \`glide.ui.session_timeout\`（セッションタイムアウト）、メール送受信の有効化など。
+- 変更はインスタンス全体に影響するため、変更前に影響範囲を確認する。
+
+## 2. ブランディング / テーマ
+
+- **Next Experience**では、テーマ（ロゴ・配色）を **Next Experience の Theme（ブランディング設定）** で構成する。
+- 会社ロゴ・ブラウザタブのタイトル・バナー画像などを設定可能。
+- ポータル（Service Portal / Employee Center）のブランディングは別途ポータル側で設定する。
+
+## 3. フォーム設定
+
+| 手段 | 用途 |
+|------|------|
+| **Form Layout** | フィールドの追加・削除・並び替え（シンプルなスレート型UI） |
+| **Form Design** | ドラッグ&ドロップのWYSIWYG。セクション・列構成も編集可 |
+| **ビュー（View）** | 同じテーブルに複数のフォーム/リストレイアウトを持たせる仕組み |
+
+- ビューはリストにも適用される。**ビュールール（View Rules）**で条件に応じたビュー自動切替が可能。
+
+## 4. リスト設定
+
+- **List Layout** で列の追加・削除・順序変更（管理者は全員向けデフォルトを変更、一般ユーザーは個人設定）。
+- 個人の列設定（Personal List）はデフォルトより優先される。
+
+## 5. プラグイン（Plugins）
+
+- 機能単位の拡張モジュール。**有効化はできるが、基本的に無効化（アンインストール）はできない**。
+- 一部プラグインは有償・要ライセンス。
+- 有効化するとデモデータを含められる場合がある（本番では通常含めない）。
+
+## 6. Update Set（更新セット）— CSA頻出
+
+構成変更（カスタマイズ）をインスタンス間で移送するための仕組み。
+
+- **記録されるもの**: 構成レコード（フォームレイアウト、ビジネスルール、ACL等）。
+- **記録されないもの**: **データ（タスクレコード等）・スケジュールジョブの実行結果・ホームページ/ダッシュボード**。
+- 流れ: 開発環境で Update Set 作成 → **Complete** に変更 → テスト環境で **Retrieve（取得）** → **Preview（プレビュー）** で衝突検出 → **Commit（コミット）**。
+- **Default update set**: 更新セットを指定しないときの受け皿。移送用には使わない。
+- プレビューで衝突（Collision）が出たら、Accept/Skip を判断してからコミット。
+
+## 7. 開発プロセス
+
+- 典型構成: **開発（Dev） → テスト（Test） → 本番（Prod）** の3インスタンス。
+- カスタマイズは Dev で行い、Update Set で昇格。本番で直接変更しない。
+- **クローン（Clone）**: 本番インスタンスのデータ・構成を下位環境へコピーする機能（逆方向はしない）。
+
+---
+
+## 頻出ポイント
+
+- Update Set に**含まれるもの/含まれないもの**（データは含まれない）
+- Update Set の移送フロー（Complete → Retrieve → Preview → Commit）
+- Form Layout と Form Design の違い、ビューの概念
+- プラグインは基本的に無効化できない
+- クローンは本番→下位環境の方向
+
+---
+
+## 全体構造マップ
+
+\`\`\`
+【フォーム・リスト表示の制御】
+  テーブル定義 (sys_dictionary)
+      │
+      ├── Form Layout  → フィールドの追加/並び替えのみ
+      ├── Form Design  → セクション・列構成もドラッグ編集
+      └── ビュー(View) → ビュールールで自動切替
+              ├── 標準ビュー
+              ├── モバイルビュー
+              └── ロール別ビュー
+
+【環境間の変更管理】
+  開発(Dev)
+    └─ Update Set 作成 → Complete
+          ↓
+    テスト(Test) → Retrieve → Preview → Commit
+          ↓
+    本番(Prod)  → Retrieve → Preview → Commit
+
+  ※ 記録対象: 構成レコード（カスタマイズ）のみ
+  ※ 非記録: データレコード・ダッシュボード・実行結果
+
+【環境コピー】
+  本番(Prod) ──Clone──→ テスト(Test) / 開発(Dev)
+  ※ 逆方向（下位→本番）のクローンは行わない
+\`\`\`
+`,
+
+  3: `# 分野3: Configuring Applications for Collaboration（配点 20%）
+
+## 1. ユーザー・グループ・ロール
+
+ユーザー（sys_user）、グループ（sys_user_group）、ロール（sys_user_role）の3層構造。ロールはグループに付与してユーザーはグループに所属させるのがベストプラクティス。\`security_admin\` は elevate role で一時昇格して使う。
+
+## 2. タスクテーブル（Task Table）
+
+\`task\` テーブルが親で、Incident / Problem / Change / Request などが拡張（継承）する。共通フィールドを継承。
+
+## 3. Visual Task Board（VTB）
+
+| 種類 | 特徴 |
+|------|------|
+| **Flexible** | レーンを手動で自由に作成、タスクを自由配置 |
+| **Guided** | フィールド値（例: State）にレーンが連動、移動で値が変わる |
+| **Freeform** | ボードに直接カード（レコード外）を自由追加可能 |
+
+## 4. 通知（Notifications）
+
+3要素: **When to send / Who will receive / What it will contain**。イベント駆動（\`gs.eventQueue()\`）も可。
+
+## 5. レポートとダッシュボード
+
+- **レポート**: 「今」のデータをスナップショット表示。
+- **Performance Analytics（PA）**: 「経時変化」のトレンド分析。スコアを定期収集してScorecardで可視化。
+
+## 6. ナレッジ管理（Knowledge Management）
+
+KB > Category > Article の階層。**Draft → Review → Published → Retired** のライフサイクル。**User Criteria** で Can Read / Can Contribute を制御。
+
+## 7. Connect / チャット
+
+- **Work notes（作業メモ）**: 内部向け。顧客には表示されない。
+- **Additional comments（コメント）**: 顧客向け。メールで通知される。
+
+---
+
+## 頻出ポイント
+
+- ロールをグループ経由で付与するのがベストプラクティス
+- 通知の3要素（When / Who / What）
+- VTBの3種類の違い（特にGuidedはフィールド値と連動）
+- PA vs レポートの使い分け（トレンド vs スナップショット）
+- User Criteria でナレッジのアクセスを制御
+
+---
+
+## 全体構造マップ
+
+\`\`\`
+【ユーザー管理の3層構造】
+
+  sys_user (ユーザー)
+    └─ 所属 ──→ sys_user_group (グループ)
+                    └─ 付与 ──→ sys_user_role (ロール)
+                                    └─ 制御 ──→ ACL / Application Access
+
+  ※ security_admin: Elevate Role → 一時昇格 → セッション終了で失効
+
+【タスク継承ツリー】
+
+  task (親テーブル)
+    ├── incident
+    ├── problem
+    ├── change_request
+    └── sc_request
+              └── sc_req_item
+
+【通知フロー】
+
+  トリガー条件 (レコード変更 / イベント)
+    └─→ Notification
+              ├── When to send  (条件フィルター / イベント名)
+              ├── Who receives  (ユーザー / グループ / フィールド値)
+              └── What contains (件名 / 本文テンプレート)
+
+【ナレッジ管理】
+
+  Knowledge Base
+    └── Category
+              └── Article
+                      Draft → Review → Published → Retired
+
+  User Criteria → Can Read / Can Contribute を制御
+\`\`\`
+`,
+
+  4: `# 分野4: Self-Service & Automation（配点 20%）
+
+## 1. サービスカタログ（Service Catalog）
+
+**Catalog > Category > Catalog Item** の階層。注文すると **REQ（sc_request） > RITM（sc_req_item） > SCTASK（sc_task）** の親子構造が作られる。
+
+- **Record Producer**: 任意テーブルへのレコード直接作成（REQ/RITMは生成されない）。
+- **Order Guide**: 複数アイテム一括注文。
+- **Variable Set**: 変数を複数アイテムで再利用。
+
+## 2. Service Portal / Employee Center
+
+ウィジェットベースのセルフサービスポータル。Employee Center が新標準。
+
+## 3. Flow Designer
+
+**トリガー（Record/Schedule/Application） + Action** の並び。
+
+- **Subflow**: トリガーなしの再利用部品。Flowから呼び出す。
+- **Spoke**: アプリ/外部サービス単位のコネクタ。
+- **Data Pill**: 前ステップの値を後続に渡す仕組み。
+
+## 4. 承認（Approvals）
+
+**Ask for Approval** アクションで承認依頼。\`sysapproval_approver\` テーブルに記録。
+
+## 5. SLA
+
+SLA Definition で開始/停止/一時停止条件と目標時間を定義。**Task SLA（task_sla）** レコードとして各タスクに付く。**Retroactive Start** で過去時点から計時開始。
+
+## 6. Assignment（自動割当）
+
+**Assignment Rules** で条件一致時に Assignment group / Assigned to を自動設定。
+
+---
+
+## 頻出ポイント
+
+- Record Producer は REQ/RITM を生成しない（任意テーブルへ直接）
+- REQ > RITM > SCTASK の親子構造
+- SubflowはFlowと異なりトリガーを持たない再利用部品
+- SLAの開始/停止/一時停止条件は独立して設定
+- Variable Set で変数を複数アイテムに再利用
+
+---
+
+## 全体構造マップ
+
+\`\`\`
+【カタログ注文フロー】
+
+  Service Portal / Employee Center
+        ↓ 注文
+  sc_catalog → sc_category → sc_cat_item
+        ↓
+  REQ (sc_request)          ← 1注文=1REQ
+    └─ RITM (sc_req_item)   ← 1アイテム=1RITM
+         └─ SCTASK (sc_task)
+
+  Record Producer → 対象テーブルへ直接 (REQ/RITMなし)
+  Order Guide     → 複数アイテムを束ねて一括注文
+
+【Flow Designer 構造】
+
+  Flow
+    ├── Trigger (Record/Schedule/Application)
+    └── Actions
+          ├── Ask for Approval → sysapproval_approver
+          ├── Create Task
+          ├── Update Record
+          └── Call Subflow (トリガーなし再利用部品)
+
+  Data Pill: 前ステップの値を後続Actionに渡す
+
+【SLA フロー】
+
+  SLA Definition
+    ├── Start condition  → 計時開始
+    ├── Pause condition  → 一時停止
+    ├── Stop condition   → 計時終了
+    └── Retroactive Start → 過去時点から計時
+
+  → Task SLA (task_sla) として各レコードに1対多で付く
+\`\`\`
+`,
+
+  5: `# 分野5: Database Management（配点 27%・最重要）
+
+## 1. データスキーマの基本
+
+- 全テーブル定義は \`sys_db_object\`。フィールド定義（辞書）は \`sys_dictionary\`。ラベルは \`sys_documentation\`。
+- \`sys_id\` は32文字GUIDで全レコードに存在。
+
+## 2. テーブルの拡張（継承）
+
+- \`task\` が Incident / Problem / Change 等の親。
+- \`cmdb_ci\` が CI系の親。
+- \`sys_user\` は単独テーブル（拡張ではない）。
+- 親のリストには子のレコードも表示される。
+- 新規カスタムテーブルには **\`u_\` プレフィックス**が自動付与。
+
+## 3. フィールドタイプと参照
+
+- **Reference**（1対多）: 参照先テーブルの1レコードを指す。
+- **List**（複数参照）: 複数レコードを参照。
+- **Choice**: \`sys_choice\` テーブルで管理。
+- **Dot-walking**: 参照先フィールドにアクセス（例: \`caller_id.company.name\`）。
+
+## 4. リレーションシップ
+
+- 1対多 = Reference フィールド
+- 多対多 = m2m テーブル（例: \`sys_user_has_role\`）
+- Database View = JOIN（読み取り専用の仮想テーブル）
+
+## 5. CMDB
+
+- CI基底テーブルは \`cmdb_ci\`。
+- CIリレーションシップは \`cmdb_rel_ci\` テーブル。
+
+## 6. ACL（アクセス制御）— 最頻出
+
+評価順序:
+1. **テーブルレベル**（具体テーブル名 → 親テーブル名 → ワイルドカード \`*\`）
+2. **フィールドレベル**（具体フィールド名 → ワイルドカード \`*\`）
+
+両方パスしてアクセス可能。**ACL変更には \`security_admin\` への elevate role が必要**。
+
+条件の3種類: **ロール / 条件（フィルター） / スクリプト**（この順で評価、すべてtrueで通過）。
+
+## 7. UI Policy / Data Policy / Business Rule
+
+| 機能 | 適用範囲 | 用途 |
+|------|----------|------|
+| **UI Policy** | フォームのみ | フィールドの表示/非表示・必須・読み取り専用 |
+| **Data Policy** | 全入力経路（インポート・API含む） | 必須・読み取り専用の強制 |
+| **Business Rule** | サーバーサイド | insert/update/delete/query のロジック |
+
+## 8. 監査・辞書オーバーライド
+
+- **Auditing**: \`sys_audit\` に変更履歴を記録（テーブルごとに有効化必要）。
+- **辞書オーバーライド**: 子テーブルだけ属性変更（親の定義は変えない）。
+
+---
+
+## 頻出ポイント
+
+- ACL評価順序（テーブル→フィールド、具体→ワイルドカード）
+- UI Policy vs Data Policy の適用範囲の違い
+- Dot-walking の概念と書き方
+- sys_user は task を拡張していない（独立テーブル）
+- 辞書オーバーライドで子だけ属性変更
+
+---
+
+## 全体構造マップ
+
+\`\`\`
+【スキーマ層】
+  sys_db_object (テーブル定義)
+    ├──→ sys_dictionary (フィールド定義)
+    │         └──→ sys_documentation (ラベル)
+    └──→ sys_choice (Choice選択肢)
+
+【テーブル継承ツリー】
+  task (親)
+    ├── incident
+    ├── problem
+    └── change_request
+
+  cmdb_ci (親)
+    ├── cmdb_ci_computer
+    └── cmdb_ci_server
+
+  sys_user ── (継承なし・独立テーブル)
+
+【ACL 評価フロー】
+  リクエスト
+      ↓
+  テーブルACL評価
+    具体テーブル名 → 親テーブル名 → *(ワイルドカード)
+      ↓ 通過
+  フィールドACL評価
+    具体フィールド名 → *(ワイルドカード)
+      ↓ 通過       ↓ 失敗
+  アクセス許可  アクセス拒否
+
+  ACL条件評価順序:
+    ロールチェック → 条件(フィルター) → スクリプト
+    ※すべてtrueの場合のみ通過
+
+【変更管理ポリシー層】
+  フォーム操作  → UI Policy + Data Policy 両方適用
+  インポート   → Data Policy のみ適用
+  API/REST    → Data Policy のみ適用
+
+  Business Rule (サーバーサイド)
+    Before / After / Async × insert/update/delete/query
+\`\`\`
+`,
+
+  6: `# 分野6: Data Migration and Integration（配点 15%）
+
+## 1. Import Set — 中心テーマ
+
+**Data Source → Import Set Table（ステージング） → Transform Map（変換）** の3ステップ。
+
+**Coalesce** がキー:
+- 一致あり → **Update**（既存レコード更新）
+- 一致なし → **Insert**（新規挿入）
+- 未指定   → **常に Insert**
+
+結果ステータス: **Inserted / Updated / Ignored / Skipped / Error**
+
+## 2. スケジュールインポート
+
+**Scheduled Import** で定期実行。LDAP統合ではユーザー・グループを定期同期。
+
+## 3. Web Services / API
+
+- **Table API** などREST APIを標準提供。
+- **REST API Explorer** でインスタンス内テスト可能。
+- **IntegrationHub** はFlow Designerから外部連携するSpoke群（有償）。
+
+## 4. エクスポート
+
+CSV / Excel / PDF / XML / JSON でエクスポート可能。**Export to XML** は sys_id を維持したまま移送できる。
+
+## 5. Update Set vs Import Set
+
+| | Update Set | Import Set |
+|--|-----------|-----------|
+| 用途 | 構成・カスタマイズのインスタンス間移送 | 外部データの取り込み |
+| 対象 | 構成レコード（スクリプト・フォーム等） | データレコード（ユーザー・CIなど） |
+
+---
+
+## 頻出ポイント
+
+- Coalesce 未指定では常に Insert（重複に注意）
+- Import Set の3ステップ（Data Source → Staging → Transform）
+- REST API Explorer はインスタンス内テストツール
+- Update Set はデータを含まない（構成のみ）
+- LDAP 同期には Scheduled Import が必要
+
+---
+
+## 全体構造マップ
+
+\`\`\`
+【Import Set フロー】
+
+  外部ソース (CSV / Excel / JDBC / REST)
+        ↓
+  Data Source (sys_data_source)
+        ↓
+  Import Set Table [ステージング]
+  (u_imp_xxxx)
+        ↓
+  Transform Map (sys_transform_map)
+    ├── Field Map (列の対応定義)
+    ├── Coalesce フィールド指定
+    │     一致あり → Update
+    │     一致なし → Insert
+    │     未指定  → 常に Insert
+    └── Transform Script (onBefore / onAfter)
+        ↓
+  ターゲットテーブル (sys_user / cmdb_ci など)
+        ↓
+  Import Set Run Log
+    Inserted / Updated / Ignored / Skipped / Error
+
+【API 連携】
+
+  外部システム
+    ├── REST → Table API / Scripted REST API
+    │     └── REST API Explorer でテスト可能
+    ├── SOAP
+    └── IntegrationHub Spoke (有償)
+          └── Flow Designer → Action → HTTP Step
+
+【LDAP 同期】
+
+  LDAP サーバー
+    └── LDAP Server 定義
+         └── Scheduled Import で定期同期
+              └── sys_user / sys_user_group へ反映
+\`\`\`
+`
+};
+
+/* ===== DOMAIN LABELS FOR STUDY ===== */
+const STUDY_DOMAINS = [
+  { id: 1, label: "Platform Overview & Navigation", weight: 7 },
+  { id: 2, label: "Instance Configuration", weight: 11 },
+  { id: 3, label: "Collaboration", weight: 20 },
+  { id: 4, label: "Self-Service & Automation", weight: 20 },
+  { id: 5, label: "Database Management", weight: 27 },
+  { id: 6, label: "Data Migration & Integration", weight: 15 },
+];
+
+/* ===== MARKDOWN RENDERER ===== */
+function renderMarkdown(md) {
+  const lines = md.split('\n');
+  let html = '';
+  let i = 0;
+
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function inlineFormat(s) {
+    s = escHtml(s);
+    // code
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // bold
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // italic
+    s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return s;
+  }
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // fenced code block
+    if (line.startsWith('```')) {
+      let code = '';
+      i++;
+      while (i < lines.length && !lines[i].startsWith('```')) {
+        code += escHtml(lines[i]) + '\n';
+        i++;
+      }
+      html += `<pre><code>${code}</code></pre>`;
+      i++;
+      continue;
+    }
+
+    // heading
+    if (/^#{1,3} /.test(line)) {
+      const m = line.match(/^(#{1,3}) (.*)/);
+      const level = m[1].length;
+      const text = inlineFormat(m[2]);
+      html += `<h${level}>${text}</h${level}>`;
+      i++;
+      continue;
+    }
+
+    // horizontal rule
+    if (/^---+$/.test(line.trim())) {
+      html += '<hr>';
+      i++;
+      continue;
+    }
+
+    // table
+    if (line.startsWith('|') && i + 1 < lines.length && lines[i+1].match(/^\|[\s\-|]+\|$/)) {
+      const headers = line.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(h => `<th>${inlineFormat(h.trim())}</th>`).join('');
+      i += 2; // skip separator
+      let rows = '';
+      while (i < lines.length && lines[i].startsWith('|')) {
+        const cells = lines[i].split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(c => `<td>${inlineFormat(c.trim())}</td>`).join('');
+        rows += `<tr>${cells}</tr>`;
+        i++;
+      }
+      html += `<div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
+      continue;
+    }
+
+    // unordered list
+    if (/^(\s*)- /.test(line)) {
+      const baseIndent = line.match(/^(\s*)/)[1].length;
+      let items = '';
+      while (i < lines.length && /^(\s*)- /.test(lines[i])) {
+        const text = lines[i].replace(/^\s*- /, '');
+        items += `<li>${inlineFormat(text)}</li>`;
+        i++;
+      }
+      html += `<ul>${items}</ul>`;
+      continue;
+    }
+
+    // ordered list
+    if (/^\d+\. /.test(line)) {
+      let items = '';
+      while (i < lines.length && /^\d+\. /.test(lines[i])) {
+        const text = lines[i].replace(/^\d+\. /, '');
+        items += `<li>${inlineFormat(text)}</li>`;
+        i++;
+      }
+      html += `<ol>${items}</ol>`;
+      continue;
+    }
+
+    // blank line
+    if (line.trim() === '') {
+      i++;
+      continue;
+    }
+
+    // paragraph
+    let para = '';
+    while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#') && !lines[i].startsWith('|') && !lines[i].startsWith('```') && !lines[i].startsWith('- ') && !/^\d+\. /.test(lines[i]) && !/^---+$/.test(lines[i].trim())) {
+      para += (para ? ' ' : '') + lines[i];
+      i++;
+    }
+    if (para) html += `<p>${inlineFormat(para)}</p>`;
+  }
+
+  return html;
+}
+
+/* ===== 進捗ストア ===== */
+const STORE_KEY = "csa_progress_v1";
+const SPACED_INTERVALS = [3, 7, 14, 30, 60];
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveProgress(p) { localStorage.setItem(STORE_KEY, JSON.stringify(p)); }
+function recordAnswer(qid, correct) {
+  const p = loadProgress();
+  const e = p[qid] || { a: 0, c: 0, w: false, stg: 0, due: 0 };
+  e.a++; if (correct) e.c++;
+  e.w = !correct;
+  if (correct) {
+    e.stg = (e.stg || 0) + 1;
+    const days = SPACED_INTERVALS[Math.min(e.stg - 1, SPACED_INTERVALS.length - 1)];
+    e.due = Date.now() + days * 86400000;
+  } else {
+    e.stg = 0;
+    e.due = Date.now() + 1 * 86400000;
+  }
+  p[qid] = e;
+  saveProgress(p);
+}
+function getDueReviewIds() {
+  const p = loadProgress();
+  const now = Date.now();
+  const ids = [];
+  for (const qid in p) {
+    const e = p[qid];
+    if (!e || !(e.a > 0)) continue;
+    if (e.due === undefined || e.due === null || e.due <= now) ids.push(Number(qid));
+  }
+  return ids;
+}
+
+/* ===== 模擬試験スコア履歴ストア ===== */
+const MOCK_HISTORY_KEY = "csa_mock_history_v1";
+function loadMockHistory() {
+  try { return JSON.parse(localStorage.getItem(MOCK_HISTORY_KEY)) || []; } catch (e) { return []; }
+}
+function saveMockHistory(h) { localStorage.setItem(MOCK_HISTORY_KEY, JSON.stringify(h)); }
+
+/* ===== ユーティリティ ===== */
+const $app = document.getElementById("app");
+const $hdr = document.getElementById("header-right");
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function sameSet(a, b) {
+  if (a.length !== b.length) return false;
+  const s = new Set(b);
+  return a.every(x => s.has(x));
+}
+
+/* ===== セッション状態 ===== */
+let session = null;
+let mockHistoryChartData = [];
+let currentTab = 'study';
+let currentStudyDomain = 1;
+
+function stopTimer() {
+  if (session && session.timerId) { clearInterval(session.timerId); session.timerId = null; }
+  $hdr.innerHTML = "";
+}
+
+/* ===== TAB NAVIGATION ===== */
+function switchTab(tab) {
+  if (session && tab !== currentTab) {
+    if (!confirm("セッションを中断してタブを切り替えますか?")) return;
+    stopTimer();
+    session = null;
+  }
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tab-' + tab);
+  if (btn) btn.classList.add('active');
+
+  switch (tab) {
+    case 'study':    renderStudy(); break;
+    case 'practice': renderDomainSelect(); break;
+    case 'mock':     startMock(); break;
+    case 'review':   renderReviewMenu(); break;
+    case 'browse':   renderBrowse(); break;
+    case 'home':     renderHome(); break;
+  }
+}
+
+/* ===== STUDY TAB ===== */
+function renderStudy(domainId) {
+  stopTimer();
+  session = null;
+  if (domainId) currentStudyDomain = domainId;
+
+  const sidebarBtns = STUDY_DOMAINS.map(d => `
+    <button class="domain-nav-btn ${d.id === currentStudyDomain ? 'active' : ''}" onclick="renderStudy(${d.id})">
+      <span class="d-num">${d.id}</span>${d.label}<br>
+      <span style="font-size:.7rem;font-weight:400;color:var(--sub);padding-left:25px">配点 ${d.weight}%</span>
+    </button>
+  `).join('');
+
+  const pillBtns = STUDY_DOMAINS.map(d => `
+    <button class="study-pill-btn ${d.id === currentStudyDomain ? 'active' : ''}" onclick="renderStudy(${d.id})">分野${d.id}</button>
+  `).join('');
+
+  const noteHtml = renderMarkdown(NOTES[currentStudyDomain] || '');
+
+  $app.innerHTML = `
+    <div class="study-pills">${pillBtns}</div>
+    <div class="study-layout">
+      <div class="study-sidebar">
+        <h3>学習分野</h3>
+        ${sidebarBtns}
+      </div>
+      <div class="note-content-wrap">
+        <div class="note-body">${noteHtml}</div>
+      </div>
+    </div>`;
+}
+
+/* ===== 弱点復習メニュー ===== */
+function renderReviewMenu() {
+  stopTimer();
+  session = null;
+  const p = loadProgress();
+  const wrongCount = QUESTIONS.filter(q => p[q.id] && p[q.id].w).length;
+  const dueCount = getDueReviewIds().length;
+
+  $app.innerHTML = `
+    <div class="card">
+      <h2>復習モードを選択</h2>
+      <div class="mode-grid">
+        <button class="mode-btn" onclick="startReview()" ${wrongCount === 0 ? 'disabled' : ''}>
+          <span class="t">弱点復習 (${wrongCount}問)</span>
+          <span class="d">直近で間違えた問題だけを再演習</span>
+        </button>
+        <button class="mode-btn" onclick="startSpacedReview()" ${dueCount === 0 ? 'disabled' : ''}>
+          <span class="t">今日の復習 (${dueCount}問)</span>
+          <span class="d">間隔反復で記憶を定着。期限が来た問題を再演習</span>
+        </button>
+      </div>
+    </div>
+    ${buildMistakeSection()}`;
+}
+
+/* ===== よく間違える問題 TOP10 ===== */
+function truncate60(s) {
+  const str = String(s);
+  return str.length > 60 ? str.slice(0, 60) + "…" : str;
+}
+function getTopMistakes() {
+  const p = loadProgress();
+  const list = [];
+  for (const qid in p) {
+    const e = p[qid];
+    const a = e.a || 0, c = e.c || 0;
+    const wrong = a - c;
+    if (wrong >= 1) list.push({ qid, a, c, wrong, rate: a ? wrong / a : 0 });
+  }
+  list.sort((x, y) => (y.wrong - x.wrong) || (y.rate - x.rate));
+  return list.slice(0, 10);
+}
+function buildMistakeSection() {
+  const top = getTopMistakes();
+  if (top.length === 0) return "";
+  let items = "";
+  for (const m of top) {
+    const q = QUESTIONS.find(qq => qq.id === Number(m.qid));
+    if (!q) continue;
+    items += `<div class="mistake-item" id="mistake-item-${q.id}">
+      <div class="mistake-row" onclick="toggleMistake(${q.id})">
+        <span class="pill">分野${q.domain}</span>
+        <span class="mistake-text">${esc(truncate60(q.q))}</span>
+        <span class="mistake-stats">誤答 ${m.wrong}回 / 挑戦 ${m.a}回</span>
+      </div>
+      <div class="mistake-detail">
+        <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+        <div class="ex">${esc(q.expl)}</div>
+      </div>
+    </div>`;
+  }
+  return `<div class="card">
+    <h2>よく間違える問題 TOP10</h2>
+    ${items}
+  </div>`;
+}
+function toggleMistake(qid) {
+  const el = document.getElementById(`mistake-item-${qid}`);
+  if (el) el.classList.toggle("open");
+}
+
+/* ===== 模擬試験スコアの推移グラフ ===== */
+function fmtMD(ts) {
+  const d = new Date(ts);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+}
+function weakestDomain(perDomain) {
+  let worstKey = null, worstRate = Infinity;
+  for (const d in perDomain || {}) {
+    const e = perDomain[d];
+    const rate = e.t ? e.c / e.t : 1;
+    if (rate < worstRate) { worstRate = rate; worstKey = d; }
+  }
+  if (worstKey === null) return "—";
+  const name = DOMAINS[worstKey] ? DOMAINS[worstKey].name : "";
+  return `分野${worstKey}: ${name}`;
+}
+function buildMockHistorySection() {
+  const hist = loadMockHistory();
+  mockHistoryChartData = hist;
+  if (hist.length === 0) return "";
+
+  const n = hist.length;
+  const plotLeft = 40, plotRight = 520, plotTop = 16, plotBottom = 164;
+  const xOf = i => n > 1 ? plotLeft + i * (plotRight - plotLeft) / (n - 1) : (plotLeft + plotRight) / 2;
+  const yOf = score => plotBottom - (Math.max(0, Math.min(100, score)) / 100) * (plotBottom - plotTop);
+
+  let gridHtml = "";
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = yOf(v);
+    gridHtml += `<line x1="${plotLeft}" y1="${y}" x2="${plotRight}" y2="${y}" stroke="var(--border)" stroke-width="1"/>`;
+    gridHtml += `<text x="${plotLeft - 8}" y="${y + 3}" text-anchor="end" font-size="9" fill="var(--sub)">${v}</text>`;
+  });
+
+  const y70 = yOf(70), y85 = yOf(85);
+  const baseHtml = `
+    <line x1="${plotLeft}" y1="${y70}" x2="${plotRight}" y2="${y70}" stroke="var(--sub)" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${plotRight + 6}" y="${y70 + 3}" font-size="9" fill="var(--sub)">合格目安70%</text>
+    <line x1="${plotLeft}" y1="${y85}" x2="${plotRight}" y2="${y85}" stroke="var(--sub)" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${plotRight + 6}" y="${y85 + 3}" font-size="9" fill="var(--sub)">受験判断85%</text>`;
+
+  let pathD = "";
+  hist.forEach((d, i) => { pathD += (i === 0 ? "M" : "L") + xOf(i) + "," + yOf(d.score) + " "; });
+  const lineHtml = `<path d="${pathD.trim()}" fill="none" stroke="var(--accent)" stroke-width="2"/>`;
+
+  const showEvery = n > 8 ? Math.ceil(n / 8) : 1;
+  let xLabelsHtml = "";
+  hist.forEach((d, i) => {
+    if (i % showEvery !== 0 && i !== n - 1) return;
+    xLabelsHtml += `<text x="${xOf(i)}" y="${plotBottom + 16}" text-anchor="middle" font-size="9" fill="var(--sub)">${fmtMD(d.t)}</text>`;
+  });
+
+  let markersHtml = "";
+  hist.forEach((d, i) => {
+    const x = xOf(i), y = yOf(d.score);
+    markersHtml += `<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)" stroke="var(--card)" stroke-width="2"/>`;
+    markersHtml += `<circle cx="${x}" cy="${y}" r="14" fill="transparent" style="cursor:pointer"
+      onmouseenter="showMockTip(event, ${i})" onmouseleave="hideMockTip()" onclick="showMockTip(event, ${i})"/>`;
+  });
+
+  const lastIdx = n - 1;
+  const lastLabelHtml = `<text x="${xOf(lastIdx)}" y="${yOf(hist[lastIdx].score) - 12}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">${hist[lastIdx].score}%</text>`;
+
+  const svg = `<svg viewBox="0 0 640 220" style="width:100%;height:auto;display:block" role="img" aria-label="模擬試験スコア推移">
+    ${gridHtml}${baseHtml}${lineHtml}${xLabelsHtml}${markersHtml}${lastLabelHtml}
+  </svg>`;
+
+  let badgeHtml = "";
+  if (n >= 2 && hist[n - 1].score >= 85 && hist[n - 2].score >= 85) {
+    badgeHtml = `<div class="mock-badge">🎉 受験予約レベル到達（2回連続85%以上）</div>`;
+  }
+
+  const recent = hist.slice().reverse().slice(0, 10);
+  let rows = "";
+  recent.forEach(d => {
+    const dt = new Date(d.t);
+    const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, "0")}/${String(dt.getDate()).padStart(2, "0")}`;
+    rows += `<tr><td>${dateStr}</td><td>${d.score}%</td><td>${esc(weakestDomain(d.perDomain))}</td></tr>`;
+  });
+  const table = `<table class="progress"><tr><th>日付</th><th>スコア</th><th>最弱分野</th></tr>${rows}</table>`;
+
+  return `<div class="card" id="mock-chart-wrap" style="position:relative">
+    <h2>模擬試験の推移</h2>
+    ${badgeHtml}
+    ${svg}
+    <div id="mock-tooltip" class="mock-tooltip" style="display:none;position:absolute;"></div>
+    ${table}
+  </div>`;
+}
+function showMockTip(evt, idx) {
+  const d = mockHistoryChartData[idx];
+  const tip = document.getElementById("mock-tooltip");
+  const wrap = document.getElementById("mock-chart-wrap");
+  if (!d || !tip || !wrap) return;
+  tip.innerHTML = `<div><strong>${fmtMD(d.t)}</strong></div><div>スコア: ${d.score}%</div><div>最弱分野: ${esc(weakestDomain(d.perDomain))}</div>`;
+  tip.style.display = "block";
+  const rect = wrap.getBoundingClientRect();
+  let x = evt.clientX - rect.left + 12;
+  let y = evt.clientY - rect.top - 10;
+  x = Math.max(4, Math.min(x, rect.width - 210));
+  tip.style.left = x + "px";
+  tip.style.top = y + "px";
+  evt.stopPropagation();
+}
+function hideMockTip() {
+  const tip = document.getElementById("mock-tooltip");
+  if (tip) tip.style.display = "none";
+}
+
+/* ===== ホーム画面（ダッシュボード） ===== */
+function renderHome() {
+  stopTimer();
+  session = null;
+  const p = loadProgress();
+  const wrongCount = QUESTIONS.filter(q => p[q.id] && p[q.id].w).length;
+  const dueCount = getDueReviewIds().length;
+
+  let rows = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const qs = QUESTIONS.filter(q => q.domain == d);
+    let attempted = 0, correctSum = 0, attemptSum = 0;
+    for (const q of qs) {
+      const e = p[q.id];
+      if (e && e.a > 0) { attempted++; correctSum += e.c; attemptSum += e.a; }
+    }
+    const cov = qs.length ? Math.round(attempted / qs.length * 100) : 0;
+    const acc = attemptSum ? Math.round(correctSum / attemptSum * 100) : null;
+    rows += `<tr>
+      <td>${d}. ${esc(DOMAINS[d].name)}</td>
+      <td>${DOMAINS[d].weight}%</td>
+      <td>${attempted}/${qs.length}<div class="bar"><div style="width:${cov}%"></div></div></td>
+      <td>${acc === null ? "—" : acc + "%"}</td>
+    </tr>`;
+  }
+
+  $app.innerHTML = `
+    <div class="card">
+      <h2>進捗ダッシュボード</h2>
+      <table class="progress">
+        <tr><th>分野</th><th>配点</th><th>演習カバー率</th><th>正答率</th></tr>
+        ${rows}
+      </table>
+      <div style="margin-top:12px">
+        <button class="ghost" onclick="resetProgress()">進捗リセット</button>
+      </div>
+    </div>
+    ${buildMockHistorySection()}
+    ${buildMistakeSection()}
+    <div class="card">
+      <h2>学習の進め方</h2>
+      <ol style="padding-left:1.4em; font-size:.9rem">
+        <li>「学習ノート」タブで分野ごとのノートを読む</li>
+        <li>「分野別練習」タブで全分野をひと通り演習する</li>
+        <li>模擬試験 → 弱点復習 → 該当ノート再読のループを回す</li>
+        <li>模擬試験で2回連続85%以上になったら受験を予約する</li>
+      </ol>
+    </div>`;
+}
+
+function resetProgress() {
+  if (confirm("進捗（正答率・弱点データ・間隔反復の復習期限）と模擬試験のスコア履歴をすべてリセットしますか?")) {
+    localStorage.removeItem(STORE_KEY);
+    localStorage.removeItem(MOCK_HISTORY_KEY);
+    renderHome();
+  }
+}
+
+/* ===== 分野別練習 ===== */
+function renderDomainSelect() {
+  stopTimer();
+  session = null;
+  let items = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const n = QUESTIONS.filter(q => q.domain == d).length;
+    items += `<label><input type="checkbox" value="${d}" checked>
+      ${d}. ${esc(DOMAINS[d].name)} <span class="muted">(${n}問・配点${DOMAINS[d].weight}%)</span></label>`;
+  }
+  $app.innerHTML = `
+    <div class="card">
+      <h2>分野別練習 — 出題範囲を選択</h2>
+      <div class="domain-select" id="dsel">${items}</div>
+      <div style="margin-top:10px">
+        <label style="display:flex;gap:8px;align-items:center;padding:8px 10px">
+          <input type="checkbox" id="opt-shuffle" checked> 出題順をシャッフル
+        </label>
+      </div>
+      <div class="nav-row">
+        <button onclick="switchTab('home')">← 戻る</button>
+        <button class="primary" onclick="startPractice()">練習を開始</button>
+      </div>
+    </div>`;
+}
+
+function startPractice() {
+  const checked = [...document.querySelectorAll("#dsel input:checked")].map(i => Number(i.value));
+  if (checked.length === 0) { alert("分野を1つ以上選択してください"); return; }
+  let qs = QUESTIONS.filter(q => checked.includes(q.domain));
+  if (document.getElementById("opt-shuffle").checked) qs = shuffle(qs);
+  beginSession("practice", qs);
+}
+
+function startReview() {
+  const p = loadProgress();
+  const qs = shuffle(QUESTIONS.filter(q => p[q.id] && p[q.id].w));
+  if (qs.length === 0) { alert("復習対象の問題はありません"); return; }
+  beginSession("review", qs);
+}
+
+function startSpacedReview() {
+  const dueIds = getDueReviewIds();
+  const qs = shuffle(QUESTIONS.filter(q => dueIds.includes(q.id)));
+  if (qs.length === 0) { alert("今日の復習対象の問題はありません"); return; }
+  beginSession("spaced", qs);
+}
+
+/* ===== 模擬試験 ===== */
+const MOCK_TOTAL = 60, MOCK_LIMIT_SEC = 90 * 60;
+function startMock() {
+  const counts = {};
+  let assigned = 0;
+  const keys = Object.keys(DOMAINS);
+  for (const d of keys) {
+    counts[d] = Math.round(MOCK_TOTAL * DOMAINS[d].weight / 100);
+    assigned += counts[d];
+  }
+  counts[5] += MOCK_TOTAL - assigned;
+  let qs = [];
+  for (const d of keys) {
+    const pool = shuffle(QUESTIONS.filter(q => q.domain == d));
+    qs = qs.concat(pool.slice(0, Math.min(counts[d], pool.length)));
+  }
+  qs = shuffle(qs);
+  beginSession("mock", qs, MOCK_LIMIT_SEC);
+}
+
+/* ===== セッション共通 ===== */
+function permuteQuestion(q) {
+  const perm = shuffle(q.choices.map((_, i) => i));
+  return {
+    ...q,
+    choices: perm.map(i => q.choices[i]),
+    answer: q.answer.map(a => perm.indexOf(a)),
+  };
+}
+
+function beginSession(mode, questions, limitSec) {
+  questions = questions.map(permuteQuestion);
+  session = {
+    mode, questions, idx: 0,
+    answers: new Array(questions.length).fill(null),
+    limitSec: limitSec || null,
+    remainSec: limitSec || null,
+    timerId: null,
+    checked: false,
+    curSel: new Set(),
+  };
+  if (limitSec) {
+    session.timerId = setInterval(() => {
+      session.remainSec--;
+      updateTimer();
+      if (session.remainSec <= 0) { finishMock(); }
+    }, 1000);
+  }
+  renderQuestion();
+}
+
+function updateTimer() {
+  if (!session || session.remainSec === null) { $hdr.innerHTML = ""; return; }
+  const m = Math.floor(session.remainSec / 60), s = session.remainSec % 60;
+  const warn = session.remainSec < 600 ? " warn" : "";
+  $hdr.innerHTML = `<span class="timer${warn}">残り ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}</span>`;
+}
+
+function modeLabel() {
+  return { practice: "分野別練習", mock: "模擬試験", review: "弱点復習", spaced: "今日の復習" }[session.mode];
+}
+
+function renderQuestion() {
+  const q = session.questions[session.idx];
+  const isMulti = q.answer.length > 1;
+  const total = session.questions.length;
+  updateTimer();
+
+  let choicesHtml = "";
+  q.choices.forEach((c, i) => {
+    const sel = session.curSel.has(i) ? " selected" : "";
+    choicesHtml += `<button class="choice${sel}" data-i="${i}" onclick="toggleChoice(${i})">${esc(c)}</button>`;
+  });
+
+  const isMock = session.mode === "mock";
+  $app.innerHTML = `
+    <div class="card">
+      <div class="qmeta">
+        <span><span class="pill">${modeLabel()}</span>問 ${session.idx + 1} / ${total}</span>
+        <span>分野${q.domain}: ${esc(DOMAINS[q.domain].name)}</span>
+      </div>
+      ${isMulti ? '<div class="multi-note">※ 複数選択（該当するものをすべて選ぶ）</div>' : ""}
+      <div class="qtext">${esc(q.q)}</div>
+      <div id="choices">${choicesHtml}</div>
+      <div id="feedback"></div>
+      <div class="nav-row">
+        <button onclick="quitSession()">中断してホームへ</button>
+        <div style="display:flex;gap:8px">
+          ${isMock && session.idx > 0 ? '<button onclick="mockPrev()">← 前へ</button>' : ""}
+          <button class="primary" id="main-btn" onclick="mainAction()">${isMock ? (session.idx === total - 1 ? "採点する" : "次へ →") : "回答する"}</button>
+        </div>
+      </div>
+    </div>`;
+
+  if (isMock && session.answers[session.idx]) {
+    session.curSel = new Set(session.answers[session.idx].sel);
+    refreshChoices();
+  }
+  session.checked = false;
+}
+
+function toggleChoice(i) {
+  if (session.checked) return;
+  const q = session.questions[session.idx];
+  const isMulti = q.answer.length > 1;
+  if (isMulti) {
+    session.curSel.has(i) ? session.curSel.delete(i) : session.curSel.add(i);
+  } else {
+    session.curSel = new Set([i]);
+  }
+  refreshChoices();
+}
+
+function refreshChoices() {
+  document.querySelectorAll("#choices .choice").forEach(btn => {
+    const i = Number(btn.dataset.i);
+    btn.classList.toggle("selected", session.curSel.has(i));
+  });
+}
+
+function mainAction() {
+  const isMock = session.mode === "mock";
+  if (isMock) {
+    saveCurrentMockAnswer();
+    if (session.idx === session.questions.length - 1) { finishMock(); }
+    else { session.idx++; session.curSel = new Set(); renderQuestion(); }
+    return;
+  }
+  if (!session.checked) { checkAnswer(); }
+  else { nextPractice(); }
+}
+
+function checkAnswer() {
+  if (session.curSel.size === 0) { alert("選択肢を選んでください"); return; }
+  const q = session.questions[session.idx];
+  const sel = [...session.curSel];
+  const correct = sameSet(sel, q.answer);
+  recordAnswer(q.id, correct);
+  session.answers[session.idx] = { sel, correct };
+  session.checked = true;
+
+  document.querySelectorAll("#choices .choice").forEach(btn => {
+    const i = Number(btn.dataset.i);
+    if (q.answer.includes(i)) btn.classList.add("correct");
+    else if (session.curSel.has(i)) btn.classList.add("wrong");
+  });
+
+  document.getElementById("feedback").innerHTML = `
+    <div class="expl ${correct ? "" : "ng"}">
+      <div class="verdict ${correct ? "ok" : "ng"}">${correct ? "✔ 正解" : "✘ 不正解"}</div>
+      ${esc(q.expl)}
+    </div>`;
+  const btn = document.getElementById("main-btn");
+  btn.textContent = session.idx === session.questions.length - 1 ? "結果を見る" : "次の問題 →";
+}
+
+function nextPractice() {
+  if (session.idx === session.questions.length - 1) { finishPractice(); return; }
+  session.idx++;
+  session.curSel = new Set();
+  renderQuestion();
+}
+
+function finishPractice() {
+  stopTimer();
+  const answered = session.answers.filter(Boolean);
+  const correct = answered.filter(a => a.correct).length;
+  const pct = answered.length ? Math.round(correct / answered.length * 100) : 0;
+  $app.innerHTML = `
+    <div class="card" style="text-align:center">
+      <h2>${modeLabel()} 終了</h2>
+      <div class="score-big ${pct >= 70 ? "pass" : "fail"}">${pct}%</div>
+      <p class="muted">${answered.length}問中 ${correct}問正解</p>
+      <div class="nav-row" style="justify-content:center">
+        <button class="primary" onclick="switchTab('home')">ホームへ</button>
+      </div>
+    </div>`;
+  session = null;
+}
+
+function saveCurrentMockAnswer() {
+  const q = session.questions[session.idx];
+  const sel = [...session.curSel];
+  session.answers[session.idx] = { sel, correct: sameSet(sel, q.answer) };
+}
+function mockPrev() {
+  saveCurrentMockAnswer();
+  session.idx--;
+  session.curSel = new Set(session.answers[session.idx] ? session.answers[session.idx].sel : []);
+  renderQuestion();
+}
+
+function finishMock() {
+  stopTimer();
+  if (session.answers[session.idx] === null && session.curSel.size > 0) saveCurrentMockAnswer();
+
+  let correct = 0;
+  const perDomain = {};
+  session.questions.forEach((q, i) => {
+    const a = session.answers[i];
+    const ok = a ? a.correct : false;
+    recordAnswer(q.id, ok);
+    if (ok) correct++;
+    perDomain[q.domain] = perDomain[q.domain] || { t: 0, c: 0 };
+    perDomain[q.domain].t++;
+    if (ok) perDomain[q.domain].c++;
+  });
+  const total = session.questions.length;
+  const pct = Math.round(correct / total * 100);
+
+  const mh = loadMockHistory();
+  mh.push({ t: Date.now(), score: pct, correct, total, perDomain });
+  saveMockHistory(mh);
+
+  let rows = "";
+  for (const d of Object.keys(DOMAINS)) {
+    if (!perDomain[d]) continue;
+    const e = perDomain[d];
+    const dp = Math.round(e.c / e.t * 100);
+    rows += `<tr><td>${d}. ${esc(DOMAINS[d].name)}</td><td>${e.c}/${e.t}</td>
+      <td><div class="bar"><div style="width:${dp}%"></div></div></td><td>${dp}%</td></tr>`;
+  }
+
+  let wrongHtml = "";
+  session.questions.forEach((q, i) => {
+    const a = session.answers[i];
+    if (a && a.correct) return;
+    wrongHtml += `<div class="browse-item">
+      <div><span class="pill">分野${q.domain}</span>${esc(q.q)}</div>
+      <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+      <div class="ex">${esc(q.expl)}</div>
+    </div>`;
+  });
+
+  $app.innerHTML = `
+    <div class="card" style="text-align:center">
+      <h2>模擬試験 結果</h2>
+      <div class="score-big ${pct >= 70 ? "pass" : "fail"}">${pct}%</div>
+      <p class="muted">${total}問中 ${correct}問正解 — ${pct >= 85 ? "受験レベル到達。この調子で仕上げる" : pct >= 70 ? "合格ライン相当。85%を目指して弱点を潰す" : "まだ演習不足。弱点復習+ノート再読へ"}</p>
+    </div>
+    <div class="card">
+      <h3>分野別スコア</h3>
+      <table class="progress"><tr><th>分野</th><th>正解</th><th></th><th>正答率</th></tr>${rows}</table>
+    </div>
+    ${wrongHtml ? `<div class="card"><h3>間違えた問題の解説</h3>${wrongHtml}</div>` : ""}
+    <div class="nav-row" style="justify-content:center">
+      <button class="primary" onclick="switchTab('home')">ホームへ</button>
+    </div>`;
+  session = null;
+}
+
+function quitSession() {
+  if (confirm("セッションを中断してホームに戻りますか?（模擬試験の場合、回答は破棄されます）")) {
+    stopTimer();
+    session = null;
+    switchTab('home');
+  }
+}
+
+/* ===== 全問ブラウズ ===== */
+function renderBrowse() {
+  stopTimer();
+  session = null;
+  let html = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const qs = QUESTIONS.filter(q => q.domain == d);
+    let items = "";
+    qs.forEach((q, i) => {
+      items += `<div class="browse-item">
+        <div><strong>Q${i + 1}.</strong> ${esc(q.q)}</div>
+        <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+        <div class="ex">${esc(q.expl)}</div>
+      </div>`;
+    });
+    html += `<div class="card"><h3>分野${d}: ${esc(DOMAINS[d].name)}（${qs.length}問・配点${DOMAINS[d].weight}%）</h3>${items}</div>`;
+  }
+  $app.innerHTML = html;
+}
+
+document.addEventListener("click", hideMockTip);
+
+// Init
+renderStudy(1);
+</script>
+</body>
+</html>
