@@ -3,6 +3,10 @@
 > 作成: 2026-07-02
 > 目的: ServiceNow Certified System Administrator (CSA) 試験合格
 
+> **横展開について**: このアプリを別資格(CAD/CIS等)向けに構築する手順は
+> [docs/NEW_CERT_PLAYBOOK.md](docs/NEW_CERT_PLAYBOOK.md) を参照。
+> コンテンツは `certs/` 配下、ビルドは `python3 tools/build.py <cert_id>`。
+
 ---
 
 ## 1. 試験概要

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{APP_TITLE}}</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #1c2b36;
+    --sub: #5f7382;
+    --accent: #1f8476;
+    --accent-dark: #14655a;
+    --accent-bg: #eaf5f3;
+    --ok: #1f8476;
+    --ng: #c0392b;
+    --border: #dde4ea;
+    --hover: #eef4f3;
+    --code-bg: #1a2733;
+    --code-text: #d4e8e3;
+    --tab-bg: #ffffff;
+    --tab-border: #dde4ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111b22;
+      --card: #192430;
+      --text: #dce8f0;
+      --sub: #7a9aad;
+      --accent: #25a090;
+      --accent-dark: #1f8476;
+      --accent-bg: #0e2822;
+      --ok: #25a090;
+      --ng: #e05c4a;
+      --border: #253545;
+      --hover: #1a2e3a;
+      --code-bg: #0d1a22;
+      --code-text: #c8e0d8;
+      --tab-bg: #192430;
+      --tab-border: #253545;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111b22;
+    --card: #192430;
+    --text: #dce8f0;
+    --sub: #7a9aad;
+    --accent: #25a090;
+    --accent-dark: #1f8476;
+    --accent-bg: #0e2822;
+    --ok: #25a090;
+    --ng: #e05c4a;
+    --border: #253545;
+    --hover: #1a2e3a;
+    --code-bg: #0d1a22;
+    --code-text: #c8e0d8;
+    --tab-bg: #192430;
+    --tab-border: #253545;
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #1c2b36;
+    --sub: #5f7382;
+    --accent: #1f8476;
+    --accent-dark: #14655a;
+    --accent-bg: #eaf5f3;
+    --ok: #1f8476;
+    --ng: #c0392b;
+    --border: #dde4ea;
+    --hover: #eef4f3;
+    --code-bg: #1a2733;
+    --code-text: #d4e8e3;
+    --tab-bg: #ffffff;
+    --tab-border: #dde4ea;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  header {
+    background: linear-gradient(135deg, #103c37, #1f8476);
+    color: #fff; padding: 10px 20px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header h1 { font-size: .95rem; font-weight: 700; }
+  header .sub { font-size: .78rem; opacity: .85; }
+
+  /* ===== TAB BAR ===== */
+  .tab-bar-wrap {
+    background: var(--tab-bg);
+    border-bottom: 1px solid var(--tab-border);
+    position: sticky; top: 44px; z-index: 90;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  }
+  .tab-bar {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: none; padding: 9px 16px;
+    font: inherit; font-size: .82rem; font-weight: 600;
+    background: none; border: none; border-bottom: 3px solid transparent;
+    color: var(--sub); cursor: pointer;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--accent); background: var(--hover); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 14px 12px 60px; width: 100%; box-sizing: border-box; }
+
+  /* ===== STUDY TAB ===== */
+  .study-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .study-layout > *:last-child { min-width: 0; }
+  .study-sidebar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    position: sticky;
+    top: 90px;
+  }
+  .study-sidebar h3 {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--sub);
+    padding: 4px 8px 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .domain-nav-btn {
+    display: block; width: 100%;
+    text-align: left; padding: 9px 12px;
+    font: inherit; font-size: .83rem; font-weight: 500;
+    background: none; border: none; border-radius: 8px;
+    color: var(--text); cursor: pointer;
+    transition: background .13s, color .13s;
+    margin-bottom: 2px;
+    line-height: 1.35;
+  }
+  .domain-nav-btn:hover { background: var(--hover); color: var(--accent); }
+  .domain-nav-btn.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .domain-nav-btn .d-num {
+    display: inline-block; width: 18px; height: 18px; line-height: 18px;
+    font-size: .68rem; font-weight: 800; text-align: center;
+    background: var(--accent); color: #fff; border-radius: 4px;
+    margin-right: 7px; flex-shrink: 0;
+    vertical-align: middle;
+  }
+  .domain-nav-btn.active .d-num { background: var(--accent-dark); }
+
+  /* ===== NOTE CONTENT ===== */
+  .note-content-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    min-height: 400px;
+  }
+  .note-body {
+    max-width: 100%;
+    line-height: 1.75;
+    font-size: .95rem;
+    color: var(--text);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .note-body h1 {
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--accent-dark);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    text-wrap: balance;
+  }
+  .note-body h2 {
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent);
+    text-wrap: balance;
+  }
+  .note-body h3 {
+    font-size: .95rem; font-weight: 700;
+    color: var(--sub);
+    margin: 20px 0 8px;
+    text-wrap: balance;
+  }
+  .note-body p { margin-bottom: 10px; }
+  .note-body ul, .note-body ol {
+    padding-left: 1.4em; margin-bottom: 10px;
+  }
+  .note-body li { margin-bottom: 3px; }
+  .note-body strong { font-weight: 700; color: var(--text); }
+  .note-body em { font-style: italic; }
+  .note-body code {
+    font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+    font-size: .83em;
+    background: var(--hover);
+    color: var(--accent-dark);
+    padding: 1px 5px; border-radius: 4px;
+    border: 1px solid var(--border);
+    word-break: break-all;
+    overflow-wrap: break-word;
+  }
+  .note-body pre {
+    font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+    font-size: .8rem;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 14px 16px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 14px 0;
+    line-height: 1.55;
+    white-space: pre;
+    max-width: 100%;
+  }
+  .note-body pre code {
+    background: none; border: none; padding: 0;
+    color: inherit; font-size: inherit;
+  }
+  .note-body hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+  .note-body table {
+    width: 100%; border-collapse: collapse;
+    font-size: .88rem; margin: 14px 0;
+  }
+  .note-body th {
+    background: var(--hover);
+    color: var(--sub); font-weight: 700; font-size: .78rem;
+    letter-spacing: .04em; text-transform: uppercase;
+    padding: 8px 12px; text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  .note-body td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .note-body tr:last-child td { border-bottom: none; }
+  .note-body .table-wrap { overflow-x: auto; }
+
+  /* Mobile sidebar pills */
+  .study-pills { display: none; }
+
+  @media (max-width: 768px) {
+    .study-layout { grid-template-columns: 1fr; gap: 12px; }
+    .study-sidebar { display: none; }
+    .note-content-wrap {
+      width: calc(100vw - 24px) !important;
+      max-width: calc(100vw - 24px) !important;
+      overflow: hidden;
+    }
+    main { padding-left: 12px !important; padding-right: 12px !important; }
+    .study-pills {
+      display: flex; gap: 8px; flex-wrap: nowrap;
+      overflow-x: auto; scrollbar-width: none;
+      padding: 4px 0 10px; margin-bottom: 4px;
+    }
+    .study-pills::-webkit-scrollbar { display: none; }
+    .study-pill-btn {
+      flex: none; padding: 7px 14px;
+      font: inherit; font-size: .8rem; font-weight: 600;
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 999px; color: var(--sub); cursor: pointer;
+      transition: all .13s; white-space: nowrap;
+    }
+    .study-pill-btn.active {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .note-content-wrap { padding: 18px 16px; }
+  }
+
+  /* ===== EXISTING STYLES ===== */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 12px;
+  }
+  h2 { font-size: 1.05rem; margin-bottom: 12px; }
+  h3 { font-size: .95rem; margin-bottom: 8px; }
+  button {
+    font: inherit; cursor: pointer; border: 1px solid var(--border);
+    background: var(--card); border-radius: 8px; padding: 10px 16px; color: var(--text);
+    transition: background .15s;
+  }
+  button:hover { background: var(--hover); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:hover { background: var(--accent-dark); }
+  button.ghost { border: none; background: none; color: var(--sub); text-decoration: underline; padding: 4px; }
+  button:disabled { opacity: .45; cursor: default; }
+  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .mode-btn { text-align: left; padding: 16px; border-radius: 12px; }
+  .mode-btn .t { font-weight: 700; display: block; margin-bottom: 4px; color: var(--accent-dark); }
+  .mode-btn .d { font-size: .8rem; color: var(--sub); }
+  table.progress { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  table.progress th, table.progress td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+  table.progress th { color: var(--sub); font-weight: 600; font-size: .75rem; }
+  .bar { background: #e6ecef; border-radius: 6px; height: 8px; overflow: hidden; min-width: 80px; }
+  .bar > div { height: 100%; background: var(--accent); border-radius: 6px; }
+  .qmeta { font-size: .78rem; color: var(--sub); margin-bottom: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  .qtext { font-weight: 600; margin-bottom: 14px; font-size: 1rem; }
+  .choice {
+    display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 12px 14px;
+    border-radius: 10px; border: 1.5px solid var(--border); background: var(--card);
+  }
+  .choice.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .choice.correct { border-color: var(--ok); background: var(--accent-bg); font-weight: 600; }
+  .choice.wrong { border-color: var(--ng); background: #faeae8; }
+  .expl {
+    margin-top: 14px; padding: 14px; border-radius: 10px; font-size: .9rem;
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+  }
+  .expl.ng { background: #fdf3f2; border-left-color: var(--ng); }
+  .verdict { font-weight: 700; margin-bottom: 6px; }
+  .verdict.ok { color: var(--ok); }
+  .verdict.ng { color: var(--ng); }
+  .nav-row { display: flex; justify-content: space-between; margin-top: 18px; gap: 8px; flex-wrap: wrap; }
+  .timer { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .timer.warn { color: #ffd2ad; }
+  .pill {
+    display: inline-block; font-size: .72rem; padding: 2px 10px; border-radius: 999px;
+    background: var(--accent-bg); color: var(--accent-dark); margin-right: 6px;
+  }
+  .score-big { font-size: 2.2rem; font-weight: 800; }
+  .score-big.pass { color: var(--ok); }
+  .score-big.fail { color: var(--ng); }
+  .domain-select label {
+    display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  }
+  .domain-select label:hover { background: var(--hover); }
+  .muted { color: var(--sub); font-size: .85rem; }
+  .browse-item { border-bottom: 1px solid var(--border); padding: 14px 0; }
+  .browse-item:last-child { border: none; }
+  .browse-item .ans { color: var(--accent-dark); font-weight: 600; font-size: .88rem; margin-top: 6px; }
+  .browse-item .ex { font-size: .85rem; color: var(--sub); margin-top: 4px; }
+  .multi-note { font-size: .78rem; color: var(--ng); font-weight: 600; margin-bottom: 8px; }
+  .mistake-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
+  .mistake-item:last-child { border: none; }
+  .mistake-row { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-wrap: wrap; }
+  .mistake-row .pill { flex: none; }
+  .mistake-text { flex: 1 1 160px; min-width: 120px; font-size: .88rem; }
+  .mistake-stats { font-size: .78rem; color: var(--sub); white-space: nowrap; }
+  .mistake-detail { display: none; margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: var(--accent-bg); border-left: 4px solid var(--accent); font-size: .85rem; }
+  .mistake-item.open .mistake-detail { display: block; }
+  .mistake-detail .ans { color: var(--accent-dark); font-weight: 600; margin-bottom: 4px; }
+  .mistake-detail .ex { color: var(--text); }
+  .mock-tooltip {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: .76rem; line-height: 1.5;
+    box-shadow: 0 4px 10px rgba(0,0,0,.14); pointer-events: none; z-index: 20;
+    max-width: 200px;
+  }
+  .mock-badge {
+    margin: 0 0 12px; padding: 8px 12px; border-radius: 8px;
+    background: var(--accent-bg); color: var(--accent-dark); font-weight: 700; font-size: .85rem;
+    display: inline-block;
+  }
+  footer { text-align: center; color: var(--sub); font-size: .75rem; padding: 20px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>{{APP_TITLE}}</h1>
+    <div class="sub">{{APP_SUBTITLE}}<span style="font-size:.68rem;opacity:.75;margin-left:8px;padding:1px 7px;border:1px solid rgba(255,255,255,.4);border-radius:999px;white-space:nowrap">{{VERSION_BADGE}}</span></div>
+  </div>
+  <div id="header-right"></div>
+</header>
+
+<div class="tab-bar-wrap">
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" id="tab-study"   role="tab" onclick="switchTab('study')"  >学習ノート</button>
+    <button class="tab-btn"        id="tab-practice" role="tab" onclick="switchTab('practice')">分野別練習</button>
+    <button class="tab-btn"        id="tab-mock"     role="tab" onclick="switchTab('mock')"    >模擬試験</button>
+    <button class="tab-btn"        id="tab-review"   role="tab" onclick="switchTab('review')"  >弱点復習</button>
+    <button class="tab-btn"        id="tab-browse"   role="tab" onclick="switchTab('browse')"  >全問一覧</button>
+    <button class="tab-btn"        id="tab-home"     role="tab" onclick="switchTab('home')"    >ダッシュボード</button>
+  </div>
+</div>
+
+<main id="app"></main>
+<footer>問題データは questions.js で管理。進捗はこのブラウザの localStorage に保存されます。</footer>
+
+<script>
+{{QUESTIONS_JS}}
+</script>
+<script>
+"use strict";
+
+/* ===== NOTES DATA ===== */
+const NOTES = {
+{{NOTES_JS}}
+};
+
+const STUDY_DOMAINS = [
+{{STUDY_DOMAINS_JS}}
+];
+
+/* ===== MARKDOWN RENDERER ===== */
+function renderMarkdown(md) {
+  const lines = md.split('\n');
+  let html = '';
+  let i = 0;
+
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function inlineFormat(s) {
+    s = escHtml(s);
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return s;
+  }
+
+  function buildUL(listLines, idx, minIndent) {
+    let out = '<ul>';
+    while (idx < listLines.length) {
+      const indent = listLines[idx].match(/^( *)/)[1].length;
+      if (indent < minIndent) break;
+      if (indent === minIndent) {
+        const text = listLines[idx].replace(/^ *- /, '');
+        idx++;
+        if (idx < listLines.length) {
+          const nextIndent = listLines[idx].match(/^( *)/)[1].length;
+          if (nextIndent > minIndent) {
+            const sub = buildUL(listLines, idx, nextIndent);
+            out += '<li>' + inlineFormat(text) + sub.html + '</li>';
+            idx = sub.nextIdx;
+          } else {
+            out += '<li>' + inlineFormat(text) + '</li>';
+          }
+        } else {
+          out += '<li>' + inlineFormat(text) + '</li>';
+        }
+      } else {
+        idx++;
+      }
+    }
+    out += '</ul>';
+    return { html: out, nextIdx: idx };
+  }
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // fenced code block
+    if (line.startsWith('```')) {
+      let code = '';
+      i++;
+      while (i < lines.length && !lines[i].startsWith('```')) {
+        code += escHtml(lines[i]) + '\n';
+        i++;
+      }
+      html += '<pre><code>' + code + '</code></pre>';
+      i++;
+      continue;
+    }
+
+    // heading
+    if (/^#{1,3} /.test(line)) {
+      const m = line.match(/^(#{1,3}) (.*)/);
+      const level = m[1].length;
+      const text = inlineFormat(m[2]);
+      html += '<h' + level + '>' + text + '</h' + level + '>';
+      i++;
+      continue;
+    }
+
+    // horizontal rule
+    if (/^---+$/.test(line.trim())) {
+      html += '<hr>';
+      i++;
+      continue;
+    }
+
+    // table
+    if (line.startsWith('|') && i + 1 < lines.length && lines[i+1].match(/^\|[\s\-|]+\|$/)) {
+      const headers = line.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(h => '<th>' + inlineFormat(h.trim()) + '</th>').join('');
+      i += 2;
+      let rows = '';
+      while (i < lines.length && lines[i].startsWith('|')) {
+        const cells = lines[i].split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(c => '<td>' + inlineFormat(c.trim()) + '</td>').join('');
+        rows += '<tr>' + cells + '</tr>';
+        i++;
+      }
+      html += '<div class="table-wrap"><table><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+      continue;
+    }
+
+    // unordered list (with nesting support)
+    if (/^\s*- /.test(line)) {
+      const listLines = [];
+      while (i < lines.length && /^\s*- /.test(lines[i])) {
+        listLines.push(lines[i]);
+        i++;
+      }
+      const baseIndent = listLines[0].match(/^( *)/)[1].length;
+      const result = buildUL(listLines, 0, baseIndent);
+      html += result.html;
+      continue;
+    }
+
+    // ordered list
+    if (/^\d+\. /.test(line)) {
+      let items = '';
+      while (i < lines.length && /^\d+\. /.test(lines[i])) {
+        const text = lines[i].replace(/^\d+\. /, '');
+        items += '<li>' + inlineFormat(text) + '</li>';
+        i++;
+      }
+      html += '<ol>' + items + '</ol>';
+      continue;
+    }
+
+    // blank line
+    if (line.trim() === '') {
+      i++;
+      continue;
+    }
+
+    // paragraph
+    let para = '';
+    while (i < lines.length && lines[i].trim() !== '' &&
+           !lines[i].startsWith('#') && !lines[i].startsWith('|') &&
+           !lines[i].startsWith('```') && !/^\s*- /.test(lines[i]) &&
+           !/^\d+\. /.test(lines[i]) && !/^---+$/.test(lines[i].trim())) {
+      para += (para ? ' ' : '') + lines[i];
+      i++;
+    }
+    if (para) html += '<p>' + inlineFormat(para) + '</p>';
+  }
+
+  return html;
+}
+
+/* ===== 進捗ストア ===== */
+const STORE_KEY = "{{STORAGE_PREFIX}}_progress_v1";
+const SPACED_INTERVALS = [3, 7, 14, 30, 60];
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveProgress(p) { localStorage.setItem(STORE_KEY, JSON.stringify(p)); }
+function recordAnswer(qid, correct) {
+  const p = loadProgress();
+  const e = p[qid] || { a: 0, c: 0, w: false, stg: 0, due: 0 };
+  e.a++; if (correct) e.c++;
+  e.w = !correct;
+  if (correct) {
+    e.stg = (e.stg || 0) + 1;
+    const days = SPACED_INTERVALS[Math.min(e.stg - 1, SPACED_INTERVALS.length - 1)];
+    e.due = Date.now() + days * 86400000;
+  } else {
+    e.stg = 0;
+    e.due = Date.now() + 1 * 86400000;
+  }
+  p[qid] = e;
+  saveProgress(p);
+}
+function getDueReviewIds() {
+  const p = loadProgress();
+  const now = Date.now();
+  const ids = [];
+  for (const qid in p) {
+    const e = p[qid];
+    if (!e || !(e.a > 0)) continue;
+    if (e.due === undefined || e.due === null || e.due <= now) ids.push(Number(qid));
+  }
+  return ids;
+}
+
+/* ===== 模擬試験スコア履歴ストア ===== */
+const MOCK_HISTORY_KEY = "{{STORAGE_PREFIX}}_mock_history_v1";
+function loadMockHistory() {
+  try { return JSON.parse(localStorage.getItem(MOCK_HISTORY_KEY)) || []; } catch (e) { return []; }
+}
+function saveMockHistory(h) { localStorage.setItem(MOCK_HISTORY_KEY, JSON.stringify(h)); }
+
+/* ===== ユーティリティ ===== */
+const $app = document.getElementById("app");
+const $hdr = document.getElementById("header-right");
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function sameSet(a, b) {
+  if (a.length !== b.length) return false;
+  const s = new Set(b);
+  return a.every(x => s.has(x));
+}
+
+/* ===== セッション状態 ===== */
+let session = null;
+let mockHistoryChartData = [];
+let currentTab = 'study';
+let currentStudyDomain = 1;
+
+function stopTimer() {
+  if (session && session.timerId) { clearInterval(session.timerId); session.timerId = null; }
+  $hdr.innerHTML = "";
+}
+
+/* ===== TAB NAVIGATION ===== */
+function switchTab(tab) {
+  if (session && tab !== currentTab) {
+    if (!confirm("セッションを中断してタブを切り替えますか?")) return;
+    stopTimer();
+    session = null;
+  }
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tab-' + tab);
+  if (btn) btn.classList.add('active');
+
+  switch (tab) {
+    case 'study':    renderStudy(); break;
+    case 'practice': renderDomainSelect(); break;
+    case 'mock':     startMock(); break;
+    case 'review':   renderReviewMenu(); break;
+    case 'browse':   renderBrowse(); break;
+    case 'home':     renderHome(); break;
+  }
+}
+
+/* ===== STUDY TAB ===== */
+function renderStudy(domainId) {
+  stopTimer();
+  session = null;
+  if (domainId) currentStudyDomain = domainId;
+
+  const sidebarBtns = STUDY_DOMAINS.map(d => `
+    <button class="domain-nav-btn ${d.id === currentStudyDomain ? 'active' : ''}" onclick="renderStudy(${d.id})">
+      <span class="d-num">${d.id}</span>${d.label}<br>
+      <span style="font-size:.7rem;font-weight:400;color:var(--sub);padding-left:25px">配点 ${d.weight}%</span>
+    </button>
+  `).join('');
+
+  const pillBtns = STUDY_DOMAINS.map(d => `
+    <button class="study-pill-btn ${d.id === currentStudyDomain ? 'active' : ''}" onclick="renderStudy(${d.id})">分野${d.id}</button>
+  `).join('');
+
+  const noteHtml = renderMarkdown(NOTES[currentStudyDomain] || '');
+
+  $app.innerHTML = `
+    <div class="study-pills">${pillBtns}</div>
+    <div class="study-layout">
+      <div class="study-sidebar">
+        <h3>学習分野</h3>
+        ${sidebarBtns}
+      </div>
+      <div class="note-content-wrap">
+        <div class="note-body">${noteHtml}</div>
+      </div>
+    </div>`;
+}
+
+/* ===== 弱点復習メニュー ===== */
+function renderReviewMenu() {
+  stopTimer();
+  session = null;
+  const p = loadProgress();
+  const wrongCount = QUESTIONS.filter(q => p[q.id] && p[q.id].w).length;
+  const dueCount = getDueReviewIds().length;
+
+  $app.innerHTML = `
+    <div class="card">
+      <h2>復習モードを選択</h2>
+      <div class="mode-grid">
+        <button class="mode-btn" onclick="startReview()" ${wrongCount === 0 ? 'disabled' : ''}>
+          <span class="t">弱点復習 (${wrongCount}問)</span>
+          <span class="d">直近で間違えた問題だけを再演習</span>
+        </button>
+        <button class="mode-btn" onclick="startSpacedReview()" ${dueCount === 0 ? 'disabled' : ''}>
+          <span class="t">今日の復習 (${dueCount}問)</span>
+          <span class="d">間隔反復で記憶を定着。期限が来た問題を再演習</span>
+        </button>
+      </div>
+    </div>
+    ${buildMistakeSection()}`;
+}
+
+/* ===== よく間違える問題 TOP10 ===== */
+function truncate60(s) {
+  const str = String(s);
+  return str.length > 60 ? str.slice(0, 60) + "…" : str;
+}
+function getTopMistakes() {
+  const p = loadProgress();
+  const list = [];
+  for (const qid in p) {
+    const e = p[qid];
+    const a = e.a || 0, c = e.c || 0;
+    const wrong = a - c;
+    if (wrong >= 1) list.push({ qid, a, c, wrong, rate: a ? wrong / a : 0 });
+  }
+  list.sort((x, y) => (y.wrong - x.wrong) || (y.rate - x.rate));
+  return list.slice(0, 10);
+}
+function buildMistakeSection() {
+  const top = getTopMistakes();
+  if (top.length === 0) return "";
+  let items = "";
+  for (const m of top) {
+    const q = QUESTIONS.find(qq => qq.id === Number(m.qid));
+    if (!q) continue;
+    items += `<div class="mistake-item" id="mistake-item-${q.id}">
+      <div class="mistake-row" onclick="toggleMistake(${q.id})">
+        <span class="pill">分野${q.domain}</span>
+        <span class="mistake-text">${esc(truncate60(q.q))}</span>
+        <span class="mistake-stats">誤答 ${m.wrong}回 / 挑戦 ${m.a}回</span>
+      </div>
+      <div class="mistake-detail">
+        <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+        <div class="ex">${esc(q.expl)}</div>
+      </div>
+    </div>`;
+  }
+  return `<div class="card">
+    <h2>よく間違える問題 TOP10</h2>
+    ${items}
+  </div>`;
+}
+function toggleMistake(qid) {
+  const el = document.getElementById(`mistake-item-${qid}`);
+  if (el) el.classList.toggle("open");
+}
+
+/* ===== 模擬試験スコアの推移グラフ ===== */
+function fmtMD(ts) {
+  const d = new Date(ts);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+}
+function weakestDomain(perDomain) {
+  let worstKey = null, worstRate = Infinity;
+  for (const d in perDomain || {}) {
+    const e = perDomain[d];
+    const rate = e.t ? e.c / e.t : 1;
+    if (rate < worstRate) { worstRate = rate; worstKey = d; }
+  }
+  if (worstKey === null) return "—";
+  const name = DOMAINS[worstKey] ? DOMAINS[worstKey].name : "";
+  return `分野${worstKey}: ${name}`;
+}
+function buildMockHistorySection() {
+  const hist = loadMockHistory();
+  mockHistoryChartData = hist;
+  if (hist.length === 0) return "";
+
+  const n = hist.length;
+  const plotLeft = 40, plotRight = 520, plotTop = 16, plotBottom = 164;
+  const xOf = i => n > 1 ? plotLeft + i * (plotRight - plotLeft) / (n - 1) : (plotLeft + plotRight) / 2;
+  const yOf = score => plotBottom - (Math.max(0, Math.min(100, score)) / 100) * (plotBottom - plotTop);
+
+  let gridHtml = "";
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = yOf(v);
+    gridHtml += `<line x1="${plotLeft}" y1="${y}" x2="${plotRight}" y2="${y}" stroke="var(--border)" stroke-width="1"/>`;
+    gridHtml += `<text x="${plotLeft - 8}" y="${y + 3}" text-anchor="end" font-size="9" fill="var(--sub)">${v}</text>`;
+  });
+
+  const y70 = yOf(70), y85 = yOf(85);
+  const baseHtml = `
+    <line x1="${plotLeft}" y1="${y70}" x2="${plotRight}" y2="${y70}" stroke="var(--sub)" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${plotRight + 6}" y="${y70 + 3}" font-size="9" fill="var(--sub)">合格目安70%</text>
+    <line x1="${plotLeft}" y1="${y85}" x2="${plotRight}" y2="${y85}" stroke="var(--sub)" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${plotRight + 6}" y="${y85 + 3}" font-size="9" fill="var(--sub)">受験判断85%</text>`;
+
+  let pathD = "";
+  hist.forEach((d, i) => { pathD += (i === 0 ? "M" : "L") + xOf(i) + "," + yOf(d.score) + " "; });
+  const lineHtml = `<path d="${pathD.trim()}" fill="none" stroke="var(--accent)" stroke-width="2"/>`;
+
+  const showEvery = n > 8 ? Math.ceil(n / 8) : 1;
+  let xLabelsHtml = "";
+  hist.forEach((d, i) => {
+    if (i % showEvery !== 0 && i !== n - 1) return;
+    xLabelsHtml += `<text x="${xOf(i)}" y="${plotBottom + 16}" text-anchor="middle" font-size="9" fill="var(--sub)">${fmtMD(d.t)}</text>`;
+  });
+
+  let markersHtml = "";
+  hist.forEach((d, i) => {
+    const x = xOf(i), y = yOf(d.score);
+    markersHtml += `<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)" stroke="var(--card)" stroke-width="2"/>`;
+    markersHtml += `<circle cx="${x}" cy="${y}" r="14" fill="transparent" style="cursor:pointer"
+      onmouseenter="showMockTip(event, ${i})" onmouseleave="hideMockTip()" onclick="showMockTip(event, ${i})"/>`;
+  });
+
+  const lastIdx = n - 1;
+  const lastLabelHtml = `<text x="${xOf(lastIdx)}" y="${yOf(hist[lastIdx].score) - 12}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">${hist[lastIdx].score}%</text>`;
+
+  const svg = `<svg viewBox="0 0 640 220" style="width:100%;height:auto;display:block" role="img" aria-label="模擬試験スコア推移">
+    ${gridHtml}${baseHtml}${lineHtml}${xLabelsHtml}${markersHtml}${lastLabelHtml}
+  </svg>`;
+
+  let badgeHtml = "";
+  if (n >= 2 && hist[n - 1].score >= 85 && hist[n - 2].score >= 85) {
+    badgeHtml = `<div class="mock-badge">🎉 受験予約レベル到達（2回連続85%以上）</div>`;
+  }
+
+  const recent = hist.slice().reverse().slice(0, 10);
+  let rows = "";
+  recent.forEach(d => {
+    const dt = new Date(d.t);
+    const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, "0")}/${String(dt.getDate()).padStart(2, "0")}`;
+    rows += `<tr><td>${dateStr}</td><td>${d.score}%</td><td>${esc(weakestDomain(d.perDomain))}</td></tr>`;
+  });
+  const table = `<table class="progress"><tr><th>日付</th><th>スコア</th><th>最弱分野</th></tr>${rows}</table>`;
+
+  return `<div class="card" id="mock-chart-wrap" style="position:relative">
+    <h2>模擬試験の推移</h2>
+    ${badgeHtml}
+    ${svg}
+    <div id="mock-tooltip" class="mock-tooltip" style="display:none;position:absolute;"></div>
+    ${table}
+  </div>`;
+}
+function showMockTip(evt, idx) {
+  const d = mockHistoryChartData[idx];
+  const tip = document.getElementById("mock-tooltip");
+  const wrap = document.getElementById("mock-chart-wrap");
+  if (!d || !tip || !wrap) return;
+  tip.innerHTML = `<div><strong>${fmtMD(d.t)}</strong></div><div>スコア: ${d.score}%</div><div>最弱分野: ${esc(weakestDomain(d.perDomain))}</div>`;
+  tip.style.display = "block";
+  const rect = wrap.getBoundingClientRect();
+  let x = evt.clientX - rect.left + 12;
+  let y = evt.clientY - rect.top - 10;
+  x = Math.max(4, Math.min(x, rect.width - 210));
+  tip.style.left = x + "px";
+  tip.style.top = y + "px";
+  evt.stopPropagation();
+}
+function hideMockTip() {
+  const tip = document.getElementById("mock-tooltip");
+  if (tip) tip.style.display = "none";
+}
+
+/* ===== ホーム画面（ダッシュボード） ===== */
+function renderHome() {
+  stopTimer();
+  session = null;
+  const p = loadProgress();
+  const wrongCount = QUESTIONS.filter(q => p[q.id] && p[q.id].w).length;
+  const dueCount = getDueReviewIds().length;
+
+  let rows = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const qs = QUESTIONS.filter(q => q.domain == d);
+    let attempted = 0, correctSum = 0, attemptSum = 0;
+    for (const q of qs) {
+      const e = p[q.id];
+      if (e && e.a > 0) { attempted++; correctSum += e.c; attemptSum += e.a; }
+    }
+    const cov = qs.length ? Math.round(attempted / qs.length * 100) : 0;
+    const acc = attemptSum ? Math.round(correctSum / attemptSum * 100) : null;
+    rows += `<tr>
+      <td>${d}. ${esc(DOMAINS[d].name)}</td>
+      <td>${DOMAINS[d].weight}%</td>
+      <td>${attempted}/${qs.length}<div class="bar"><div style="width:${cov}%"></div></div></td>
+      <td>${acc === null ? "—" : acc + "%"}</td>
+    </tr>`;
+  }
+
+  $app.innerHTML = `
+    <div class="card">
+      <h2>進捗ダッシュボード</h2>
+      <table class="progress">
+        <tr><th>分野</th><th>配点</th><th>演習カバー率</th><th>正答率</th></tr>
+        ${rows}
+      </table>
+      <div style="margin-top:12px">
+        <button class="ghost" onclick="resetProgress()">進捗リセット</button>
+      </div>
+    </div>
+    ${buildMockHistorySection()}
+    ${buildMistakeSection()}
+    <div class="card">
+      <h2>学習の進め方</h2>
+      <ol style="padding-left:1.4em; font-size:.9rem">
+        <li>「学習ノート」タブで分野ごとのノートを読む</li>
+        <li>「分野別練習」タブで全分野をひと通り演習する</li>
+        <li>模擬試験 → 弱点復習 → 該当ノート再読のループを回す</li>
+        <li>模擬試験で2回連続85%以上になったら受験を予約する</li>
+      </ol>
+    </div>`;
+}
+
+function resetProgress() {
+  if (confirm("進捗（正答率・弱点データ・間隔反復の復習期限）と模擬試験のスコア履歴をすべてリセットしますか?")) {
+    localStorage.removeItem(STORE_KEY);
+    localStorage.removeItem(MOCK_HISTORY_KEY);
+    renderHome();
+  }
+}
+
+/* ===== 分野別練習 ===== */
+function renderDomainSelect() {
+  stopTimer();
+  session = null;
+  let items = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const n = QUESTIONS.filter(q => q.domain == d).length;
+    items += `<label><input type="checkbox" value="${d}" checked>
+      ${d}. ${esc(DOMAINS[d].name)} <span class="muted">(${n}問・配点${DOMAINS[d].weight}%)</span></label>`;
+  }
+  $app.innerHTML = `
+    <div class="card">
+      <h2>分野別練習 — 出題範囲を選択</h2>
+      <div class="domain-select" id="dsel">${items}</div>
+      <div style="margin-top:10px">
+        <label style="display:flex;gap:8px;align-items:center;padding:8px 10px">
+          <input type="checkbox" id="opt-shuffle" checked> 出題順をシャッフル
+        </label>
+      </div>
+      <div class="nav-row">
+        <button onclick="switchTab('home')">← 戻る</button>
+        <button class="primary" onclick="startPractice()">練習を開始</button>
+      </div>
+    </div>`;
+}
+
+function startPractice() {
+  const checked = [...document.querySelectorAll("#dsel input:checked")].map(i => Number(i.value));
+  if (checked.length === 0) { alert("分野を1つ以上選択してください"); return; }
+  let qs = QUESTIONS.filter(q => checked.includes(q.domain));
+  if (document.getElementById("opt-shuffle").checked) qs = shuffle(qs);
+  beginSession("practice", qs);
+}
+
+function startReview() {
+  const p = loadProgress();
+  const qs = shuffle(QUESTIONS.filter(q => p[q.id] && p[q.id].w));
+  if (qs.length === 0) { alert("復習対象の問題はありません"); return; }
+  beginSession("review", qs);
+}
+
+function startSpacedReview() {
+  const dueIds = getDueReviewIds();
+  const qs = shuffle(QUESTIONS.filter(q => dueIds.includes(q.id)));
+  if (qs.length === 0) { alert("今日の復習対象の問題はありません"); return; }
+  beginSession("spaced", qs);
+}
+
+/* ===== 模擬試験 ===== */
+const MOCK_TOTAL = 60, MOCK_LIMIT_SEC = 90 * 60;
+function startMock() {
+  const counts = {};
+  let assigned = 0;
+  const keys = Object.keys(DOMAINS);
+  for (const d of keys) {
+    counts[d] = Math.round(MOCK_TOTAL * DOMAINS[d].weight / 100);
+    assigned += counts[d];
+  }
+  counts[5] += MOCK_TOTAL - assigned;
+  let qs = [];
+  for (const d of keys) {
+    const pool = shuffle(QUESTIONS.filter(q => q.domain == d));
+    qs = qs.concat(pool.slice(0, Math.min(counts[d], pool.length)));
+  }
+  qs = shuffle(qs);
+  beginSession("mock", qs, MOCK_LIMIT_SEC);
+}
+
+/* ===== セッション共通 ===== */
+function permuteQuestion(q) {
+  const perm = shuffle(q.choices.map((_, i) => i));
+  return {
+    ...q,
+    choices: perm.map(i => q.choices[i]),
+    answer: q.answer.map(a => perm.indexOf(a)),
+  };
+}
+
+function beginSession(mode, questions, limitSec) {
+  questions = questions.map(permuteQuestion);
+  session = {
+    mode, questions, idx: 0,
+    answers: new Array(questions.length).fill(null),
+    limitSec: limitSec || null,
+    remainSec: limitSec || null,
+    timerId: null,
+    checked: false,
+    curSel: new Set(),
+  };
+  if (limitSec) {
+    session.timerId = setInterval(() => {
+      session.remainSec--;
+      updateTimer();
+      if (session.remainSec <= 0) { finishMock(); }
+    }, 1000);
+  }
+  renderQuestion();
+}
+
+function updateTimer() {
+  if (!session || session.remainSec === null) { $hdr.innerHTML = ""; return; }
+  const m = Math.floor(session.remainSec / 60), s = session.remainSec % 60;
+  const warn = session.remainSec < 600 ? " warn" : "";
+  $hdr.innerHTML = `<span class="timer${warn}">残り ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}</span>`;
+}
+
+function modeLabel() {
+  return { practice: "分野別練習", mock: "模擬試験", review: "弱点復習", spaced: "今日の復習" }[session.mode];
+}
+
+function renderQuestion() {
+  const q = session.questions[session.idx];
+  const isMulti = q.answer.length > 1;
+  const total = session.questions.length;
+  updateTimer();
+
+  let choicesHtml = "";
+  q.choices.forEach((c, i) => {
+    const sel = session.curSel.has(i) ? " selected" : "";
+    choicesHtml += `<button class="choice${sel}" data-i="${i}" onclick="toggleChoice(${i})">${esc(c)}</button>`;
+  });
+
+  const isMock = session.mode === "mock";
+  $app.innerHTML = `
+    <div class="card">
+      <div class="qmeta">
+        <span><span class="pill">${modeLabel()}</span>問 ${session.idx + 1} / ${total}</span>
+        <span>分野${q.domain}: ${esc(DOMAINS[q.domain].name)}</span>
+      </div>
+      ${isMulti ? '<div class="multi-note">※ 複数選択（該当するものをすべて選ぶ）</div>' : ""}
+      <div class="qtext">${esc(q.q)}</div>
+      <div id="choices">${choicesHtml}</div>
+      <div id="feedback"></div>
+      <div class="nav-row">
+        <button onclick="quitSession()">中断してホームへ</button>
+        <div style="display:flex;gap:8px">
+          ${isMock && session.idx > 0 ? '<button onclick="mockPrev()">← 前へ</button>' : ""}
+          <button class="primary" id="main-btn" onclick="mainAction()">${isMock ? (session.idx === total - 1 ? "採点する" : "次へ →") : "回答する"}</button>
+        </div>
+      </div>
+    </div>`;
+
+  if (isMock && session.answers[session.idx]) {
+    session.curSel = new Set(session.answers[session.idx].sel);
+    refreshChoices();
+  }
+  session.checked = false;
+}
+
+function toggleChoice(i) {
+  if (session.checked) return;
+  const q = session.questions[session.idx];
+  const isMulti = q.answer.length > 1;
+  if (isMulti) {
+    session.curSel.has(i) ? session.curSel.delete(i) : session.curSel.add(i);
+  } else {
+    session.curSel = new Set([i]);
+  }
+  refreshChoices();
+}
+
+function refreshChoices() {
+  document.querySelectorAll("#choices .choice").forEach(btn => {
+    const i = Number(btn.dataset.i);
+    btn.classList.toggle("selected", session.curSel.has(i));
+  });
+}
+
+function mainAction() {
+  const isMock = session.mode === "mock";
+  if (isMock) {
+    saveCurrentMockAnswer();
+    if (session.idx === session.questions.length - 1) { finishMock(); }
+    else { session.idx++; session.curSel = new Set(); renderQuestion(); }
+    return;
+  }
+  if (!session.checked) { checkAnswer(); }
+  else { nextPractice(); }
+}
+
+function checkAnswer() {
+  if (session.curSel.size === 0) { alert("選択肢を選んでください"); return; }
+  const q = session.questions[session.idx];
+  const sel = [...session.curSel];
+  const correct = sameSet(sel, q.answer);
+  recordAnswer(q.id, correct);
+  session.answers[session.idx] = { sel, correct };
+  session.checked = true;
+
+  document.querySelectorAll("#choices .choice").forEach(btn => {
+    const i = Number(btn.dataset.i);
+    if (q.answer.includes(i)) btn.classList.add("correct");
+    else if (session.curSel.has(i)) btn.classList.add("wrong");
+  });
+
+  document.getElementById("feedback").innerHTML = `
+    <div class="expl ${correct ? "" : "ng"}">
+      <div class="verdict ${correct ? "ok" : "ng"}">${correct ? "✔ 正解" : "✘ 不正解"}</div>
+      ${esc(q.expl)}
+    </div>`;
+  const btn = document.getElementById("main-btn");
+  btn.textContent = session.idx === session.questions.length - 1 ? "結果を見る" : "次の問題 →";
+}
+
+function nextPractice() {
+  if (session.idx === session.questions.length - 1) { finishPractice(); return; }
+  session.idx++;
+  session.curSel = new Set();
+  renderQuestion();
+}
+
+function finishPractice() {
+  stopTimer();
+  const answered = session.answers.filter(Boolean);
+  const correct = answered.filter(a => a.correct).length;
+  const pct = answered.length ? Math.round(correct / answered.length * 100) : 0;
+  $app.innerHTML = `
+    <div class="card" style="text-align:center">
+      <h2>${modeLabel()} 終了</h2>
+      <div class="score-big ${pct >= 70 ? "pass" : "fail"}">${pct}%</div>
+      <p class="muted">${answered.length}問中 ${correct}問正解</p>
+      <div class="nav-row" style="justify-content:center">
+        <button class="primary" onclick="switchTab('home')">ホームへ</button>
+      </div>
+    </div>`;
+  session = null;
+}
+
+function saveCurrentMockAnswer() {
+  const q = session.questions[session.idx];
+  const sel = [...session.curSel];
+  session.answers[session.idx] = { sel, correct: sameSet(sel, q.answer) };
+}
+function mockPrev() {
+  saveCurrentMockAnswer();
+  session.idx--;
+  session.curSel = new Set(session.answers[session.idx] ? session.answers[session.idx].sel : []);
+  renderQuestion();
+}
+
+function finishMock() {
+  stopTimer();
+  if (session.answers[session.idx] === null && session.curSel.size > 0) saveCurrentMockAnswer();
+
+  let correct = 0;
+  const perDomain = {};
+  session.questions.forEach((q, i) => {
+    const a = session.answers[i];
+    const ok = a ? a.correct : false;
+    recordAnswer(q.id, ok);
+    if (ok) correct++;
+    perDomain[q.domain] = perDomain[q.domain] || { t: 0, c: 0 };
+    perDomain[q.domain].t++;
+    if (ok) perDomain[q.domain].c++;
+  });
+  const total = session.questions.length;
+  const pct = Math.round(correct / total * 100);
+
+  const mh = loadMockHistory();
+  mh.push({ t: Date.now(), score: pct, correct, total, perDomain });
+  saveMockHistory(mh);
+
+  let rows = "";
+  for (const d of Object.keys(DOMAINS)) {
+    if (!perDomain[d]) continue;
+    const e = perDomain[d];
+    const dp = Math.round(e.c / e.t * 100);
+    rows += `<tr><td>${d}. ${esc(DOMAINS[d].name)}</td><td>${e.c}/${e.t}</td>
+      <td><div class="bar"><div style="width:${dp}%"></div></div></td><td>${dp}%</td></tr>`;
+  }
+
+  let wrongHtml = "";
+  session.questions.forEach((q, i) => {
+    const a = session.answers[i];
+    if (a && a.correct) return;
+    wrongHtml += `<div class="browse-item">
+      <div><span class="pill">分野${q.domain}</span>${esc(q.q)}</div>
+      <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+      <div class="ex">${esc(q.expl)}</div>
+    </div>`;
+  });
+
+  $app.innerHTML = `
+    <div class="card" style="text-align:center">
+      <h2>模擬試験 結果</h2>
+      <div class="score-big ${pct >= 70 ? "pass" : "fail"}">${pct}%</div>
+      <p class="muted">${total}問中 ${correct}問正解 — ${pct >= 85 ? "受験レベル到達。この調子で仕上げる" : pct >= 70 ? "合格ライン相当。85%を目指して弱点を潰す" : "まだ演習不足。弱点復習+ノート再読へ"}</p>
+    </div>
+    <div class="card">
+      <h3>分野別スコア</h3>
+      <table class="progress"><tr><th>分野</th><th>正解</th><th></th><th>正答率</th></tr>${rows}</table>
+    </div>
+    ${wrongHtml ? `<div class="card"><h3>間違えた問題の解説</h3>${wrongHtml}</div>` : ""}
+    <div class="nav-row" style="justify-content:center">
+      <button class="primary" onclick="switchTab('home')">ホームへ</button>
+    </div>`;
+  session = null;
+}
+
+function quitSession() {
+  if (confirm("セッションを中断してホームに戻りますか?（模擬試験の場合、回答は破棄されます）")) {
+    stopTimer();
+    session = null;
+    switchTab('home');
+  }
+}
+
+/* ===== 全問ブラウズ ===== */
+function renderBrowse() {
+  stopTimer();
+  session = null;
+  let html = "";
+  for (const d of Object.keys(DOMAINS)) {
+    const qs = QUESTIONS.filter(q => q.domain == d);
+    let items = "";
+    qs.forEach((q, i) => {
+      items += `<div class="browse-item">
+        <div><strong>Q${i + 1}.</strong> ${esc(q.q)}</div>
+        <div class="ans">正解: ${q.answer.map(x => esc(q.choices[x])).join(" / ")}</div>
+        <div class="ex">${esc(q.expl)}</div>
+      </div>`;
+    });
+    html += `<div class="card"><h3>分野${d}: ${esc(DOMAINS[d].name)}（${qs.length}問・配点${DOMAINS[d].weight}%）</h3>${items}</div>`;
+  }
+  $app.innerHTML = html;
+}
+
+document.addEventListener("click", hideMockTip);
+
+// Init
+renderStudy(1);
+</script>
+</body>
+</html>

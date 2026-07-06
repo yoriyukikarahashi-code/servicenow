@@ -1,0 +1,16 @@
+{
+  "cert_id": "csa",
+  "app_title": "ServiceNow CSA 学習システム",
+  "app_subtitle": "Certified System Administrator 試験対策",
+  "version_badge": "PDI: Zurich リリース準拠",
+  "storage_prefix": "csa",
+  "output_single": "csa_single.html",
+  "domains": [
+    { "id": 1, "label": "Platform Overview & Navigation", "weight": 7,  "note": "01_platform_overview.md" },
+    { "id": 2, "label": "Instance Configuration", "weight": 11, "note": "02_instance_configuration.md" },
+    { "id": 3, "label": "Collaboration", "weight": 20, "note": "03_collaboration.md" },
+    { "id": 4, "label": "Self-Service & Automation", "weight": 20, "note": "04_self_service_automation.md" },
+    { "id": 5, "label": "Database Management", "weight": 27, "note": "05_database_management.md" },
+    { "id": 6, "label": "Data Migration & Integration", "weight": 15, "note": "06_data_migration.md" }
+  ]
+}
