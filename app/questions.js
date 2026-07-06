@@ -1851,7 +1851,7 @@ const QUESTIONS = [
     "Connect Chat"
   ],
   answer: [0],
-  expl: "Now Support(旧HI: Hi)は顧客がServiceNow社へケースを登録したり、既知の問題やインスタンス管理(アップグレード依頼等)を行うための公式ポータルである。Service PortalやEmployee Centerは自社の従業員向けセルフサービス画面、Connect Chatはインスタンス内のリアルタイムチャット機能であり、いずれもServiceNow社への問い合わせ窓口ではない。"
+  expl: "Now Support(旧HI: Hi)は顧客がServiceNow社へケースを登録したり、既知の問題やインスタンス管理(アップグレード依頼等)を行うための公式ポータルである。Service PortalやEmployee Centerは自社の従業員向けセルフサービス画面、Connect Chatはインスタンス内のリアルタイムチャット機能(Zurich世代では非推奨・後継はSidebar)であり、いずれもServiceNow社への問い合わせ窓口ではない。"
 },
 
 // ===== 第2弾 分野2(Instance Configuration)=====
@@ -2239,7 +2239,7 @@ const QUESTIONS = [
       "Guided BoardはStateフィールドでしか作成できない"
     ],
     answer: [0],
-    expl: "Guided Boardはレーンをフィールドの離散的な値に対応させる仕組みのため、State以外でもPriority等のChoice型フィールドを基準にできる。「Reference型であれば何でも基準にできる」という記述は誤りであり、自由入力のString型は値が定まらないためレーン化に適さない。Stateフィールド専用というわけでもない。"
+    expl: "Guided Boardはレーンをフィールドの離散的な値に対応させる仕組みのため、State以外でもPriority等のChoice型フィールドを基準にできる。なおAssignment group等のReference型フィールドも基準にできるが、「Reference型であれば何でも」という無条件の記述は誤り。自由入力のString型は値が離散的に定まらないためレーン化に適さない。Stateフィールド専用というわけでもない。"
   },
 
   // ===== 第2弾 分野4 =====
@@ -2283,13 +2283,13 @@ const QUESTIONS = [
   id: 434, domain: 4,
   q: "カタログアイテムの変数タイプ「Reference」と「Lookup Select Box」の違いとして最も適切なものはどれか。",
   choices: [
-    "Referenceは選択したレコードへの参照を保持するだけだが、Lookup Select Boxは選択した値に応じて同じフォーム内の他の変数へ値を自動入力(オートポピュレート)させる目的でよく使われる",
+    "Referenceは参照ルックアップでレコードを検索・選択しsys_id参照を保持するが、Lookup Select Boxは対象テーブルのレコードをドロップダウン形式で提示し、指定したLookup value fieldの値を格納できる",
     "Referenceは文字列型、Lookup Select Boxは真偽値型である",
     "両者は完全に同じ機能で名称のみが異なる",
     "Lookup Select Boxは複数選択、Referenceは単一選択専用という違いのみである"
   ],
   answer: [0],
-  expl: "Referenceは他テーブルのレコードを参照する基本的な変数タイプだが、Lookup Select Boxは選択したレコードの他フィールド値を使って同フォーム内の別変数を自動入力する用途でよく使われる点が特徴的な違いである。両者は型もデータの扱いも異なり単なる名称違いではなく、選択できる数の違いのみが本質的な差でもない。"
+  expl: "Referenceは参照ルックアップ(オートコンプリート検索)でレコードを選択しsys_id参照を保持する。Lookup Select Boxは対象テーブルのレコードをドロップダウンとして提示し、Lookup value fieldで指定したフィールドの値を格納できる点が本質的な違い。オートポピュレート属性はReference変数でも設定可能であり、Lookup Select Box固有の機能ではない。"
 },
 {
   id: 435, domain: 4,
@@ -2625,7 +2625,7 @@ const QUESTIONS = [
   },
   {
     id: 555, domain: 5,
-    q: "ユーザーへのロール付与を格納する多対多(m2m)の標準テーブルとして適切なものをすべて選べ。(複数選択)",
+    q: "ロール付与(ユーザーまたはグループへの)を格納する多対多(m2m)の標準テーブルとして適切なものをすべて選べ。(複数選択)",
     choices: ["sys_user_has_role", "sys_group_has_role", "sys_user_grmember", "sys_security_acl"],
     answer: [0, 1],
     expl: "ユーザーへの直接のロール付与はsys_user_has_role、グループへのロール付与はsys_group_has_roleという多対多の中間テーブルに格納される。sys_user_grmemberはユーザーとグループの所属関係を保持するテーブルでロール付与ではなく、sys_security_aclはACL定義そのものであり、いずれもロール付与のm2mテーブルではない。"
