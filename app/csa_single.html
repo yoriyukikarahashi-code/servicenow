@@ -742,13 +742,13 @@ const QUESTIONS = [
     id: 216, domain: 2,
     q: "Next Experience UIの配色・ロゴなどのブランディングをインスタンス全体で管理者が設定する仕組みはどれか。",
     choices: [
-      "Branding Editorなど、テーマ管理用の管理者向け設定",
+      "テーマ(Theme)管理などNext Experience向けの管理者用ブランディング設定",
       "各ユーザーのPreferencesのみで設定する",
       "ACLの中で色を指定する",
       "Update Setの説明欄に色を記入する"
     ],
     answer: [0],
-    expl: "Next Experienceのブランディング(ロゴ・配色等)はBranding Editor等の管理者向けテーマ設定で組織全体に適用する。ユーザー個人のPreferencesはダークモード切替など限定的な個人設定にとどまり、ACLやUpdate Setの説明欄はブランディングの設定場所ではない。"
+    expl: "Next Experienceのブランディング(ロゴ・配色等)はテーマ(sys_theme)やAppearance設定など管理者向けテーマ管理で組織全体に適用する(旧UI16世代ではBranding Editor)。ユーザー個人のPreferencesはダークモード切替など限定的な個人設定にとどまり、ACLやUpdate Setの説明欄はブランディングの設定場所ではない。"
   },
 
   // ========== 分野3: Configuring Applications for Collaboration ==========
@@ -807,10 +807,10 @@ const QUESTIONS = [
       "レコードの挿入・更新(条件指定)",
       "イベント(Event)の発火",
       "ユーザーのログイン失敗のみ",
-      "トリガー(スケジュール)"
+      "ワークフローやフローのNotificationアクティビティからのTriggered起動"
     ],
     answer: [0, 1, 3],
-    expl: "通知はレコードの挿入/更新、イベントレジストリに登録されたイベントの発火、スケジュールトリガーで送信できる。ログイン失敗のみに限定されるものではない。"
+    expl: "通知の発火方法はレコードの挿入/更新(条件指定)、イベントレジストリに登録されたイベントの発火、ワークフロー/フローからのTriggered起動の3方式。通知単体に定期スケジュール送信の機能はない(スケジュール配信があるのはレポート)。ログイン失敗のみに限定されるものではない。"
   },
   {
     id: 306, domain: 3,
@@ -1084,19 +1084,91 @@ const QUESTIONS = [
       "Performance Analytics"
     ],
     answer: [0],
-    expl: "Connect Chatはインスタンス内でリアルタイムのチャット・会話を行うコラボレーション機能で、レコードから直接特定ユーザーとチャットを開始できる。Visual Task Boardはタスク管理、Service Portalはセルフサービス画面、Performance Analyticsは分析機能であり、いずれもチャット機能ではない。"
+    expl: "Connect Chatはインスタンス内でリアルタイムのチャット・会話を行うコラボレーション機能で、レコードから直接特定ユーザーとチャットを開始できる。なお最新リリースではConnectは非推奨となり、Next ExperienceではSidebarが後継のコラボレーション機能。Visual Task Boardはタスク管理、Service Portalはセルフサービス画面、Performance Analyticsは分析機能。"
   },
   {
     id: 330, domain: 3,
-    q: "Agent Workspaceの特徴として正しいものはどれか。",
+    q: "Workspace(Configurable Workspace)の特徴として正しいものはどれか。",
     choices: [
       "従来のフォームベースのUIをそのまま踏襲した画面である",
       "リストと複数のレコードをタブで切り替えながら作業できる、エージェント向けに最適化されたUIである",
       "エンドユーザー(依頼者)専用のセルフサービス画面である",
-      "モバイルアプリでは利用できない"
+      "レポートやダッシュボードは一切表示できない"
     ],
     answer: [1],
-    expl: "Agent Workspaceは複数レコードをタブで並行処理できる、担当者(エージェント)向けの作業画面。エンドユーザー向けはEmployee Center/Service Portalであり、Agent Workspaceは従来のフォームベースUIをそのまま踏襲したものではない。"
+    expl: "Workspace(CSM/ITSM Workspace等のConfigurable Workspace)は複数レコードをタブで並行処理できる、担当者(エージェント)向けの作業画面。UI Builderでカスタマイズ可能なNext Experience上の画面で、旧Agent Workspaceの後継。エンドユーザー向けはEmployee Center/Service Portal。"
+  },
+  {
+    id: 351, domain: 3,
+    q: "Client Scriptの種類として正しいものをすべて選べ。(複数選択)",
+    choices: [
+      "onLoad",
+      "onChange",
+      "onSubmit",
+      "onDelete"
+    ],
+    answer: [0, 1, 2],
+    expl: "Client Scriptの種類はonLoad(フォーム読込時)、onChange(フィールド値変更時)、onSubmit(保存時)、onCellEdit(リストのインライン編集時)の4種類。onDeleteというタイプは存在しない(削除時の処理はサーバーサイドのBusiness Ruleで行う)。"
+  },
+  {
+    id: 352, domain: 3,
+    q: "Client Scriptでフィールドを必須にするg_form APIメソッドはどれか。",
+    choices: [
+      "g_form.setMandatory('field', true)",
+      "g_form.setRequired('field')",
+      "g_form.makeMandatory('field')",
+      "g_form.setValue('field', 'mandatory')"
+    ],
+    answer: [0],
+    expl: "フィールドの必須/任意はg_form.setMandatory('field_name', true/false)で切り替える。setVisibleは表示/非表示、setReadOnlyは読み取り専用の切替。setRequiredやmakeMandatoryというメソッドは存在しない。"
+  },
+  {
+    id: 353, domain: 3,
+    q: "onChange型Client Scriptに自動的に渡される引数として正しいものをすべて選べ。(複数選択)",
+    choices: [
+      "control",
+      "oldValue",
+      "newValue",
+      "isLoading"
+    ],
+    answer: [0, 1, 2, 3],
+    expl: "onChange型Client Scriptの関数シグネチャはfunction onChange(control, oldValue, newValue, isLoading, isTemplate)。isLoadingはフォーム読込中の変更かを判別するために使い、通常if (isLoading || newValue === '') return; でガードする。"
+  },
+  {
+    id: 354, domain: 3,
+    q: "フォーム上にカスタムボタンを追加してサーバーサイド処理を実行させたい。使用すべき機能はどれか。",
+    choices: [
+      "UI Action",
+      "Client Script",
+      "UI Policy",
+      "Business Rule"
+    ],
+    answer: [0],
+    expl: "フォームやリストのボタン・コンテキストメニュー・関連リンクはUI Action(sys_ui_action)で作成する。Client ScriptとUI Policyはフォームの表示制御、Business Ruleはレコード操作時の自動処理であり、ボタンの追加はできない。"
+  },
+  {
+    id: 355, domain: 3,
+    q: "UI Actionの表示形式として正しいものをすべて選べ。(複数選択)",
+    choices: [
+      "フォーム上部のボタン(Form button)",
+      "フォームの右クリックメニュー(Form context menu)",
+      "リスト上部のボタン(List banner button)",
+      "メール本文内のリンク"
+    ],
+    answer: [0, 1, 2],
+    expl: "UI ActionはForm button/Form context menu/Form link/List banner button/List context menu等の形式で表示できる。メール本文内のリンクはNotificationのテンプレートで作成するものであり、UI Actionの表示形式ではない。"
+  },
+  {
+    id: 356, domain: 3,
+    q: "ユーザーが送信したメールから自動的にIncidentレコードを作成する仕組みはどれか。",
+    choices: [
+      "Inbound Email Action",
+      "Outbound Email Notification",
+      "Email Digest",
+      "Record Producer"
+    ],
+    answer: [0],
+    expl: "Inbound Email Action(sys_email_action)は受信メールをトリガーにレコードの作成(insert)や更新(update)を行うルール。既存チケットへの返信をWork Notesに追記する用途にも使う。Record Producerはカタログ経由のフォーム入力でレコードを作る機能であり、メール起点ではない。"
   },
 
   // ========== 分野4: Self-Service & Automation ==========
@@ -1402,13 +1474,13 @@ const QUESTIONS = [
     id: 427, domain: 4,
     q: "task_slaレコードのStage(ステージ)の説明として正しいものはどれか。",
     choices: [
-      "In Progress・Paused・Completed・Cancelledなどの値を取り、SLA違反の有無は別途Has Breached(違反フラグ)で判定される",
+      "In Progress・Paused・Breached・Achieved・Cancelledなどの値を取り、SLAの進行状態を表す",
       "Stageの値は常にBreachedの1種類のみである",
       "StageはApproved/Rejectedのみを取る",
       "Stageはユーザーが自由入力するテキストフィールドである"
     ],
     answer: [0],
-    expl: "task_slaのStageはIn Progress/Paused/Completed/Cancelled等の選択肢を持ち、SLAが違反したかどうかは別のHas Breachedフラグで管理される。Approved/Rejectedは承認レコードの状態であり、Stageは自由入力のテキストでもない。"
+    expl: "task_slaのStageはIn Progress/Paused/Breached(違反)/Achieved(達成)/Cancelled等の選択肢を持ち、SLAの進行状態を表す。違反有無を条件やレポートで判定する際はHas Breachedフラグも利用できる。Approved/Rejectedは承認レコードの状態であり、Stageは自由入力のテキストでもない。"
   },
   {
     id: 428, domain: 4,
@@ -1641,7 +1713,7 @@ const QUESTIONS = [
     q: "あるテーブルにマッチするACLが1つも存在しない場合(High Security環境)、admin以外のユーザーのアクセスはどうなるか。",
     choices: ["デフォルトで拒否される", "デフォルトで許可される", "読み取りのみ許可される", "エラー画面になる"],
     answer: [0],
-    expl: "High Security Settings環境ではデフォルト拒否(deny)の考え方で、明示的に許可するACLがなければアクセスできない。読み取りのみ許可される、あるいはエラー画面になるといった挙動ではなく、明示的な許可ACLがない限りアクセス自体が拒否される。"
+    expl: "High Security Settings環境ではデフォルト拒否(glide.sm.default_mode=deny)の考え方で、明示的に許可するACLがなければアクセスできない。なおHigh Securityが無効(default_mode=allow)の環境ではマッチするACLがない場合デフォルト許可となる。現行リリースではHigh Securityが標準有効のためデフォルト拒否が基本。"
   },
   {
     id: 521, domain: 5,
@@ -2011,13 +2083,13 @@ const QUESTIONS = [
     id: 614, domain: 6,
     q: "Coalesce に指定したフィールドの値が既存レコードの複数件と一致した場合、その行はどうなるか。",
     choices: [
-      "Skippedになる(どのレコードを更新すべきか特定できないため)",
+      "一致したレコードのうち1件のみが更新される(どのレコードが更新されるかは保証されない)",
       "すべての一致レコードが更新される",
-      "最初の1件が更新される",
+      "その行はエラーになり処理が中断される",
       "新規レコードが作成される"
     ],
     answer: [0],
-    expl: "Coalesce一致が複数件あると更新対象を特定できないため、その行はスキップされる。インポート後のステータス確認が重要な理由の一つ。"
+    expl: "Coalesce値が複数の既存レコードと一致した場合、クエリで最初に返った1件のみが更新される(どれが更新されるかは保証されない)。この不確定な動作を避けるため、Coalesceには一意な値を持つフィールドを選ぶのがベストプラクティス。"
   },
   {
     id: 615, domain: 6,
